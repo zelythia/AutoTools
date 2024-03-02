@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "autotools",
+  "version": "${version}",
+  "name": "AutoTools",
+  "description": "Automatically switch to the correct tool to use on a block/mob.",
+  "authors": [
+    "lukaz"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/minecraft_autotools",
+    "issues ": "https://www.curseforge.com/minecraft/mc-mods/autotools/issues"
+  },
+  "license": "All Rights Reserved",
+  "icon": "assets/autotools/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.zelythia.fabric.AutoToolsFabric"
+    ],
+    "modmenu": [
+      "net.zelythia.fabric.compat.modmenu.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "autotools.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": ">=1.20.3",
+    "java": ">=17",
+    "fabric-key-binding-api-v1": "*",
+    "fabric-lifecycle-events-v1": "*",
+    "fabric-api-base": "*"
+  }
+}

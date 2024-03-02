@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "[49,)"
+#issueTrackerURL = ""
+license = "All rights reserved"
+
+[[mods]]
+modId="autotools"
+version="${version}"
+displayName="AutoTools"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/autotools"
+#logoFile="icon.png"
+authors="zelythia"
+description='''
+Automatically switch to the correct tool to use on a block/mob.
+'''
+
+[[dependencies.autotools]]
+modId = "forge"
+mandatory = true
+versionRange = "[49,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.autotools]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.4]"
+ordering = "NONE"
+side = "BOTH"
