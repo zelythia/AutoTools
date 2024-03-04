@@ -55,4 +55,4 @@ jobs:
             quilt
 
           dependencies: |
-            fabric@${{FABRIC_API_VERSION}}(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
+            fabric@${{env.FABRIC_API_VERSION}}(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
