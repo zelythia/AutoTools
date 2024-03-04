@@ -3,9 +3,12 @@ name: Publish on GitHub, CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:
-  MINECRAFT_VERSION: 1.20.4
+  MINECRAFT_VERSION: 1.20.1
   VERSION: 2.0
-  FABRIC_API_VERSION: 0.96.4+1.20.4
+  FABRIC_API_VERSION: 0.92.0+1.20.1
+  SUPPORTED_VERSIONS: |
+    1.20
+    1.20.1
 
 jobs:
   build:
@@ -47,6 +50,7 @@ jobs:
           name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
           version-type: release
+          game-versions: ${{env.SUPPORTED_VERSIONS}}
           changelog-file: CHANGELOG.md
           loaders: |
             fabric
@@ -70,6 +74,7 @@ jobs:
           name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
           version-type: release
+          game-versions: ${{env.SUPPORTED_VERSIONS}}
           changelog-file: CHANGELOG.md
           loaders: |
             forge
@@ -89,6 +94,7 @@ jobs:
           name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
           version-type: release
+          game-versions: ${{env.SUPPORTED_VERSIONS}}
           changelog-file: CHANGELOG.md
           loaders: |
             neoforge

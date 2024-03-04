@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[49,)"
+loaderVersion = "[47,)"
 issueTrackerURL = "https://github.com/zelythia/AutoTools/issues"
 license = "MIT"
 
@@ -17,13 +17,13 @@ Automatically switch to the correct tool to use on a block/mob.
 [[dependencies.autotools]]
 modId = "forge"
 mandatory = true
-versionRange = "[49,)"
+versionRange = "[47,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.autotools]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.4]"
+versionRange = "[1.20, 1.20.1]"
 ordering = "NONE"
 side = "CLIENT"
