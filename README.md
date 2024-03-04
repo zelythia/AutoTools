@@ -30,10 +30,6 @@ This mod is entirely client-side and works on servers and with many third-party 
 
 This mod requires the **Fabric API** when using it with the fabric mod loader. (Does not need to be installed separately)
 
-### Support
-
-If you have any questions or issues regarding AutoTools you can add me on Discord (please also provide the modloader an version you're playing): __zelythia__
-
 ---
 
 ### For Developers:
