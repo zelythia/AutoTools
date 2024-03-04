@@ -5,14 +5,15 @@
   "name": "AutoTools",
   "description": "Automatically switch to the correct tool to use on a block/mob.",
   "authors": [
-    "lukaz"
+    "zelythia"
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/minecraft_autotools",
-    "issues ": "https://www.curseforge.com/minecraft/mc-mods/autotools/issues"
+    "issues": "https://github.com/zelythia/AutoTools/issues",
+    "sources": "https://github.com/zelythia/AutoTools"
   },
-  "license": "All Rights Reserved",
-  "icon": "assets/autotools/icon.png",
+  "license": "MIT",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
