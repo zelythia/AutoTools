@@ -1,0 +1,2 @@
+ - Fixed a bug where AutoTools would not work on servers
+ - Fixed a bug where AutoTools would use up durability when looking for an optimal tool
