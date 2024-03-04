@@ -41,7 +41,7 @@ jobs:
 #          curseforge-id: 522205
 #          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITH_TOKEN }}
 
           files: |
             fabric/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
