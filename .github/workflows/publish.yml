@@ -35,13 +35,13 @@ jobs:
       - name: Publish Fabric-Mod on (Curseforge/Modrinth/Github)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-#          modrinth-id: zgVJyCgK
-#          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          modrinth-id: zgVJyCgK
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
 #          curseforge-id: 522205
 #          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-token: ${{ secrets.GITH_TOKEN }}
+#          github-token: ${{ secrets.GITH_TOKEN }}
 
           files: |
             fabric/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
