@@ -16,12 +16,12 @@
 
 package net.zelythia.clientTags;
 
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -43,29 +43,23 @@ public final class ClientTags {
 	/**
 	 * Loads a tag into the cache, recursively loading any contained tags along with it.
 	 *
-	 * @param tagKey the {@code TagKey} to load
+	 * @param tag the {@code Tag} to load
+	 * @param registry The registry for T
 	 * @return a set of {@code Identifier}s this tag contains
 	 */
-	public static Set<ResourceLocation> getOrCreateLocalTag(TagKey<?> tagKey) {
-		return ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey).completeIds();
+	public static <T> Set<ResourceLocation> getOrCreateLocalTag(Tag.Named<T> tag, Registry<T> registry) {
+		return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag, registry).completeIds();
 	}
 
 	/**
-	 * Checks if an entry is in a tag.
+	 * Loads a tag into the cache, recursively loading any contained tags along with it.
 	 *
-	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked, recursively checking the
-	 * synced tags and entries contained within.
-	 *
-	 * @param tagKey the {@code TagKey} to being checked
-	 * @param entry  the entry to check
-	 * @return if the entry is in the given tag
+	 * @param tag the {@code Tag} to load
+	 * @param registryEntry An entry of the tag
+	 * @return a set of {@code Identifier}s this tag contains
 	 */
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
-		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(entry);
-
-		return ClientTagsImpl.getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
+	public static <T> Set<ResourceLocation> getOrCreateLocalTag(Tag.Named<T> tag, T registryEntry) {
+		return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag, ClientTagsImpl.getRegistry(registryEntry).get()).completeIds();
 	}
 
 	/**
@@ -76,31 +70,35 @@ public final class ClientTags {
 	 * the tag populated from the available mods is checked, recursively checking the
 	 * synced tags and entries contained within.
 	 *
-	 * @param tagKey        the {@code TagKey} to be checked
+	 * @param tagKey        the {@code Tag} to be checked
 	 * @param registryEntry the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> registryEntry) {
+	public static <T> boolean isInWithLocalFallback(Tag<T> tagKey, T registryEntry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryEntry);
-		return ClientTagsImpl.isInWithLocalFallback(tagKey, registryEntry);
+		if(!(tagKey instanceof Tag.Named)){
+ 			ClientTagsLoader.LOGGER.error("ClientTags only support Named Tags");
+			 return false;
+		}
+		return ClientTagsImpl.isInWithLocalFallback((Tag.Named<T>) tagKey, registryEntry);
 	}
 
 	/**
 	 * Checks if an entry is in a tag provided by the available mods.
 	 *
-	 * @param tagKey      the {@code TagKey} to being checked
-	 * @param registryKey the entry to check
+	 * @param tagKey      the {@code Tag} to being checked
+	 * @param registryEntry the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInLocal(TagKey<T> tagKey, ResourceKey<T> registryKey) {
+	public static <T> boolean isInLocal(Tag.Named<T> tagKey, T registryEntry) {
 		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(registryKey);
+		Objects.requireNonNull(registryEntry);
 
-		if (tagKey.registry().location().equals(registryKey.registry())) {
-			// Check local tags
-			Set<ResourceLocation> ids = getOrCreateLocalTag(tagKey);
-			return ids.contains(registryKey.location());
+		Optional<Registry<T>> registry = ClientTagsImpl.getRegistry(registryEntry);
+		if(registry.isPresent()){
+			Set<ResourceLocation> ids = getOrCreateLocalTag(tagKey, registry.get());
+			return ids.contains(registry.get().getKey(registryEntry));
 		}
 
 		return false;

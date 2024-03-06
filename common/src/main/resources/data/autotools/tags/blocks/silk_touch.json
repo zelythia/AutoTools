@@ -25,7 +25,6 @@
     "minecraft:weeping_vines_plant",
 
     "minecraft:glass",
-    "minecraft:tinted_glass",
     "minecraft:red_stained_glass",
     "minecraft:lime_stained_glass",
     "minecraft:pink_stained_glass",
@@ -63,11 +62,6 @@
 
     "#minecraft:corals",
     "#minecraft:coral_blocks",
-    "#minecraft:leaves",
-
-    "minecraft:sculk_vein",
-    "minecraft:calibrated_sculk_sensor",
-    "minecraft:chiseled_bookshelf",
-    "minecraft:decorated_pot"
+    "#minecraft:leaves"
   ]
 }

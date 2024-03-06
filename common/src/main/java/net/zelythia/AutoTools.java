@@ -5,11 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,13 +19,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,25 +29,29 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.zelythia.clientTags.ClientTags;
+import net.zelythia.clientTags.ClientTagsImpl;
+import net.zelythia.clientTags.ClientTagsLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class AutoTools {
     public static final String MOD_ID = "autotools";
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
-    public static final TagKey<Block> SILK_TOUCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_ORES = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always_ores"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always_exc_ores"));
-    public static final TagKey<Block> FORTUNE = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "fortune"));
-    public static final TagKey<Block> FORTUNE_SETTING = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "fortune_setting"));
-    public static final TagKey<Block> DO_NOT_SWAP_UNLESS_ENCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "do_not_swap_unless_ench"));
+    public static Tag<Block> SILK_TOUCH;
+    public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS;
+    public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS_ORES;
+    public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES;
+    public static Tag<Block> FORTUNE;
+    public static Tag<Block> FORTUNE_SETTING;
+    public static Tag<Block> DO_NOT_SWAP_UNLESS_ENCH;
 
     public static final HashMap<ResourceLocation, ResourceLocation[]> CUSTOM_TOOLS = new HashMap<>();
-    private static final HashMap<String, ResourceLocation[]> TOOL_LISTS = new HashMap<>() {{
+    private static final HashMap<String, ResourceLocation[]> TOOL_LISTS = new HashMap<String, ResourceLocation[]>() {{
         put("autotools:pickaxe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_pickaxe"), new ResourceLocation("minecraft:diamond_pickaxe"), new ResourceLocation("minecraft:iron_pickaxe"), new ResourceLocation("minecraft:golden_pickaxe"), new ResourceLocation("minecraft:stone_pickaxe"), new ResourceLocation("minecraft:wooden_pickaxe")});
         put("autotools:shovel", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_shovel"), new ResourceLocation("minecraft:diamond_shovel"), new ResourceLocation("minecraft:iron_shovel"), new ResourceLocation("minecraft:golden_shovel"), new ResourceLocation("minecraft:stone_shovel"), new ResourceLocation("minecraft:wooden_shovel")});
         put("autotools:hoe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_hoe"), new ResourceLocation("minecraft:diamond_hoe"), new ResourceLocation("minecraft:iron_hoe"), new ResourceLocation("minecraft:golden_hoe"), new ResourceLocation("minecraft:stone_hoe"), new ResourceLocation("minecraft:wooden_hoe")});
@@ -72,16 +72,22 @@ public class AutoTools {
     }
 
     public static void loadCustomItems() {
+
+        JsonParser jsonParser = new JsonParser();
+
         try {
-            JsonElement jsonElement = JsonParser.parseString(AutoToolsConfig.CUSTOM_TOOLS);
+            JsonElement jsonElement = jsonParser.parse(AutoToolsConfig.CUSTOM_TOOLS);
             if (!jsonElement.isJsonObject()) return;
             JsonObject jsonObject = (JsonObject) jsonElement;
 
-            for (String key : jsonObject.keySet()) {
+            Set<Map.Entry<String, JsonElement>> entrySet = jsonObject.entrySet();
+
+            for (Map.Entry<String, JsonElement> entry : entrySet) {
 
                 ArrayList<ResourceLocation> tools = new ArrayList<>();
-                if (jsonObject.get(key).isJsonArray()) {
-                    JsonArray toolsArray = jsonObject.getAsJsonArray(key);
+
+                if (entry.getValue().isJsonArray()) {
+                    JsonArray toolsArray = entry.getValue().getAsJsonArray();
 
                     for (int i = 0; i < toolsArray.size(); i++) {
                         if (TOOL_LISTS.containsKey(toolsArray.get(i).getAsString())) {
@@ -92,12 +98,12 @@ public class AutoTools {
                         tools.add(new ResourceLocation(toolsArray.get(i).getAsString()));
                     }
                 } else {
-                    if (TOOL_LISTS.containsKey(jsonObject.get(key).getAsString())) {
-                        tools.addAll(List.of(TOOL_LISTS.get(jsonObject.get(key).getAsString())));
-                    } else tools.add(new ResourceLocation(jsonObject.get(key).getAsString()));
+                    if (TOOL_LISTS.containsKey(entry.getValue().getAsString())) {
+                        tools.addAll(Arrays.asList(TOOL_LISTS.get(entry.getValue().getAsString())));
+                    } else tools.add(new ResourceLocation(entry.getValue().getAsString()));
                 }
 
-                CUSTOM_TOOLS.put(new ResourceLocation(key), Arrays.copyOf(tools.toArray(), tools.size(), ResourceLocation[].class));
+                CUSTOM_TOOLS.put(new ResourceLocation(entry.getKey()), Arrays.copyOf(tools.toArray(), tools.size(), ResourceLocation[].class));
             }
 
             LOGGER.info("Loaded custom block configs: " + CUSTOM_TOOLS.keySet());
@@ -115,7 +121,14 @@ public class AutoTools {
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
         swaps.push(sourceSlot);
 
-        client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
+        if (Screen.hasShiftDown()) {
+            //Simulating a click on the toolSlot and the swappableSlot with the ClickType = SWAP so it updates with the server
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 18, sourceSlot, ClickType.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 27, sourceSlot, ClickType.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 36, sourceSlot, ClickType.SWAP, client.player);
+        } else {
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 36, sourceSlot, ClickType.SWAP, client.player);
+        }
 
         inventory.selected = destSlot;
     }
@@ -128,7 +141,7 @@ public class AutoTools {
         Minecraft client = Minecraft.getInstance();
         if(client.player == null || client.gameMode == null) return;
 
-        Inventory inventory = client.player.getInventory();
+        Inventory inventory = client.player.inventory;
 
         while (!swaps.empty()) {
             int i = swaps.pop();
@@ -153,8 +166,6 @@ public class AutoTools {
             if (blockState.getDestroySpeed(null, pos) != 0) {
                 modifier *= (1F + (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack) * 20F) / 100F);
             }
-
-            ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock());
 
             //SilkTouch
             if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 1) {
@@ -192,7 +203,7 @@ public class AutoTools {
      */
     public static int findSlotMatchingItem(Inventory inventory, ItemStack itemStack) {
         for(int i = 0; i < inventory.items.size(); ++i) {
-            if (ItemStack.isSameItem(itemStack, inventory.items.get(i))) {
+            if (ItemStack.isSame(itemStack, inventory.items.get(i))) {
                 return i;
             }
         }
@@ -202,7 +213,7 @@ public class AutoTools {
 
 
     public static void getCorrectTool(HitResult hit, Minecraft client) {
-        Inventory inventory = client.player.getInventory();
+        Inventory inventory = client.player.inventory;
 
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
@@ -212,13 +223,13 @@ public class AutoTools {
             float miningSpeed = 1;
 
             //Detection for custom tools
-            if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
-                ResourceLocation[] tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
+            if (CUSTOM_TOOLS.containsKey(Registry.BLOCK.getKey(blockState.getBlock()))) {
+                ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.BLOCK.getKey(blockState.getBlock()));
 
                 for (ResourceLocation resourceLocation : tools) {
                     if(Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
 
-                    toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
+                    toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
                     if (toolSlot != -1) break;
                 }
 
@@ -245,7 +256,6 @@ public class AutoTools {
                     return;
                 } else {
                     selectItem(client, inventory, toolSlot);
-                    return;
                 }
             }
 
@@ -259,6 +269,7 @@ public class AutoTools {
                 if (inventory.getItem(inventory.selected).getItem().isCorrectToolForDrops(blockState)
                         || !blockState.requiresCorrectToolForDrops()) return;
             }
+
 
             boolean foundEnchantment = false;
             for (int i = 0; i < inventory.getContainerSize(); i++) {
@@ -322,20 +333,21 @@ public class AutoTools {
 
 
                     if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
-                        if (entity instanceof LivingEntity livingEntity) {
+                        if (entity instanceof LivingEntity) {
+                            LivingEntity livingEntity = (LivingEntity) entity;
                             if (!item.hurtEnemy(inventory.getItem(i), livingEntity, inventory.player)) {
                                 continue;
                             }
                         }
 
                         //Custom tool detection
-                        if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
-                            ResourceLocation[] tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+                        if (CUSTOM_TOOLS.containsKey(Registry.ENTITY_TYPE.getKey(entity.getType()))) {
+                            ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.ENTITY_TYPE.getKey(entity.getType()));
 
                             for (ResourceLocation resourceLocation : tools) {
                                 if(Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
 
-                                toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
+                                toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
                                 if (toolSlot != -1) break;
                             }
 
@@ -352,7 +364,6 @@ public class AutoTools {
                             }
                         }
 
-
                         //Every item with an attackDamage larger than 1 has an ATTACK_DAMAGE attribute/modifier
                         if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {
                             //Calculating DPS
@@ -368,7 +379,8 @@ public class AutoTools {
 
                         //Enchantments
                         if (inventory.getItem(i).isEnchanted()) {
-                            if (((EntityHitResult) hit).getEntity() instanceof LivingEntity livingEntity) {
+                            if (((EntityHitResult) hit).getEntity() instanceof LivingEntity) {
+                                LivingEntity livingEntity = (LivingEntity) ((EntityHitResult) hit).getEntity();
                                 newAttackDamage += EnchantmentHelper.getDamageBonus(inventory.getItem(i), livingEntity.getMobType());
                             }
                         }

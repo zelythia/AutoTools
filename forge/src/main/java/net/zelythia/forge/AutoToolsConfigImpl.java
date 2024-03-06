@@ -8,7 +8,7 @@ public class AutoToolsConfigImpl {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
-    private static final ForgeConfigSpec.ConfigValue<Boolean> TOGGLE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> TOGGLE;
     private static final ForgeConfigSpec.ConfigValue<Boolean> SHOWDPS;
     private static final ForgeConfigSpec.ConfigValue<Boolean> KEEPSLOT;
     private static final ForgeConfigSpec.ConfigValue<Boolean> DISABLECREATIVE;
@@ -21,7 +21,6 @@ public class AutoToolsConfigImpl {
     private static final ForgeConfigSpec.ConfigValue<Boolean> CHANGE_FOR_ENTITIES;
 
     private static final ForgeConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
-
 
     static {
         BUILDER.push("AutoTools");

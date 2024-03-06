@@ -4,9 +4,14 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.block.Block;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 import net.zelythia.fabric.events.ClientBlockBreakEvent;
@@ -19,6 +24,14 @@ public class AutoToolsFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        AutoTools.SILK_TOUCH = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch"));
+        AutoTools.SILK_TOUCH_SETTING_ALWAYS = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch_setting_always"));
+        AutoTools.SILK_TOUCH_SETTING_ALWAYS_ORES = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch_setting_always_ores"));
+        AutoTools.SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch_setting_always_exc_ores"));
+        AutoTools.FORTUNE = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "fortune"));
+        AutoTools.FORTUNE_SETTING = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "fortune_setting"));
+        AutoTools.DO_NOT_SWAP_UNLESS_ENCH = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "do_not_swap_unless_ench"));
+
         AutoTools.init();
 
         KeyMapping key_changeTool = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.autotools.get_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category"));
@@ -30,7 +43,7 @@ public class AutoToolsFabric implements ClientModInitializer {
                 if (key_changeTool.consumeClick()) {
                     if (!keyPressed) {
                         switchItem = !switchItem;
-                        client.player.sendSystemMessage(switchItem ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
+                        client.player.sendMessage(new TextComponent(switchItem ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
                         keyPressed = true;
                     }
                     //resetting the keyPressed-count
@@ -61,7 +74,6 @@ public class AutoToolsFabric implements ClientModInitializer {
                 blockBroken = true;
             }
         });
+
     }
-
-
 }

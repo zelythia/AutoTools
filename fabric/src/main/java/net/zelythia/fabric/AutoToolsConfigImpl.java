@@ -4,8 +4,8 @@ import net.zelythia.AutoToolsConfig;
 import net.zelythia.fabric.config.SimpleConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 
 public class AutoToolsConfigImpl {
 
@@ -35,43 +35,42 @@ public class AutoToolsConfigImpl {
      * Changing what is written in the config by default
      */
     private static String defaultConfig(String filename) {
-        return """
-                #AutoTools config
+        return "#AutoTools config\n" +
+                "\n" +
+                "#AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.\n" +
+                "toggle=false\n" +
+                "#Disables AutoTools in creative-mode if toggle is enabled\n" +
+                "disableCreative=true\n" +
+                "#Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.\n" +
+                "keepSlot=false\n" +
+                "#AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability\n" +
+                "preferHotBarTool=true\n" +
+                "#AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed\n" +
+                "preferLowDurability=false\n" +
+                "#Autotools will try to always get a tool with Fortune for gravel and leaves\n" +
+                "alwaysPreferFortune=false\n" +
+                "\n" +
+                "#AutoTools only tries to get a new tool if it is needed to break the block\n" +
+                "onlySwitchIfNecessary=false  " +
+                "#AutoTools will switch back to you previous tool or item you had in your hand before breaking the block\n" +
+                "switchBack=false\n" +
+                "#Displays the weapons Dps when hovering over it as an tooltip\n" +
+                "showDPS=true\n" +
+                "#AutoTools will change to the tool with the most DPS when looking at an entity\n" +
+                "changeForEntities=true\n" +
+                "\n" +
+                "#Autotools will prefer Silk Touch:\n" +
+                "# never, always, always_ores, except_ores\n" +
+                "preferSilkTouch=except_ores\n" +
+                "\n" +
+                "#Add custom block-tool-configurations in JSON format\n" +
+                "#e.g. customTools={\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\n" +
+                "#When adding multiple tools, the first one has the highest priority\n" +
+                "#There are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\n" +
+                "#Use \"autotools:disabled\" to disable AutoTools on a certain block\n" +
+                "#Also works for entities: \"minecraft:entity_id\":\"minecraft:tool_id\"\n" +
+                "customTools={}";
 
-                #AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.
-                toggle=false
-                #Disables AutoTools in creative-mode if toggle is enabled
-                disableCreative=true
-                #Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.
-                keepSlot=false
-                #AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability
-                preferHotBarTool=true
-                #AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed
-                preferLowDurability=false
-                #Autotools will try to always get a tool with Fortune for gravel and leaves
-                alwaysPreferFortune=false
-
-                #AutoTools only tries to get a new tool if it is needed to break the block
-                onlySwitchIfNecessary=false
-                #AutoTools will switch back to you previous tool or item you had in your hand before breaking the block
-                switchBack=false
-                #Displays the weapons Dps when hovering over it as an tooltip
-                showDPS=true
-                #AutoTools will change to the tool with the most DPS when looking at an entity
-                changeForEntities=true
-
-                #Autotools will prefer Silk Touch:
-                # never, always, always_ores, except_ores
-                preferSilkTouch=except_ores
-
-                #Add custom block-tool-configurations in JSON format
-                #e.g. customTools={"minecraft:block_id":"minecraft:tool_id"} or customTools={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]}
-                #When adding multiple tools, the first one has the highest priority
-                #There are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword
-                #Use "autotools:disabled" to disable AutoTools on a certain block
-                #Also works for entities: "minecraft:entity_id":"minecraft:tool_id"
-                customTools={}
-                """;
     }
 
     @Nullable
@@ -79,7 +78,7 @@ public class AutoToolsConfigImpl {
         if (config != null) {
             return config;
         } else {
-            LOGGER.error("Config not initialized.");
+            LOGGER.error("Config not initialized.( Run 'new AutoToolsConfig()' before using )");
             return null;
         }
     }

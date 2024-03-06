@@ -25,7 +25,7 @@ public class AttackMixin {
     public LocalPlayer player;
 
     @Inject(at = @At("HEAD"), method = "startAttack")
-    private void doAttack(CallbackInfoReturnable<Boolean> cir) {
+    private void doAttack(CallbackInfo cir) {
         if (AutoToolsConfig.TOGGLE && AutoToolsFabric.switchItem) {
             if (player.isCreative()) {
                 if (!AutoToolsConfig.DISABLECREATIVE) {

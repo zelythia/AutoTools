@@ -31,10 +31,6 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }
 
-base {
-    archivesName = rootProject.archives_base_name + "-" + rootProject.minecraft_version + "-forge"
-}
-
 processResources {
     inputs.property "version", project.version
 
@@ -48,14 +44,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+    classifier "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
+    classifier null
 }
 
+jar {
+    classifier "dev"
+}
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
@@ -68,8 +68,6 @@ components.java {
         skip()
     }
 }
-
-
 
 publishing {
     publications {

@@ -2,6 +2,7 @@ package net.zelythia.clientTags.fabric;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.tags.Tag;
 
 import java.nio.file.Path;
 import java.util.HashSet;

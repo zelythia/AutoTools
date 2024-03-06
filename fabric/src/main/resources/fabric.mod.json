@@ -27,9 +27,9 @@
     "autotools.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.21",
-    "minecraft": ">=1.20.3",
-    "java": ">=17",
+    "fabricloader": ">=0.11.3",
+    "minecraft": "1.16.x",
+    "java": ">=8",
     "fabric-key-binding-api-v1": "*",
     "fabric-lifecycle-events-v1": "*",
     "fabric-api-base": "*"
