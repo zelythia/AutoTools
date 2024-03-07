@@ -19,7 +19,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -29,13 +32,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.zelythia.clientTags.ClientTags;
-import net.zelythia.clientTags.ClientTagsImpl;
-import net.zelythia.clientTags.ClientTagsLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class AutoTools {
@@ -203,7 +202,7 @@ public class AutoTools {
      */
     public static int findSlotMatchingItem(Inventory inventory, ItemStack itemStack) {
         for(int i = 0; i < inventory.items.size(); ++i) {
-            if (ItemStack.isSame(itemStack, inventory.items.get(i))) {
+            if (ItemStack.isSameIgnoreDurability(itemStack, inventory.items.get(i))) {
                 return i;
             }
         }
