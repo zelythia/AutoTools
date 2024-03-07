@@ -3,6 +3,7 @@ package net.zelythia.fabric.mixins;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -31,7 +32,6 @@ public abstract class ItemStackMixin {
     @Shadow
     public abstract boolean isEnchanted();
 
-    @SuppressWarnings("InvalidInjectorMethodSignature")
     @ModifyVariable(method = "getTooltipLines", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hasTag()Z", ordinal = 1), name = "list", ordinal = 0)
     public List<Component> addDPSTooltip(List<Component> list) {
         if (AutoToolsConfig.SHOWDPS) {
@@ -74,7 +74,7 @@ public abstract class ItemStackMixin {
                     String damage = (optionalAttackDamage > attackDamage) ?
                             (double) Math.round(attackDamage * 10d) / 10d + " (" + (double) Math.round(optionalAttackDamage * 10d) / 10d + ")" :
                             String.valueOf((double) Math.round(attackDamage * 10d) / 10d);
-                    list.add(Component.literal(" " + damage + " Dps").withStyle(ChatFormatting.DARK_GREEN));
+                    list.add(new TextComponent(" " + damage + " Dps").withStyle(ChatFormatting.DARK_GREEN));
                 }
             }
         }

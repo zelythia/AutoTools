@@ -12,6 +12,7 @@
     "minecraft:bookshelf",
     "minecraft:bee_nest",
     "minecraft:beehive",
+    "minecraft:beehive",
     "minecraft:turtle_egg",
     "minecraft:melon",
 
@@ -63,11 +64,6 @@
 
     "#minecraft:corals",
     "#minecraft:coral_blocks",
-    "#minecraft:leaves",
-
-    "minecraft:sculk_vein",
-    "minecraft:calibrated_sculk_sensor",
-    "minecraft:chiseled_bookshelf",
-    "minecraft:decorated_pot"
+    "#minecraft:leaves"
   ]
 }

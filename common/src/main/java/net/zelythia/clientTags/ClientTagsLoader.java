@@ -24,10 +24,10 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagFile;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
+import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ClientTagsLoader {
 	private static final Logger LOGGER = LoggerFactory.getLogger("client-tags");
@@ -47,22 +48,18 @@ public class ClientTagsLoader {
 	 * Load a given tag from the available mods into a set of {@code Identifier}s.
 	 * Parsing based on {@link net.minecraft.tags.TagLoader#load(net.minecraft.server.packs.resources.ResourceManager)}
 	 */
-	public static LoadedTag loadTag(TagKey<?> tagKey) {
-		var tags = new HashSet<TagEntry>();
+	public static <T> LoadedTag loadTag(TagKey<?> tagKey) {
+		var tags = new HashSet<Tag.BuilderEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.location());
 
 		for (Path tagPath : tagFiles) {
 			try (BufferedReader tagReader = Files.newBufferedReader(tagPath)) {
-				JsonElement jsonElement = JsonParser.parseReader(tagReader);
-				TagFile maybeTagFile = TagFile.CODEC.parse(new Dynamic<>(JsonOps.INSTANCE, jsonElement))
-						.result().orElse(null);
+				JsonParser parser = new JsonParser();
+				JsonElement jsonElement = parser.parse(tagReader);
 
-				if (maybeTagFile != null) {
-					if (maybeTagFile.replace()) {
-						tags.clear();
-					}
-
-					tags.addAll(maybeTagFile.entries());
+				if (jsonElement.isJsonObject()) {
+					//TODO add own json parsing so be don't need BuilderEntries and can use Entries instead
+					tags.addAll(Tag.Builder.tag().addFromJson(jsonElement.getAsJsonObject(), tagPath.getFileName().toString().replace(".json", "")).getEntries().collect(Collectors.toList()));
 				}
 			} catch (IOException e) {
 				LOGGER.error("Error loading tag: " + tagKey, e);
@@ -73,23 +70,23 @@ public class ClientTagsLoader {
 		HashSet<ResourceLocation> immediateChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
-		for (TagEntry tagEntry : tags) {
-			tagEntry.build(new TagEntry.Lookup<>() {
-				@Nullable
-				@Override
-				public ResourceLocation element(ResourceLocation id) {
-					immediateChildIds.add(id);
-					return id;
-				}
-
-				@Nullable
-				@Override
-				public Collection<ResourceLocation> tag(ResourceLocation id) {
-					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
-					immediateChildTags.add(tag);
-					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
-				}
-			}, completeIds::add);
+		for (Tag.BuilderEntry tagEntry : tags) {
+			tagEntry.entry().build(
+					resourceLocation -> {
+						Tag<T> tag = new Tag<>(Collections.EMPTY_LIST);
+						TagKey<T> tagKey1 = (TagKey<T>) new TagKey<>(tagKey.registry(), resourceLocation);
+						immediateChildTags.add(tagKey1);
+						return tag;
+					},
+					resourceLocation -> {
+						immediateChildIds.add(resourceLocation);
+						return (T) Registry.REGISTRY.get(tagKey.registry().location()).getOptional(resourceLocation).orElse(null);
+					},
+					registryEntry -> {
+						Registry<T> registry = (Registry<T>) Registry.REGISTRY.get(tagKey.registry().location());
+						completeIds.add(registry.getKey(registryEntry));
+					}
+			);
 		}
 
 		// Ensure that the tag does not refer to itself

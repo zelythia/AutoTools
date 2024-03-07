@@ -6,7 +6,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 import net.zelythia.fabric.events.ClientBlockBreakEvent;
@@ -30,7 +31,7 @@ public class AutoToolsFabric implements ClientModInitializer {
                 if (key_changeTool.consumeClick()) {
                     if (!keyPressed) {
                         switchItem = !switchItem;
-                        client.player.sendSystemMessage(switchItem ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
+                        client.player.sendMessage(new TextComponent(switchItem ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
                         keyPressed = true;
                     }
                     //resetting the keyPressed-count

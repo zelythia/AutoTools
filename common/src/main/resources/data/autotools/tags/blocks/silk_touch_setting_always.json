@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#autotools:silk_touch",
-
     "minecraft:grass_block",
     "minecraft:mycelium",
     "minecraft:podzol",
@@ -21,8 +19,8 @@
     "minecraft:redstone_ore",
     "minecraft:nether_gold_ore",
     "minecraft:lapis_ore",
-    "minecraft:nether_quartz_ore",
     "minecraft:gilded_blackstone",
+    "minecraft:nether_quartz_ore",
     "minecraft:deepslate_coal_ore",
     "minecraft:deepslate_gold_ore",
     "minecraft:deepslate_iron_ore",
@@ -30,11 +28,6 @@
     "minecraft:deepslate_diamond_ore",
     "minecraft:deepslate_emerald_ore",
     "minecraft:deepslate_redstone_ore",
-    "minecraft:deepslate_lapis_ore",
-
-    "minecraft:sculk",
-    "minecraft:sculk_catalyst",
-    "minecraft:sculk_shrieker",
-    "minecraft:sculk_sensor"
+    "minecraft:deepslate_lapis_ore"
   ]
 }

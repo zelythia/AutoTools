@@ -3,9 +3,9 @@ name: Publish on GitHub, CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:
-  MINECRAFT_VERSION: 1.20.4
+  MINECRAFT_VERSION: 1.18.2
   VERSION: 2.0
-  FABRIC_API_VERSION: 0.96.4+1.20.4
+  FABRIC_API_VERSION: 0.76.0+1.18.2
 
 jobs:
   build:
@@ -73,26 +73,7 @@ jobs:
           changelog-file: CHANGELOG.md
           loaders: |
             forge
-
-      - name: Publish Neoforge-Mod on (Curseforge/Modrinth)
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: zgVJyCgK
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          curseforge-id: 522205
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: |
-            neoforge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
-
-          name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
-          version: "${{env.VERSION}}"
-          version-type: release
-          changelog-file: CHANGELOG.md
-          loaders: |
-            neoforge
-
+            
 
       - name: Publish Mod on Github
         uses: Kir-Antipov/mc-publish@v3.3
@@ -105,9 +86,6 @@ jobs:
             
             forge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
             forge/build/libs/*-@(dev|shadow|sources|javadoc).jar
-            
-            neoforge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
-            neoforge/build/libs/*-@(dev|shadow|sources|javadoc).jar
 
           name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"

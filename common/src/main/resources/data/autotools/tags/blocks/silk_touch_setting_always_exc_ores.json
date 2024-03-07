@@ -12,11 +12,7 @@
     "minecraft:deepslate",
 
     "minecraft:warped_nylium",
-    "minecraft:crimson_nylium",
+    "minecraft:crimson_nylium"
 
-    "minecraft:sculk",
-    "minecraft:sculk_catalyst",
-    "minecraft:sculk_shrieker",
-    "minecraft:sculk_sensor"
   ]
 }

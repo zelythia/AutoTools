@@ -5,9 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -19,10 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -35,19 +32,22 @@ import net.zelythia.clientTags.ClientTags;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class AutoTools {
     public static final String MOD_ID = "autotools";
-    public static final Logger LOGGER = LogManager.getLogger("AutoTools");
+    private static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
-    public static final TagKey<Block> SILK_TOUCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_ORES = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always_ores"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always_exc_ores"));
-    public static final TagKey<Block> FORTUNE = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "fortune"));
-    public static final TagKey<Block> FORTUNE_SETTING = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "fortune_setting"));
-    public static final TagKey<Block> DO_NOT_SWAP_UNLESS_ENCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "do_not_swap_unless_ench"));
+    public static final TagKey<Block> SILK_TOUCH = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MOD_ID, "silk_touch"));
+    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MOD_ID, "silk_touch_setting_always"));
+    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_ORES = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MOD_ID, "silk_touch_setting_always_ores"));
+    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MOD_ID, "silk_touch_setting_always_exc_ores"));
+    public static final TagKey<Block> FORTUNE = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MOD_ID, "fortune"));
+    public static final TagKey<Block> FORTUNE_SETTING = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MOD_ID, "fortune_setting"));
+    public static final TagKey<Block> DO_NOT_SWAP_UNLESS_ENCH = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MOD_ID, "do_not_swap_unless_ench"));
+
 
     public static final HashMap<ResourceLocation, ResourceLocation[]> CUSTOM_TOOLS = new HashMap<>();
     private static final HashMap<String, ResourceLocation[]> TOOL_LISTS = new HashMap<>() {{
@@ -58,7 +58,7 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_axe"), new ResourceLocation("minecraft:diamond_axe"), new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:golden_axe"), new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:wooden_axe")});
     }};
 
-    private static final Stack<Integer> swaps = new Stack<>();
+    public static Stack<Integer> swaps = new Stack<>();
 
 
     /**
@@ -114,7 +114,15 @@ public class AutoTools {
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
         swaps.push(sourceSlot);
 
-        client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
+        if (Screen.hasShiftDown()) {
+
+            //Simulating a click on the toolSlot and the swappableSlot with the ClickType = SWAP, so it updates with the server
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 18, sourceSlot, ClickType.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 27, sourceSlot, ClickType.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 36, sourceSlot, ClickType.SWAP, client.player);
+        } else {
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 36, sourceSlot, ClickType.SWAP, client.player);
+        }
 
         inventory.selected = destSlot;
     }
@@ -189,7 +197,7 @@ public class AutoTools {
      */
     public static int findSlotMatchingItem(Inventory inventory, ItemStack itemStack) {
         for(int i = 0; i < inventory.items.size(); ++i) {
-            if (ItemStack.isSameItem(itemStack, inventory.items.get(i))) {
+            if (ItemStack.isSameIgnoreDurability(itemStack, inventory.items.get(i))) {
                 return i;
             }
         }
@@ -209,13 +217,13 @@ public class AutoTools {
             float miningSpeed = 1;
 
             //Detection for custom tools
-            if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
-                ResourceLocation[] tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
+            if (CUSTOM_TOOLS.containsKey(Registry.BLOCK.getKey(blockState.getBlock()))) {
+                ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.BLOCK.getKey(blockState.getBlock()));
 
                 for (ResourceLocation resourceLocation : tools) {
                     if(Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
 
-                    toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
+                    toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
                     if (toolSlot != -1) break;
                 }
 
@@ -326,13 +334,13 @@ public class AutoTools {
                         }
 
                         //Custom tool detection
-                        if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
-                            ResourceLocation[] tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+                        if (CUSTOM_TOOLS.containsKey(Registry.ENTITY_TYPE.getKey(entity.getType()))) {
+                            ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.ENTITY_TYPE.getKey(entity.getType()));
 
                             for (ResourceLocation resourceLocation : tools) {
                                 if(Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
 
-                                toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
+                                toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
                                 if (toolSlot != -1) break;
                             }
 
@@ -348,7 +356,6 @@ public class AutoTools {
                                 return;
                             }
                         }
-
 
                         //Every item with an attackDamage larger than 1 has an ATTACK_DAMAGE attribute/modifier
                         if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {

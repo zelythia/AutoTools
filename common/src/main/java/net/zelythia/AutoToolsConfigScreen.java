@@ -1,19 +1,114 @@
 package net.zelythia;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.CycleOption;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.TooltipAccessor;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
-public class AutoToolsConfigScreen extends Screen {
-    public final Screen parent;
+import java.util.Arrays;
+import java.util.Optional;
 
-    public AutoToolsConfigScreen(Screen screen) {
-        super(Component.translatable("ui.title"));
-        parent = screen;
+public class AutoToolsConfigScreen extends OptionsSubScreen {
+
+    public static final CycleOption<Boolean> TOGGLE = CycleOption.createOnOff(
+            "ui.config.toggle",
+            new TranslatableComponent("ui.desc.toggle"),
+            gameOptions1 -> AutoToolsConfig.TOGGLE,
+            (gameOptions, option, toggle) -> AutoToolsConfig.TOGGLE = toggle
+    );
+
+    public static final CycleOption<Boolean> SHOWDPS = CycleOption.createOnOff(
+            "ui.config.showDPS",
+            new TranslatableComponent("ui.desc.showDPS"),
+            gameOptions1 -> AutoToolsConfig.SHOWDPS,
+            (gameOptions, option, showDPS) -> AutoToolsConfig.SHOWDPS = showDPS
+    );
+
+    public static final CycleOption<Boolean> KEEPSLOT = CycleOption.createOnOff(
+            "ui.config.keepSlot",
+            new TranslatableComponent("ui.desc.keepSlot"),
+            gameOptions1 -> AutoToolsConfig.KEEPSLOT,
+            (gameOptions, option, keepSlot) -> AutoToolsConfig.KEEPSLOT = keepSlot
+    );
+
+    public static final CycleOption<Boolean> DISABLECREATIVE = CycleOption.createOnOff(
+            "ui.config.disableCreative",
+            new TranslatableComponent("ui.desc.disableCreative"),
+            gameOptions1 -> AutoToolsConfig.DISABLECREATIVE,
+            (gameOptions, option, disableCreative) -> AutoToolsConfig.DISABLECREATIVE = disableCreative
+    );
+
+    public static final CycleOption<Boolean> ALWAYS_PREFER_FORTUNE = CycleOption.createOnOff(
+            "ui.config.preferFortune",
+            new TranslatableComponent("ui.desc.preferFortune"),
+            gameOptions -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE,
+            (gameOptions, option, preferFortune) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = preferFortune
+    );
+
+    public static final CycleOption<String> PREFER_SILK_TOUCH = CycleOption.create(
+            "ui.config.preferSilkTouch",
+            () -> { //List of elements
+                String[] options = {"never", "except_ores", "always_ores", "always",};
+                return Arrays.stream(options).toList();
+            },
+            (string) -> { //Supplier
+                return switch (string) {
+                    case "always" -> new TranslatableComponent("ui.config.preferSilkTouch.always");
+                    case "always_ores" -> new TranslatableComponent("ui.config.preferSilkTouch.always_ores");
+                    case "except_ores" -> new TranslatableComponent("ui.config.preferSilkTouch.except_ores");
+                    case "never" -> new TranslatableComponent("ui.config.preferSilkTouch.never");
+                    default -> new TranslatableComponent("ui.config.error");
+                };
+            },
+            options -> AutoToolsConfig.PREFER_SILK_TOUCH,  //Getter
+            (options, option, string) -> AutoToolsConfig.PREFER_SILK_TOUCH = string //Setter
+    ).setTooltip(minecraft -> (preferSilkTouch) -> minecraft.font.split(new TranslatableComponent("ui.desc.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH), 200));
+
+    public static final CycleOption<Boolean> ONLY_SWITCH_IF_NECESSARY = CycleOption.createOnOff(
+            "ui.config.onlyNecessary",
+            new TranslatableComponent("ui.desc.onlyNecessary"),
+            gameOptions1 -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY,
+            (gameOptions, option, switchNecessary) -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = switchNecessary
+    );
+
+    public static final CycleOption<Boolean> PREFER_HOTBAR_TOOL = CycleOption.createOnOff(
+            "ui.config.preferHotbarTool",
+            new TranslatableComponent("ui.desc.preferHotbarTool"),
+            gameOptions1 -> AutoToolsConfig.PREFER_HOTBAR_TOOL,
+            (gameOptions, option, switchNecessary) -> AutoToolsConfig.PREFER_HOTBAR_TOOL = switchNecessary
+    );
+
+    public static final CycleOption<Boolean> PREFER_LOW_DURABILITY = CycleOption.createOnOff(
+            "ui.config.preferLowDurability",
+            new TranslatableComponent("ui.desc.preferLowDurability"),
+            gameOptions1 -> AutoToolsConfig.PREFER_LOW_DURABILITY,
+            (gameOptions, option, switchNecessary) -> AutoToolsConfig.PREFER_LOW_DURABILITY = switchNecessary
+    );
+
+    public static final CycleOption<Boolean> SWITCH_BACK = CycleOption.createOnOff(
+            "ui.config.switchBack",
+            new TranslatableComponent("ui.desc.switchBack"),
+            gameOptions -> AutoToolsConfig.SWITCH_BACK,
+            (gameOptions, option, switchBack) -> AutoToolsConfig.SWITCH_BACK = switchBack
+    );
+
+    public static final CycleOption<Boolean> CHANGE_FOR_ENTITIES = CycleOption.createOnOff(
+            "ui.config.changeForEntities",
+            new TranslatableComponent("ui.desc.changeForEntities"),
+            gameOptions -> AutoToolsConfig.CHANGE_FOR_ENTITIES,
+            (gameOptions, option, change) -> AutoToolsConfig.CHANGE_FOR_ENTITIES = change
+    );
+
+
+    public AutoToolsConfigScreen(Screen parent) {
+        super(parent, Minecraft.getInstance().options, new TextComponent("AutoTools Config"));
     }
 
     @Override
@@ -21,122 +116,40 @@ public class AutoToolsConfigScreen extends Screen {
         AutoToolsConfig.load();
         AutoTools.loadCustomItems();
 
-        final int y = this.height / 6 - 12;
+        int y = this.height / 6 - 12;
+        this.addRenderableWidget(TOGGLE.createButton(this.options, this.width / 2 - 155, y, 150));
+        this.addRenderableWidget(DISABLECREATIVE.createButton(this.options, this.width / 2 - 155, y + 24, 150));
+        this.addRenderableWidget(KEEPSLOT.createButton(this.options, this.width / 2 - 155, y + 48, 150));
+        this.addRenderableWidget(PREFER_HOTBAR_TOOL.createButton(this.options, this.width / 2 - 155, y + 72, 150));
+        this.addRenderableWidget(PREFER_LOW_DURABILITY.createButton(this.options, this.width / 2 - 155, y + 96, 150));
+        this.addRenderableWidget(ALWAYS_PREFER_FORTUNE.createButton(this.options, this.width / 2 - 155, y + 120, 150));
 
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.TOGGLE)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.toggle")))
-                .create(this.width / 2 - 155, y, 150, 20,
-                        Component.translatable("ui.config.toggle"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.TOGGLE = boolean_)
-        );
+        this.addRenderableWidget(ONLY_SWITCH_IF_NECESSARY.createButton(this.options, this.width / 2 + 5, y, 150));
+        this.addRenderableWidget(SWITCH_BACK.createButton(this.options, this.width / 2 + 5, y + 24, 150));
+        this.addRenderableWidget(SHOWDPS.createButton(this.options, this.width / 2 + 5, y + 48, 150));
+        this.addRenderableWidget(CHANGE_FOR_ENTITIES.createButton(this.options, this.width / 2 + 5, y + 72, 150));
 
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.DISABLECREATIVE)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.disableCreative")))
-                .create(this.width / 2 - 155, y + 24, 150, 20,
-                        Component.translatable("ui.config.disableCreative"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.DISABLECREATIVE = boolean_)
-        );
+        this.addRenderableWidget(PREFER_SILK_TOUCH.createButton(this.options, this.width / 2 - 155, y + 144, 310));
 
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.KEEPSLOT)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.keepSlot")))
-                .create(this.width / 2 - 155, y + 48, 150, 20,
-                        Component.translatable("ui.config.keepSlot"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.KEEPSLOT = boolean_)
-        );
-
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.PREFER_HOTBAR_TOOL)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.preferHotbarTool")))
-                .create(this.width / 2 - 155, y + 72, 150, 20,
-                        Component.translatable("ui.config.preferHotbarTool"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.PREFER_HOTBAR_TOOL = boolean_)
-        );
-
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.PREFER_LOW_DURABILITY)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.preferLowDurability")))
-                .create(this.width / 2 - 155, y + 96, 150, 20,
-                        Component.translatable("ui.config.preferLowDurability"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.PREFER_LOW_DURABILITY = boolean_)
-        );
-
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.ALWAYS_PREFER_FORTUNE)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.preferFortune")))
-                .create(this.width / 2 - 155, y + 120, 150, 20,
-                        Component.translatable("ui.config.preferFortune"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = boolean_)
-        );
-
-
-        //
-        //
-        //
-
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.onlyNecessary")))
-                .create(this.width / 2 + 5, y, 150, 20,
-                        Component.translatable("ui.config.onlyNecessary"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = boolean_)
-        );
-
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.SWITCH_BACK)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.switchBack")))
-                .create(this.width / 2 + 5, y + 24, 150, 20,
-                        Component.translatable("ui.config.switchBack"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.SWITCH_BACK = boolean_)
-        );
-
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.SHOWDPS)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.showDPS")))
-                .create(this.width / 2 + 5, y + 48, 150, 20,
-                        Component.translatable("ui.config.showDPS"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.SHOWDPS = boolean_)
-        );
-
-
-        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.CHANGE_FOR_ENTITIES)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.changeForEntities")))
-                .create(this.width / 2 + 5, y + 72, 150, 20,
-                        Component.translatable("ui.config.changeForEntities"),
-                        (cycleButton, boolean_) -> AutoToolsConfig.CHANGE_FOR_ENTITIES = boolean_)
-        );
-
-        //
-        //
-        //
-
-        this.addRenderableWidget(CycleButton.builder(
-                        (String string) -> {
-                            return switch (string) {
-                                case "always" -> Component.translatable("ui.config.preferSilkTouch.always");
-                                case "always_ores" -> Component.translatable("ui.config.preferSilkTouch.always_ores");
-                                case "except_ores" -> Component.translatable("ui.config.preferSilkTouch.except_ores");
-                                case "never" -> Component.translatable("ui.config.preferSilkTouch.never");
-                                default -> Component.translatable("ui.config.error");
-                            };
-                        })
-                .withValues("never", "except_ores", "always_ores", "always")
-                .withInitialValue(AutoToolsConfig.PREFER_SILK_TOUCH)
-                .withTooltip(s -> Tooltip.create(Component.translatable("ui.desc.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH)))
-                .create(this.width / 2 - 155, y + 144, 310, 20,
-                        Component.translatable("ui.config.preferSilkTouch"),
-                        (cycleButton, string) -> AutoToolsConfig.PREFER_SILK_TOUCH = string
-                ))
-        ;
-
-        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> {
-            this.onClose();
-        }).bounds(this.width / 2 - 100, this.height - 27, 200, 20).build());
+        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height - 27, 200, 20, CommonComponents.GUI_DONE, (p_96827_) -> this.onClose()));
     }
 
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderDirtBackground(guiGraphics);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 15, 0xffffff);
+    @Override
+    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+        this.renderBackground(matrices);
+        drawCenteredString(matrices, this.font, this.title, this.width / 2, 15, 0xffffff);
+        super.render(matrices, mouseX, mouseY, delta);
 
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        //Drawing tooltips to the screen
+        Optional<GuiEventListener> hoveredElement = getChildAt(mouseX, mouseY);
+        if (hoveredElement.isPresent() && hoveredElement.get() instanceof TooltipAccessor) {
+            this.renderTooltip(matrices, ((TooltipAccessor) hoveredElement.get()).getTooltip(), mouseX, mouseY);
+        }
     }
 
     @Override
     public void onClose() {
         AutoToolsConfig.save();
-        this.minecraft.setScreen(parent);
+        this.minecraft.setScreen(this.lastScreen);
     }
 }

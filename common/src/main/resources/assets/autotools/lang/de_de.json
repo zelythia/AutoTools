@@ -18,9 +18,10 @@
     "ui.config.onlyNecessary": "Nur Tauschen wenn nötig",
     "ui.config.preferHotbarTool": "Hotbar Slot bevorzugen",
     "ui.config.preferLowDurability": "Geringe Haltbarkeit bevorzugen",
+    "ui.config.switchBack": "Zurücktauschen",
     "ui.config.changeForEntities": "Wechsle für Entites",
 
-    "ui.desc.toggle" : "AutoTools wird immer an sein und das beste Werkzeug auswählen. (Kann mit der festegesetzten Taste ein und aus geschalten werden)",
+    "ui.desc.toggle" : "AutoTools wird immer an sein und das beste Werkzeug auswählen. Kann mit der festgelegten Taste ein und aus geschalten werden. (Funktioniert sehr gut mit \"Zurücktauschen\")",
     "ui.desc.showDPS" : "Zeigt den Dps der Waffe an wenn man mit der Maus darüber fährt",
     "ui.desc.keepSlot" : "Behalte immer den ausgewählten slot anstatt die Vanilla-Mechaniken zu benutzen.",
     "ui.desc.disableCreative" : "Deaktiviert AutoTools im Kreativmodus wenn Umschalten an ist.",
@@ -32,5 +33,6 @@
     "ui.desc.onlyNecessary": "AutoTools wird nur das Werkzeug nur ändern ,wenn es den Block nicht abbauen kann.",
     "ui.desc.preferHotbarTool": "AutoTools wird immer das Werkzeug in deiner Hotbar bevorzugen ohne Rücksicht auf die Haltbarkeit bei gleicher Abbaugeschwindigkeit",
     "ui.desc.preferLowDurability": "AutoTools wird immer das Werkzeug mit der niedrigsten Haltbarkeit bevorzugen, wenn sie die gleiche Abbaugeschwindigkeit haben,",
+    "ui.desc.switchBack": "AutoTools wechselt nach dem Abbauen automatisch zum vorherigen Gegenstand zurück",
     "ui.desc.changeForEntities": "AutoTools wird die Waffe mit dem meisten Schaden auswählen wenn mann auf ein Entity schaut."
 }
