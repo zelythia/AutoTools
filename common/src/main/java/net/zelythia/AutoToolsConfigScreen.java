@@ -1,6 +1,6 @@
 package net.zelythia;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -127,11 +127,11 @@ public class AutoToolsConfigScreen extends Screen {
         }).bounds(this.width / 2 - 100, this.height - 27, 200, 20).build());
     }
 
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderDirtBackground(guiGraphics);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 15, 0xffffff);
-
-        super.render(guiGraphics, mouseX, mouseY, delta);
+    @Override
+    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+        this.renderBackground(matrices);
+        drawCenteredString(matrices, this.font, this.title, this.width / 2, 15, 0xffffff);
+        super.render(matrices, mouseX, mouseY, delta);
     }
 
     @Override

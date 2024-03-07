@@ -109,8 +109,8 @@ public class AutoToolsForge {
 
     @SubscribeEvent
     public void ClickInputEvent(InputEvent.InteractionKeyMappingTriggered event) {
-        if (event.isAttack()) {
-            if (AutoToolsConfig.TOGGLE && switchItem) {
+        if (AutoToolsConfig.TOGGLE && switchItem) {
+            if (event.isAttack()) {
                 Minecraft instance = Minecraft.getInstance();
 
                 if (instance.player.isCreative()) {

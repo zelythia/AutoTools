@@ -22,6 +22,8 @@ package net.zelythia.fabric.config;
  * THE SOFTWARE.
  */
 
+//import net.fabricmc.loader.api.FabricLoader;
+
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -128,7 +130,7 @@ public class SimpleConfig {
             LOGGER.error("AutoTools config failed to load!");
             LOGGER.trace(e);
             broken = true;
-        }
+        };
     }
 
     private void parseConfigEntry(String entry, int line) {
@@ -161,7 +163,6 @@ public class SimpleConfig {
         if (!broken) {
             loadConfig();
         }
-
     }
 
     /**

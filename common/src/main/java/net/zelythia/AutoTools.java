@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -19,10 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -35,6 +33,8 @@ import net.zelythia.clientTags.ClientTags;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class AutoTools {
@@ -106,7 +106,7 @@ public class AutoTools {
     }
 
     /**
-     * Brings the item from sourceSlot into the players main hand
+     * Bring the item from the sourceSlot into the players hands
      *
      * @param sourceSlot The slot with the item you want to select
      */
@@ -114,7 +114,15 @@ public class AutoTools {
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
         swaps.push(sourceSlot);
 
-        client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
+        if (Screen.hasShiftDown()) {
+
+            //Simulating a click on the toolSlot and the swappableSlot with the ClickType = SWAP, so it updates with the server
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 18, sourceSlot, ClickType.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 27, sourceSlot, ClickType.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 36, sourceSlot, ClickType.SWAP, client.player);
+        } else {
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 36, sourceSlot, ClickType.SWAP, client.player);
+        }
 
         inventory.selected = destSlot;
     }
@@ -189,7 +197,7 @@ public class AutoTools {
      */
     public static int findSlotMatchingItem(Inventory inventory, ItemStack itemStack) {
         for(int i = 0; i < inventory.items.size(); ++i) {
-            if (ItemStack.isSameItem(itemStack, inventory.items.get(i))) {
+            if (ItemStack.isSame(itemStack, inventory.items.get(i))) {
                 return i;
             }
         }
@@ -348,7 +356,6 @@ public class AutoTools {
                                 return;
                             }
                         }
-
 
                         //Every item with an attackDamage larger than 1 has an ATTACK_DAMAGE attribute/modifier
                         if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {

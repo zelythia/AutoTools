@@ -22,7 +22,6 @@ public class AutoToolsConfigImpl {
 
     private static final ForgeConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
 
-
     static {
         BUILDER.push("AutoTools");
 
