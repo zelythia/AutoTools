@@ -41,6 +41,7 @@ public class AutoTools {
     public static final String MOD_ID = "autotools";
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
+    public static Tag<Block> SHEARS;
     public static Tag<Block> SILK_TOUCH;
     public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS;
     public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS_ORES;
@@ -117,11 +118,24 @@ public class AutoTools {
      * @param sourceSlot The slot with the item you want to select
      */
     public static void selectItem(Minecraft client, Inventory inventory, int sourceSlot) {
+        if (swaps.empty()) {
+            swaps.push(inventory.selected);
+        }
+
+        if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
+            if (swaps.get(swaps.size() - 1) != inventory.selected) {
+                swaps.push(inventory.selected);
+            }
+            inventory.selected = sourceSlot;
+
+            return;
+        }
+
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
         swaps.push(sourceSlot);
 
         if (Screen.hasShiftDown()) {
-            //Simulating a click on the toolSlot and the swappableSlot with the ClickType = SWAP so it updates with the server
+            //Simulating a click on the toolSlot and the swappableSlot with the ClickType = SWAP, so it updates on the server
             client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 18, sourceSlot, ClickType.SWAP, client.player);
             client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 27, sourceSlot, ClickType.SWAP, client.player);
             client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, destSlot + 36, sourceSlot, ClickType.SWAP, client.player);
@@ -138,7 +152,7 @@ public class AutoTools {
     public static void switchBack() {
         if (swaps.empty()) return;
         Minecraft client = Minecraft.getInstance();
-        if(client.player == null || client.gameMode == null) return;
+        if (client.player == null || client.gameMode == null) return;
 
         Inventory inventory = client.player.inventory;
 
@@ -155,15 +169,17 @@ public class AutoTools {
     }
 
     /**
-     * Return an enchantment modifier for when the stack is used a specific block
-     * @return -1 , 0 or positive Float
+     * Returns the miningSpeed and priority of an item [default = (1,0)]
      */
-    public static float getEnchantmentModifier(ItemStack stack, BlockState blockState, BlockPos pos) {
+    public static ItemMiningSpeed getMiningSpeed(ItemStack stack, BlockState blockState, BlockPos pos) {
         float modifier = 1F;
+        int priority = 0;
+        float miningSpeed = stack.getDestroySpeed(blockState);
+
         if (stack.isEnchanted()) {
             //Efficiency
             if (blockState.getDestroySpeed(null, pos) != 0) {
-                modifier *= (1F + (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack) * 20F) / 100F);
+                modifier += (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack) * 20F) / 100F;
             }
 
             //SilkTouch
@@ -172,36 +188,50 @@ public class AutoTools {
                         || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
                         || AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
                         || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
-                    modifier *= 1000F;
-                } else if (AutoToolsConfig.PREFER_SILK_TOUCH.equals("never")
-                        || (AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores") && !ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()))
-                        || (AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores") && !ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()))) {
-                    return -1;
+                    priority = 6;
                 }
             }
             //Fortune
             else if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack) >= 1) {
                 if (ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
-                        && !(AutoToolsConfig.PREFER_SILK_TOUCH.equals("always") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()))
-                        && !(AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()))
                         || AutoToolsConfig.ALWAYS_PREFER_FORTUNE && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock())) {
-                    modifier *= 1000F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack);
+                    priority += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack);
                 }
             }
 
-            //Hoe check
+            //Hoe check to make sure we prefer fortune hoes over other fortune tools when farming
             if (ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock()) && ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock()) && stack.getItem() instanceof HoeItem) {
-                modifier += 1;
+                priority += 1;
             }
         }
-        return modifier - 1;
+
+        if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
+            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
+                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores"))
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
+                    priority += 1;
+                }
+            }
+
+            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack) == 0 && !ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
+                    && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock()) && !AutoToolsConfig.ALWAYS_PREFER_FORTUNE) {
+                priority += 1;
+            }
+        }
+
+        if (stack.sameItem(new ItemStack(Items.SHEARS)) && ClientTags.isInWithLocalFallback(SHEARS, blockState.getBlock())) {
+            priority += 6;
+        }
+
+        return new ItemMiningSpeed(miningSpeed * modifier, priority);
     }
 
     /**
      * Custom {@link Inventory#findSlotMatchingItem(ItemStack)} method that ignored ItemTags
      */
     public static int findSlotMatchingItem(Inventory inventory, ItemStack itemStack) {
-        for(int i = 0; i < inventory.items.size(); ++i) {
+        for (int i = 0; i < inventory.items.size(); ++i) {
             if (ItemStack.isSameIgnoreDurability(itemStack, inventory.items.get(i))) {
                 return i;
             }
@@ -219,26 +249,20 @@ public class AutoTools {
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
 
             int toolSlot = -1;
-            float miningSpeed = 1;
+            ItemMiningSpeed miningSpeed = new ItemMiningSpeed(1f, 0);
 
             //Detection for custom tools
             if (CUSTOM_TOOLS.containsKey(Registry.BLOCK.getKey(blockState.getBlock()))) {
                 ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.BLOCK.getKey(blockState.getBlock()));
 
                 for (ResourceLocation resourceLocation : tools) {
-                    if(Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
+                    if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
 
                     toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
                     if (toolSlot != -1) break;
                 }
 
                 if (toolSlot == -1) {
-                } else if (toolSlot <= 8) {
-                    if (swaps.empty() || swaps.get(swaps.size() - 1) != inventory.selected) {
-                        swaps.push(inventory.selected);
-                    }
-                    inventory.selected = toolSlot;
-                    return;
                 } else {
                     selectItem(client, inventory, toolSlot);
                     return;
@@ -270,25 +294,20 @@ public class AutoTools {
             }
 
 
-            boolean foundEnchantment = false;
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 Item item = inventory.getItem(i).getItem();
 
                 if (item != Items.AIR) {
-                    float newMiningSpeed = 1;
+                    ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(blockState) || !blockState.requiresCorrectToolForDrops()) {
-                        newMiningSpeed = item.getDestroySpeed(inventory.getItem(i), blockState);
-
-                        newMiningSpeed += getEnchantmentModifier(inventory.getItem(i), blockState, blockHitResult.getBlockPos());
-                        if (!foundEnchantment)
-                            foundEnchantment = getEnchantmentModifier(inventory.getItem(i), blockState, blockHitResult.getBlockPos()) != 0;
+                        newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos());
                     }
 
-                    if (newMiningSpeed == miningSpeed) {
+                    if (newMiningSpeed.equals(miningSpeed)) {
                         if (toolSlot != -1) {
                             if (AutoToolsConfig.PREFER_HOTBAR_TOOL) {
-                                if (i <= 8 && (toolSlot > 8 ||
+                                if (i <= 8 && (toolSlot > 8 || i == inventory.selected ||
                                         ((AutoToolsConfig.PREFER_LOW_DURABILITY && inventory.getItem(i).getDamageValue() > inventory.getItem(toolSlot).getDamageValue())
                                                 || (!AutoToolsConfig.PREFER_LOW_DURABILITY && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())))
                                 ) {
@@ -301,24 +320,18 @@ public class AutoTools {
                                 miningSpeed = newMiningSpeed;
                             }
                         }
-                    } else if (newMiningSpeed > miningSpeed) {
+                    } else if (newMiningSpeed.priority > miningSpeed.priority || (newMiningSpeed.miningSpeed > miningSpeed.miningSpeed && newMiningSpeed.priority >= miningSpeed.priority)) {
                         toolSlot = i;
                         miningSpeed = newMiningSpeed;
                     }
                 }
             }
 
-            if (toolSlot == -1 || ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock()) && !foundEnchantment) {
-            } else if (toolSlot <= 8) {
-                if (swaps.empty() || swaps.get(swaps.size() - 1) != inventory.selected) {
-                    swaps.push(inventory.selected);
-                }
-                inventory.selected = toolSlot;
+            if (toolSlot == -1 || ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock()) && miningSpeed.priority == 0) {
             } else {
                 selectItem(client, inventory, toolSlot);
             }
-        }
-        else if (AutoToolsConfig.CHANGE_FOR_ENTITIES && hit.getType() == HitResult.Type.ENTITY) {
+        } else if (AutoToolsConfig.CHANGE_FOR_ENTITIES && hit.getType() == HitResult.Type.ENTITY) {
             Entity entity = ((EntityHitResult) hit).getEntity();
 
             int toolSlot = -1;
@@ -344,19 +357,14 @@ public class AutoTools {
                             ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.ENTITY_TYPE.getKey(entity.getType()));
 
                             for (ResourceLocation resourceLocation : tools) {
-                                if(Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
+                                if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled")))
+                                    return;
 
                                 toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
                                 if (toolSlot != -1) break;
                             }
 
                             if (toolSlot == -1) {
-                            } else if (toolSlot <= 8) {
-                                if (swaps.empty() || swaps.get(swaps.size() - 1) != inventory.selected) {
-                                    swaps.push(inventory.selected);
-                                }
-                                inventory.selected = toolSlot;
-                                return;
                             } else {
                                 selectItem(client, inventory, toolSlot);
                                 return;
@@ -406,6 +414,29 @@ public class AutoTools {
                 selectItem(client, inventory, toolSlot);
             }
 
+        }
+    }
+
+    public static final class ItemMiningSpeed {
+        public Float miningSpeed;
+        public int priority;
+
+        ItemMiningSpeed(Float miningSpeed, int priority) {
+            this.miningSpeed = miningSpeed;
+            this.priority = priority;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ItemMiningSpeed that = (ItemMiningSpeed) o;
+            return priority == that.priority && Objects.equals(miningSpeed, that.miningSpeed);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(miningSpeed, priority);
         }
     }
 }

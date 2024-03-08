@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#autotools:silk_touch",
-
     "minecraft:grass_block",
     "minecraft:mycelium",
     "minecraft:podzol",
@@ -20,6 +18,10 @@
     "minecraft:nether_gold_ore",
     "minecraft:lapis_ore",
     "minecraft:nether_quartz_ore",
-    "minecraft:gilded_blackstone"
+    "minecraft:gilded_blackstone",
+
+    "#minecraft:leaves",
+    "minecraft:snow_block",
+    "minecraft:snow"
   ]
 }

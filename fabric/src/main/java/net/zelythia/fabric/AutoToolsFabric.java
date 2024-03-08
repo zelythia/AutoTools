@@ -10,8 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.level.block.Block;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 import net.zelythia.fabric.events.ClientBlockBreakEvent;
@@ -24,6 +22,7 @@ public class AutoToolsFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        AutoTools.SHEARS = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "shears"));
         AutoTools.SILK_TOUCH = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch"));
         AutoTools.SILK_TOUCH_SETTING_ALWAYS = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch_setting_always"));
         AutoTools.SILK_TOUCH_SETTING_ALWAYS_ORES = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch_setting_always_ores"));

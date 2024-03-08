@@ -1,6 +1,8 @@
 {
     "replace": false,
     "values": [
+        "#autotools:shears",
+
         "minecraft:nether_wart",
         "minecraft:sweet_berry_bush",
         "minecraft:wheat",
