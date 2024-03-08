@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#autotools:silk_touch",
-
     "minecraft:grass_block",
     "minecraft:podzol",
     "minecraft:mycelium",
@@ -14,9 +12,8 @@
     "minecraft:warped_nylium",
     "minecraft:crimson_nylium",
 
-    "minecraft:sculk",
-    "minecraft:sculk_catalyst",
-    "minecraft:sculk_shrieker",
-    "minecraft:sculk_sensor"
+    "#minecraft:leaves",
+    "minecraft:snow_block",
+    "minecraft:snow"
   ]
 }
