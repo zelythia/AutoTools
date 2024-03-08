@@ -32,6 +32,25 @@ jobs:
       - name: Build
         run: ./gradlew clean build
 
+      - name: Publish Forge-Mod on (Curseforge/Modrinth)
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: zgVJyCgK
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 522205
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            forge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
+
+          name: AutoTools Forge ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
+          version: "${{env.VERSION}}"
+          version-type: release
+          changelog-file: CHANGELOG.md
+          loaders: |
+            forge
+
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
@@ -54,45 +73,6 @@ jobs:
 
           dependencies: |
             fabric@${{env.FABRIC_API_VERSION}}(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
-
-      - name: Publish Forge-Mod on (Curseforge/Modrinth)
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: zgVJyCgK
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          curseforge-id: 522205
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: |
-            forge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
-
-          name: AutoTools Forge ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
-          version: "${{env.VERSION}}"
-          version-type: release
-          changelog-file: CHANGELOG.md
-          loaders: |
-            forge
-
-      - name: Publish Neoforge-Mod on (Curseforge/Modrinth)
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: zgVJyCgK
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          curseforge-id: 522205
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: |
-            neoforge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
-
-          name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
-          version: "${{env.VERSION}}"
-          version-type: release
-          changelog-file: CHANGELOG.md
-          loaders: |
-            neoforge
-
 
       - name: Publish Mod on Github
         uses: Kir-Antipov/mc-publish@v3.3
