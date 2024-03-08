@@ -5,8 +5,6 @@
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",
     "chat.disabled_autotools": "§4Disabled§f AutoTools!",
 
-    "ui.title": "AutoTools config",
-
     "ui.config.toggle" : "Toggle",
     "ui.config.showDPS" : "Show Dps",
     "ui.config.keepSlot": "Keep selected slot",
@@ -23,18 +21,20 @@
     "ui.config.switchBack": "Switch Back",
     "ui.config.changeForEntities": "Change for entites",
 
-    "ui.desc.toggle" : "AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.",
+    "ui.desc.toggle" : "AutoTools will always be active and try to get you the best tool. Can be toggled with the set key. (works best with \"Switch Back\")",
     "ui.desc.showDPS" : "Displays the weapons Dps when hovering over it.",
     "ui.desc.keepSlot" : "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.",
     "ui.desc.disableCreative" : "Disables AutoTools in creative-mode if toggle is disabled",
-    "ui.desc.preferSilkTouch.always": "Autotools will try to always get a tool with Silk Touch for blocks like grass, stone or ores",
-    "ui.desc.preferSilkTouch.always_ores": "Autotools will only prefer SilkTouch if it is required to mine the block or if you are mining ores.",
-    "ui.desc.preferSilkTouch.except_ores": "Autotools will try to always get a tool with Silk Touch for blocks like grass or stone",
-    "ui.desc.preferSilkTouch.never": "Autotools will only prefer SilkTouch if it is required to mine the block",
-    "ui.desc.preferFortune": "Autotools will try to always get a tool with Fortune for gravel and leaves",
+
+    "ui.desc.preferSilkTouch.always": "Autotools additionally will use SilkTouch for: grass, stone, ores, leaves, snow",
+    "ui.desc.preferSilkTouch.always_ores": "AutoTools additionally will use SilkTouch for ores",
+    "ui.desc.preferSilkTouch.except_ores": "Autotools additionally will SilkTouch for: grass, stone, leaves, snow",
+    "ui.desc.preferSilkTouch.never": "Autotools will use SilkTouch if its required to mine a block.",
+
+    "ui.desc.preferFortune": "Autotools will use Fortune for Gravel and Leaves",
     "ui.desc.onlyNecessary": "AutoTools will only switch items if you can't mine a block with your current one",
     "ui.desc.preferHotbarTool": "AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability",
     "ui.desc.preferLowDurability": "AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed",
-    "ui.desc.switchBack": "AutoTools will switch back to you previous tool or item you had in your hand before breaking the block",
+    "ui.desc.switchBack": "AutoTools will switch back to the previous tool or item you had in your hand before breaking the block",
     "ui.desc.changeForEntities": "AutoTools will change to the tool with the most DPS when looking at an entity."
 }
