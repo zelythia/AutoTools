@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dead_bush",
+    "minecraft:fern",
+    "minecraft:large_fern",
+    "#minecraft:leaves",
+    "minecraft:nether_sprouts",
+    "minecraft:seagrass",
+    "minecraft:tall_seagrass",
+    "minecraft:grass",
+    "minecraft:tall_grass",
+    "minecraft:tripwire",
+    "minecraft:twisting_vines",
+    "minecraft:weeping_vines",
+    "minecraft:vine",
+    "minecraft:cobweb"
+  ]
+}

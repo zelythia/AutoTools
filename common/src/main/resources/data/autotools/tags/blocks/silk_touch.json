@@ -63,10 +63,13 @@
 
     "#minecraft:corals",
     "#minecraft:coral_blocks",
-    "#minecraft:leaves",
 
+    "minecraft:sculk",
+    "minecraft:sculk_catalyst",
+    "minecraft:sculk_sensor",
+    "minecraft:sculk_shrieker",
     "minecraft:sculk_vein",
-    "minecraft:calibrated_sculk_sensor",
+
     "minecraft:chiseled_bookshelf",
     "minecraft:decorated_pot"
   ]
