@@ -1,16 +1,7 @@
 {
   "replace": false,
   "values": [
-
     "minecraft:gravel",
-
-    "jungle_leaves",
-    "oak_leaves",
-    "spruce_leaves",
-    "dark_oak_leaves",
-    "acacia_leaves",
-    "birch_leaves",
-    "azalea_leaves",
-    "flowering_azalea_leaves"
+    "#minecraft:leaves"
   ]
 }

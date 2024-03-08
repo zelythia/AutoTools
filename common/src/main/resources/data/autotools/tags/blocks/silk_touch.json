@@ -63,7 +63,6 @@
     "minecraft:light_gray_stained_glass_pane",
 
     "#minecraft:corals",
-    "#minecraft:coral_blocks",
-    "#minecraft:leaves"
+    "#minecraft:coral_blocks"
   ]
 }

@@ -1,2 +1,4 @@
- - Fixed a bug where AutoTools would not work on servers
- - Fixed a bug where AutoTools would use up durability when looking for an optimal tool
+- Fixed AutoTools sometimes not working on servers
+- Fixed AutoTools sometimes using up durability when looking for the right tool
+- Fixed a bug with custom tool configurations
+- Fixed a bug with SwitchBack not selecting the correct starting slot

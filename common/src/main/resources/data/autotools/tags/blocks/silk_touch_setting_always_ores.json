@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#autotools:silk_touch",
-
     "minecraft:gravel",
 
     "minecraft:gold_ore",

@@ -28,6 +28,14 @@
     "minecraft:wheat",
     "minecraft:carrots",
     "minecraft:potatoes",
-    "minecraft:beetroots"
+    "minecraft:beetroots",
+
+    "minecraft:glowstone",
+    "minecraft:melon",
+    "minecraft:sea_lantern",
+    "minecraft:twisting_vines",
+    "minecraft:twisting_vines_plant",
+    "minecraft:weeping_vines",
+    "minecraft:weeping_vines_plant"
   ]
 }
