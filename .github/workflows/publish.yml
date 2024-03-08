@@ -67,7 +67,7 @@ jobs:
           files: |
             forge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
 
-          name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
+          name: AutoTools Forge ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
           version-type: release
           changelog-file: CHANGELOG.md
@@ -86,7 +86,7 @@ jobs:
           files: |
             neoforge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
 
-          name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
+          name: AutoTools NeoForge ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
           version-type: release
           changelog-file: CHANGELOG.md
