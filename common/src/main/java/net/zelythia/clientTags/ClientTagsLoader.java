@@ -166,7 +166,7 @@ public class ClientTagsLoader {
      * @return the paths to all tag json files within the available mods
      */
     private static HashSet<Path> getTagFiles(Registry<?> registry, ResourceLocation identifier) {
-        return getTagFiles("tags/" + registry.key().location().getPath(), identifier);
+        return getTagFiles("tags/" + registry.key().location().getPath() + "s", identifier);
     }
 
     /**
