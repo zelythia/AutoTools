@@ -1,5 +1,8 @@
 # AutoTools
 
+[![modrinth](https://img.shields.io/modrinth/dt/minecraft_autotools?style=for-the-badge&logo=modrinth&label=Modrinth&color=1bd96a)](https://modrinth.com/mod/minecraft_autotools)
+[![modrinth](https://cf.way2muchnoise.eu/522205.svg?badge_style=for_the_badge)]([https://modrinth.com/mod/minecraft_autotools](https://www.curseforge.com/minecraft/mc-mods/autotools))
+
 AutoTools looks through your whole inventory and finds the best tool to mine a block or attack a mob. The tool is
 determined by mining speed, mining level, enchantments, and the DPS. the Mod features a high level of customisation with
 many config options. For blocks where SilkTouch is preferred
