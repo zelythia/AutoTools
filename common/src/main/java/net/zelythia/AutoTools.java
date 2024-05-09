@@ -50,7 +50,7 @@ public class AutoTools {
     public static Tag<Block> FORTUNE_SETTING;
     public static Tag<Block> DO_NOT_SWAP_UNLESS_ENCH;
 
-    public static final HashMap<ResourceLocation, ResourceLocation[]> CUSTOM_TOOLS = new HashMap<>();
+    public static final HashMap<ResourceLocation, List<ResourceLocation>> CUSTOM_TOOLS = new HashMap<>();
     private static final HashMap<String, ResourceLocation[]> TOOL_LISTS = new HashMap<String, ResourceLocation[]>() {{
         put("autotools:pickaxe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_pickaxe"), new ResourceLocation("minecraft:diamond_pickaxe"), new ResourceLocation("minecraft:iron_pickaxe"), new ResourceLocation("minecraft:golden_pickaxe"), new ResourceLocation("minecraft:stone_pickaxe"), new ResourceLocation("minecraft:wooden_pickaxe")});
         put("autotools:shovel", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_shovel"), new ResourceLocation("minecraft:diamond_shovel"), new ResourceLocation("minecraft:iron_shovel"), new ResourceLocation("minecraft:golden_shovel"), new ResourceLocation("minecraft:stone_shovel"), new ResourceLocation("minecraft:wooden_shovel")});
@@ -60,6 +60,8 @@ public class AutoTools {
     }};
 
     private static final Stack<Integer> swaps = new Stack<>();
+    public static boolean switchItem = true;
+    public static boolean blockBroken = false;
 
 
     /**
@@ -68,6 +70,8 @@ public class AutoTools {
     public static void init() {
         AutoToolsConfig.load();
 
+        //Not the best way of adding custom tools. Fine as long as it won't get any more
+        CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
     }
 
@@ -103,7 +107,7 @@ public class AutoTools {
                     } else tools.add(new ResourceLocation(entry.getValue().getAsString()));
                 }
 
-                CUSTOM_TOOLS.put(new ResourceLocation(entry.getKey()), Arrays.copyOf(tools.toArray(), tools.size(), ResourceLocation[].class));
+                CUSTOM_TOOLS.computeIfAbsent(new ResourceLocation(entry.getKey()), key -> new ArrayList<>()).addAll(tools);
             }
 
             LOGGER.info("Loaded custom block configs: " + CUSTOM_TOOLS.keySet());
@@ -111,6 +115,20 @@ public class AutoTools {
             LOGGER.error("Error while parsing custom blocks");
         }
     }
+
+
+    public static void onBlockBreaking(Minecraft client, HitResult hitResult) {
+        if (AutoToolsConfig.TOGGLE && AutoTools.switchItem) {
+            if (client.player.isCreative()) {
+                if (!AutoToolsConfig.DISABLECREATIVE) {
+                    AutoTools.getCorrectTool(hitResult, client);
+                }
+            } else {
+                AutoTools.getCorrectTool(hitResult, client);
+            }
+        }
+    }
+
 
     /**
      * Brings the item from sourceSlot into the players main hand
@@ -253,7 +271,7 @@ public class AutoTools {
 
             //Detection for custom tools
             if (CUSTOM_TOOLS.containsKey(Registry.BLOCK.getKey(blockState.getBlock()))) {
-                ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.BLOCK.getKey(blockState.getBlock()));
+                List<ResourceLocation> tools = CUSTOM_TOOLS.get(Registry.BLOCK.getKey(blockState.getBlock()));
 
                 for (ResourceLocation resourceLocation : tools) {
                     if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
@@ -337,6 +355,11 @@ public class AutoTools {
             int toolSlot = -1;
             float attackDamage = 0;
 
+
+            if (AutoToolsConfig.KEEP_AXE && Arrays.asList(TOOL_LISTS.get("autotools:axe")).contains(Registry.ITEM.getKey(inventory.getSelected().getItem()))) {
+                return;
+            }
+
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 Item item = inventory.getItem(i).getItem();
 
@@ -345,6 +368,7 @@ public class AutoTools {
 
 
                     if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
+                        //Only switch if the player can hurt the entity with the current item
                         if (entity instanceof LivingEntity) {
                             LivingEntity livingEntity = (LivingEntity) entity;
                             if (!item.hurtEnemy(inventory.getItem(i), livingEntity, inventory.player)) {
@@ -354,7 +378,7 @@ public class AutoTools {
 
                         //Custom tool detection
                         if (CUSTOM_TOOLS.containsKey(Registry.ENTITY_TYPE.getKey(entity.getType()))) {
-                            ResourceLocation[] tools = CUSTOM_TOOLS.get(Registry.ENTITY_TYPE.getKey(entity.getType()));
+                            List<ResourceLocation> tools = CUSTOM_TOOLS.get(Registry.ENTITY_TYPE.getKey(entity.getType()));
 
                             for (ResourceLocation resourceLocation : tools) {
                                 if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled")))
@@ -437,6 +461,11 @@ public class AutoTools {
         @Override
         public int hashCode() {
             return Objects.hash(miningSpeed, priority);
+        }
+
+        @Override
+        public String toString() {
+            return "ItemMiningSpeed("+miningSpeed+","+priority+")";
         }
     }
 }

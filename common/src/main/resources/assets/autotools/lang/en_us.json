@@ -20,10 +20,11 @@
     "ui.config.preferLowDurability": "Prefer lower durability",
     "ui.config.switchBack": "Switch Back",
     "ui.config.changeForEntities": "Change for entites",
+    "ui.config.keepAxe": "Keep Axe",
 
     "ui.desc.toggle" : "AutoTools will always be active and try to get you the best tool. Can be toggled with the set key. (works best with \"Switch Back\")",
-    "ui.desc.showDPS" : "Displays the weapons Dps when hovering over it.",
-    "ui.desc.keepSlot" : "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.",
+    "ui.desc.showDPS" : "Displays the weapons Dps when hovering over it",
+    "ui.desc.keepSlot" : "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics",
     "ui.desc.disableCreative" : "Disables AutoTools in creative-mode if toggle is disabled",
 
     "ui.desc.preferSilkTouch.always": "Autotools additionally will use SilkTouch for: grass, stone, ores, leaves, snow",
@@ -36,5 +37,6 @@
     "ui.desc.preferHotbarTool": "AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability",
     "ui.desc.preferLowDurability": "AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed",
     "ui.desc.switchBack": "AutoTools will switch back to the previous tool or item you had in your hand before breaking the block",
-    "ui.desc.changeForEntities": "AutoTools will change to the tool with the most DPS when looking at an entity."
+    "ui.desc.changeForEntities": "AutoTools will change to the tool with the most DPS when looking at an entity",
+    "ui.desc.keepAxe": "AutoTools won't change to a better weapon(e.g. a sword) when holding an axe"
 }

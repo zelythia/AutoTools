@@ -8,6 +8,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface ClientBlockBreakEvent {
 
+    /**
+     * Called when a block was broken on the client
+     */
     Event<ClientBlockBreakEvent> EVENT = EventFactory.createArrayBacked(ClientBlockBreakEvent.class,
             (listeners) -> (levelAccessor, blockPos, blockState) -> {
                 if (levelAccessor.isClientSide()) {

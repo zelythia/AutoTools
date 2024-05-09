@@ -1,14 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.zelythia.fabric.mixins",
+  "package": "net.zelythia.forge.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [],
   "client": [
-    "AttackMixin",
-    "BlockBreakMixin",
-    "BlockMixin",
-    "ItemStackMixin"
+    "BlockBreakMixin"
   ],
   "server": [],
   "injectors": {

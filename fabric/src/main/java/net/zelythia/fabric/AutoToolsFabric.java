@@ -16,9 +16,7 @@ import net.zelythia.fabric.events.ClientBlockBreakEvent;
 import org.lwjgl.glfw.GLFW;
 
 public class AutoToolsFabric implements ClientModInitializer {
-    public static boolean switchItem = true;
     private boolean keyPressed = false;
-    public static boolean blockBroken = false;
 
     @Override
     public void onInitializeClient() {
@@ -41,8 +39,8 @@ public class AutoToolsFabric implements ClientModInitializer {
                 //When toggling the keybinding should only be reacted to once per press
                 if (key_changeTool.consumeClick()) {
                     if (!keyPressed) {
-                        switchItem = !switchItem;
-                        client.player.sendMessage(new TextComponent(switchItem ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
+                        AutoTools.switchItem = !AutoTools.switchItem;
+                        client.player.sendMessage(new TextComponent(AutoTools.switchItem ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
                         keyPressed = true;
                     }
                     //resetting the keyPressed-count
@@ -61,16 +59,16 @@ public class AutoToolsFabric implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!Minecraft.getInstance().options.keyAttack.isDown()) {
-                if (AutoToolsConfig.SWITCH_BACK && (AutoToolsConfig.TOGGLE || blockBroken)) {
+                if (AutoToolsConfig.SWITCH_BACK && (AutoToolsConfig.TOGGLE || AutoTools.blockBroken)) {
                     AutoTools.switchBack();
-                    blockBroken = false;
+                    AutoTools.blockBroken = false;
                 }
             }
         });
 
         ClientBlockBreakEvent.EVENT.register((levelAccessor, blockPos, blockState) -> {
             if (AutoToolsConfig.SWITCH_BACK && !AutoToolsConfig.TOGGLE) {
-                blockBroken = true;
+                AutoTools.blockBroken = true;
             }
         });
 

@@ -5,8 +5,6 @@ import net.zelythia.fabric.config.SimpleConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
-
 public class AutoToolsConfigImpl {
 
     private static final Logger LOGGER = LogManager.getLogger("AutoToolsConfig");
@@ -26,6 +24,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.PREFER_LOW_DURABILITY = config.getOrDefault("preferLowDurability", false);
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
+        AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
 
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
     }
@@ -58,6 +57,8 @@ public class AutoToolsConfigImpl {
                 "showDPS=true\n" +
                 "#AutoTools will change to the tool with the most DPS when looking at an entity\n" +
                 "changeForEntities=true\n" +
+                "#AutoTools won't change to a better weapon(e.g. a sword) when holding an axe\n"+
+                "keepAxe=false\n"+
                 "\n" +
                 "#Autotools will prefer Silk Touch:\n" +
                 "# never, always, always_ores, except_ores\n" +
@@ -73,7 +74,6 @@ public class AutoToolsConfigImpl {
 
     }
 
-    @Nullable
     public static SimpleConfig getConfig() {
         if (config != null) {
             return config;
@@ -96,6 +96,7 @@ public class AutoToolsConfigImpl {
         getConfig().setOrCreate("preferLowDurability", AutoToolsConfig.PREFER_LOW_DURABILITY);
         getConfig().setOrCreate("switchBack", AutoToolsConfig.SWITCH_BACK);
         getConfig().setOrCreate("changeForEntities", AutoToolsConfig.CHANGE_FOR_ENTITIES);
+        getConfig().setOrCreate("keepAxe", AutoToolsConfig.KEEP_AXE);
     }
 
     public static void load() {
@@ -113,5 +114,6 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
+        AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
     }
 }

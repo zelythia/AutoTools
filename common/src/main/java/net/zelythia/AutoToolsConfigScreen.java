@@ -110,7 +110,14 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
             "ui.config.changeForEntities",
             new TranslatableComponent("ui.desc.changeForEntities"),
             gameOptions -> AutoToolsConfig.CHANGE_FOR_ENTITIES,
-            (gameOptions, switchBack) -> AutoToolsConfig.CHANGE_FOR_ENTITIES = switchBack
+            (gameOptions, changeForEntities) -> AutoToolsConfig.CHANGE_FOR_ENTITIES = changeForEntities
+    );
+
+    public static final BooleanOption KEEP_AXE = new BooleanOption(
+            "ui.config.keepAxe",
+            new TranslatableComponent("ui.desc.keepAxe"),
+            gameOptions -> AutoToolsConfig.KEEP_AXE,
+            (gameOptions, keepAxe) -> AutoToolsConfig.KEEP_AXE = keepAxe
     );
 
 
@@ -136,6 +143,7 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
         this.addButton(SWITCH_BACK.createButton(this.options, this.width / 2 + 5, y + 24, 150));
         this.addButton(SHOWDPS.createButton(this.options, this.width / 2 + 5, y + 48, 150));
         this.addButton(CHANGE_FOR_ENTITIES.createButton(this.options, this.width / 2 + 5, y + 72, 150));
+        this.addButton(KEEP_AXE.createButton(this.options, this.width / 2 + 5, y + 96, 150));
 
         this.addButton(PREFER_SILK_TOUCH.createButton(this.options, this.width / 2 - 155, y + 144, 310));
 
