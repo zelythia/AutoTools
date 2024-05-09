@@ -32,8 +32,8 @@
     "ui.desc.preferSilkTouch.except_ores": "AutoTools benutzt Behutsamkeit auch bei:Gras, Stein, Blättern, Schnee",
     "ui.desc.preferSilkTouch.never": "AutoTools wird Behutsamkeit nur bevorzugen, wenn es zum Abbauen des Blockes benötigt wird",
 
-    "ui.desc.preferFortune": "AutoTools benutzt Glück bei Kies und Blättern",
-    "ui.desc.onlyNecessary": "AutoTools wird nur das Werkzeug nur ändern ,wenn es den Block nicht abbauen kann",
+    "ui.desc.alwaysPreferFortune": "AutoTools benutzt Glück bei Kies und Blättern",
+    "ui.desc.onlySwitchIfNecessary": "AutoTools wird nur das Werkzeug nur ändern ,wenn es den Block nicht abbauen kann",
     "ui.desc.preferHotbarTool": "AutoTools wird immer das Werkzeug in deiner Hotbar bevorzugen ohne Rücksicht auf die Haltbarkeit bei gleicher Abbaugeschwindigkeit",
     "ui.desc.preferLowDurability": "AutoTools wird immer das Werkzeug mit der niedrigsten Haltbarkeit bevorzugen, wenn sie die gleiche Abbaugeschwindigkeit haben,",
     "ui.desc.switchBack": "AutoTools wechselt nach dem Abbauen automatisch zum vorherigen Gegenstand zurück",

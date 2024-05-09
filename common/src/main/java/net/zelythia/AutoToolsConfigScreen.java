@@ -47,10 +47,10 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
     );
 
     public static final BooleanOption ALWAYS_PREFER_FORTUNE = new BooleanOption(
-            "ui.config.preferFortune",
-            new TranslatableComponent("ui.desc.preferFortune"),
+            "ui.config.alwaysPreferFortune",
+            new TranslatableComponent("ui.desc.alwaysPreferFortune"),
             gameOptions -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE,
-            (gameOptions, preferFortune) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = preferFortune
+            (gameOptions, alwaysPreferFortune) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = alwaysPreferFortune
     );
 
     public static final CycleOption PREFER_SILK_TOUCH = new CycleOption(
@@ -79,24 +79,24 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
     );
 
     public static final BooleanOption ONLY_SWITCH_IF_NECESSARY = new BooleanOption(
-            "ui.config.onlyNecessary",
-            new TranslatableComponent("ui.desc.onlyNecessary"),
+            "ui.config.onlySwitchIfNecessary",
+            new TranslatableComponent("ui.desc.onlySwitchIfNecessary"),
             gameOptions1 -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY,
-            (gameOptions, switchNecessary) -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = switchNecessary
+            (gameOptions, onlySwitchIfNecessary) -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = onlySwitchIfNecessary
     );
 
     public static final BooleanOption PREFER_HOTBAR_TOOL = new BooleanOption(
             "ui.config.preferHotbarTool",
             new TranslatableComponent("ui.desc.preferHotbarTool"),
             gameOptions1 -> AutoToolsConfig.PREFER_HOTBAR_TOOL,
-            (gameOptions, switchNecessary) -> AutoToolsConfig.PREFER_HOTBAR_TOOL = switchNecessary
+            (gameOptions, preferHotbarTool) -> AutoToolsConfig.PREFER_HOTBAR_TOOL = preferHotbarTool
     );
 
     public static final BooleanOption PREFER_LOW_DURABILITY = new BooleanOption(
             "ui.config.preferLowDurability",
             new TranslatableComponent("ui.desc.preferLowDurability"),
             gameOptions1 -> AutoToolsConfig.PREFER_LOW_DURABILITY,
-            (gameOptions, switchNecessary) -> AutoToolsConfig.PREFER_LOW_DURABILITY = switchNecessary
+            (gameOptions, preferLowDurability) -> AutoToolsConfig.PREFER_LOW_DURABILITY = preferLowDurability
     );
 
     public static final BooleanOption SWITCH_BACK = new BooleanOption(

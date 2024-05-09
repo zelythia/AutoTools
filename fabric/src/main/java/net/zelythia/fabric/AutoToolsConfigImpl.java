@@ -57,8 +57,8 @@ public class AutoToolsConfigImpl {
                 "showDPS=true\n" +
                 "#AutoTools will change to the tool with the most DPS when looking at an entity\n" +
                 "changeForEntities=true\n" +
-                "#AutoTools won't change to a better weapon(e.g. a sword) when holding an axe\n"+
-                "keepAxe=false\n"+
+                "#AutoTools won't change to a better weapon(e.g. a sword) when holding an axe\n" +
+                "keepAxe=false\n" +
                 "\n" +
                 "#Autotools will prefer Silk Touch:\n" +
                 "# never, always, always_ores, except_ores\n" +
@@ -84,7 +84,7 @@ public class AutoToolsConfigImpl {
     }
 
     public static void save() {
-        if(getConfig() == null) return;
+        if (getConfig() == null) return;
         getConfig().setOrCreate("toggle", AutoToolsConfig.TOGGLE);
         getConfig().setOrCreate("showDPS", AutoToolsConfig.SHOWDPS);
         getConfig().setOrCreate("keepSlot", AutoToolsConfig.KEEPSLOT);

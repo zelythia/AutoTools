@@ -32,8 +32,8 @@
     "ui.desc.preferSilkTouch.except_ores": "Autotools additionally will SilkTouch for: grass, stone, leaves, snow",
     "ui.desc.preferSilkTouch.never": "Autotools will use SilkTouch if its required to mine a block.",
 
-    "ui.desc.preferFortune": "Autotools will use Fortune for Gravel and Leaves",
-    "ui.desc.onlyNecessary": "AutoTools will only switch items if you can't mine a block with your current one",
+    "ui.desc.alwaysPreferFortune": "Autotools will use Fortune for Gravel and Leaves",
+    "ui.desc.onlySwitchIfNecessary": "AutoTools will only switch items if you can't mine a block with your current one",
     "ui.desc.preferHotbarTool": "AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability",
     "ui.desc.preferLowDurability": "AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed",
     "ui.desc.switchBack": "AutoTools will switch back to the previous tool or item you had in your hand before breaking the block",
