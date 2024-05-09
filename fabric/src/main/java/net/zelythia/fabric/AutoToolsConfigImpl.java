@@ -67,7 +67,7 @@ public class AutoToolsConfigImpl {
                 "#Add custom block-tool-configurations in JSON format\n" +
                 "#e.g. customTools={\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\n" +
                 "#When adding multiple tools, the first one has the highest priority\n" +
-                "#There are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\n" +
+                "#There are also pre-defined lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\n" +
                 "#Use \"autotools:disabled\" to disable AutoTools on a certain block\n" +
                 "#Also works for entities: \"minecraft:entity_id\":\"minecraft:tool_id\"\n" +
                 "customTools={}";
