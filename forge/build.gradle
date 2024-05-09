@@ -13,6 +13,7 @@ loom {
     forge {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+        mixinConfig "autotools.mixins.json"
     }
 }
 
@@ -48,18 +49,17 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
 }
 
-jar {
-    classifier "dev"
-}
+//jar {
+//    classifier "dev"
+//}
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
