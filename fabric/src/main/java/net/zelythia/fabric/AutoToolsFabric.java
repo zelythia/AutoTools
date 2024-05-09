@@ -2,7 +2,10 @@ package net.zelythia.fabric;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.client.KeyMapping;
@@ -12,9 +15,11 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
+import net.zelythia.TooltipHelper;
 import net.zelythia.fabric.events.ClientBlockBreakEvent;
 import org.lwjgl.glfw.GLFW;
 
+@Environment(EnvType.CLIENT)
 public class AutoToolsFabric implements ClientModInitializer {
     private boolean keyPressed = false;
 
@@ -72,5 +77,8 @@ public class AutoToolsFabric implements ClientModInitializer {
             }
         });
 
+        ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
+            TooltipHelper.applyTooltip(stack, lines);
+        });
     }
 }
