@@ -4,4 +4,5 @@
  - Fixed #6: ClientTags now properly work on Forge
  - Fixed DPS-Tooltip position issues
 
+
  - Added #3: Option to not switch when holding an axe in combat
