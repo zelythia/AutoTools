@@ -45,6 +45,7 @@ dependencies {
     includeFabricApiModule "fabric-api-base"
     includeFabricApiModule "fabric-tag-extensions-v0"
     includeFabricApiModule "fabric-item-api-v1"
+    includeFabricApiModule "fabric-networking-api-v1"
 }
 
 def includeFabricApiModule(String moduleName) {

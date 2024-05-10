@@ -6,12 +6,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.BlockTags;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -34,14 +33,14 @@ public class AutoToolsForge {
     KeyMapping key_changeTool = new KeyMapping("key.autotools.get_tool", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category");
 
     public AutoToolsForge() {
-        AutoTools.SHEARS = BlockTags.bind(AutoTools.MOD_ID+":shears");
-        AutoTools.SILK_TOUCH = BlockTags.bind(AutoTools.MOD_ID+":silk_touch");
-        AutoTools.SILK_TOUCH_SETTING_ALWAYS = BlockTags.bind(AutoTools.MOD_ID+":silk_touch_setting_always");
-        AutoTools.SILK_TOUCH_SETTING_ALWAYS_ORES = BlockTags.bind(AutoTools.MOD_ID+":silk_touch_setting_always_ores");
-        AutoTools.SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = BlockTags.bind(AutoTools.MOD_ID+":silk_touch_setting_always_exc_ores");
-        AutoTools.FORTUNE = BlockTags.bind(AutoTools.MOD_ID+":fortune");
-        AutoTools.FORTUNE_SETTING = BlockTags.bind(AutoTools.MOD_ID+":fortune_setting");
-        AutoTools.DO_NOT_SWAP_UNLESS_ENCH = BlockTags.bind(AutoTools.MOD_ID+":do_not_swap_unless_ench");
+        AutoTools.SHEARS = BlockTags.bind(AutoTools.MOD_ID + ":shears");
+        AutoTools.SILK_TOUCH = BlockTags.bind(AutoTools.MOD_ID + ":silk_touch");
+        AutoTools.SILK_TOUCH_SETTING_ALWAYS = BlockTags.bind(AutoTools.MOD_ID + ":silk_touch_setting_always");
+        AutoTools.SILK_TOUCH_SETTING_ALWAYS_ORES = BlockTags.bind(AutoTools.MOD_ID + ":silk_touch_setting_always_ores");
+        AutoTools.SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = BlockTags.bind(AutoTools.MOD_ID + ":silk_touch_setting_always_exc_ores");
+        AutoTools.FORTUNE = BlockTags.bind(AutoTools.MOD_ID + ":fortune");
+        AutoTools.FORTUNE_SETTING = BlockTags.bind(AutoTools.MOD_ID + ":fortune_setting");
+        AutoTools.DO_NOT_SWAP_UNLESS_ENCH = BlockTags.bind(AutoTools.MOD_ID + ":do_not_swap_unless_ench");
 
         //Removing Tags from List, so they won't be expected on a server
         BlockTags.getWrappers().remove(AutoTools.SHEARS);
@@ -74,12 +73,6 @@ public class AutoToolsForge {
         AutoTools.init();
     }
 
-    @SubscribeEvent
-    public void BlockBreakEvent(BlockEvent.BreakEvent event) {
-        if (AutoToolsConfig.SWITCH_BACK && !AutoToolsConfig.TOGGLE) {
-            AutoTools.blockBroken = true;
-        }
-    }
 
     @SubscribeEvent
     public void ClientTickEvent(@NotNull TickEvent.ClientTickEvent event) {
@@ -90,8 +83,8 @@ public class AutoToolsForge {
                 //Handling key presses
                 if (key_changeTool.consumeClick()) {
                     if (!keyPressed) {
-                        AutoTools.switchItem = !AutoTools.switchItem;
-                        client.player.sendMessage(new TextComponent(AutoTools.switchItem ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
+                        AutoTools.toggle = !AutoTools.toggle;
+                        client.player.sendMessage(new TextComponent(AutoTools.toggle ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
                         keyPressed = true;
                     }
                 } else {
@@ -104,24 +97,22 @@ public class AutoToolsForge {
             }
         } else if (event.phase == TickEvent.Phase.END) {
             if (!Minecraft.getInstance().options.keyAttack.isDown()) {
-                if (AutoToolsConfig.SWITCH_BACK && (AutoToolsConfig.TOGGLE || AutoTools.blockBroken)) {
+                //Detecting switchBack for entities
+                if (AutoToolsConfig.SWITCH_BACK && AutoTools.lastBlock == null) {
                     AutoTools.switchBack();
-                    AutoTools.blockBroken = false;
                 }
             }
         }
     }
 
     @SubscribeEvent
-    public void ClickInputEvent(InputEvent.ClickInputEvent event) {
-        if(event.isAttack()){
-            Minecraft client = Minecraft.getInstance();
-            AutoTools.onBlockBreaking(client, client.hitResult);
-        }
+    public void onToolTip(ItemTooltipEvent event) {
+        TooltipHelper.applyTooltip(event.getItemStack(), event.getToolTip());
     }
 
     @SubscribeEvent
-    public void onToolTip(ItemTooltipEvent event) {
-        TooltipHelper.applyTooltip(event.getItemStack(), event.getToolTip());
+    public void onJoin(ClientPlayerNetworkEvent.LoggedInEvent event){
+        AutoTools.swaps.clear();
+        AutoTools.lastBlock = null;
     }
 }

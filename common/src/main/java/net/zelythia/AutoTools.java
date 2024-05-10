@@ -59,9 +59,9 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_axe"), new ResourceLocation("minecraft:diamond_axe"), new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:golden_axe"), new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:wooden_axe")});
     }};
 
-    private static final Stack<Integer> swaps = new Stack<>();
-    public static boolean switchItem = true;
-    public static boolean blockBroken = false;
+    public static final Stack<Integer> swaps = new Stack<>();
+    public static boolean toggle = true;
+    public static BlockState lastBlock = null;
 
 
     /**
@@ -118,7 +118,7 @@ public class AutoTools {
 
 
     public static void onBlockBreaking(Minecraft client, HitResult hitResult) {
-        if (AutoToolsConfig.TOGGLE && AutoTools.switchItem) {
+        if (AutoToolsConfig.TOGGLE && AutoTools.toggle) {
             if (client.player.isCreative()) {
                 if (!AutoToolsConfig.DISABLECREATIVE) {
                     AutoTools.getCorrectTool(hitResult, client);
@@ -142,7 +142,7 @@ public class AutoTools {
 
         if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
             if (swaps.get(swaps.size() - 1) != inventory.selected) {
-                swaps.push(inventory.selected);
+                if(swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
             inventory.selected = sourceSlot;
 
@@ -150,7 +150,7 @@ public class AutoTools {
         }
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
-        swaps.push(sourceSlot);
+        if(swaps.peek() != sourceSlot) swaps.push(sourceSlot);
 
         if (Screen.hasShiftDown()) {
             //Simulating a click on the toolSlot and the swappableSlot with the ClickType = SWAP, so it updates on the server
@@ -162,13 +162,15 @@ public class AutoTools {
         }
 
         inventory.selected = destSlot;
+        inventory.setChanged();
     }
 
     /**
      * Used for AutoToolsConfig.SWITCH_BACK to switch to the last tool the player was holding before using AutoTools
      */
     public static void switchBack() {
-        if (swaps.empty()) return;
+        //Don't switch if the player wants to mine another block || swaps.empty()
+        if (Minecraft.getInstance().options.keyAttack.isDown() || swaps.empty()) return;
         Minecraft client = Minecraft.getInstance();
         if (client.player == null || client.gameMode == null) return;
 
@@ -178,12 +180,19 @@ public class AutoTools {
             int i = swaps.pop();
 
             if (i <= 8) {
+                if (AutoToolsConfig.KEEPSLOT && i != inventory.selected) {
+                    client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, inventory.selected + 36, i, ClickType.SWAP, client.player);
+                    return;
+                }
+
                 inventory.selected = i;
                 return;
             }
 
             client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, i, inventory.selected, ClickType.SWAP, client.player);
         }
+
+        inventory.setChanged();
     }
 
     /**
@@ -265,6 +274,10 @@ public class AutoTools {
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
+
+            //Don't check for new tool if the BlockState is the same Object as the last one
+            if (Objects.equals(lastBlock, blockState)) return;
+            lastBlock = blockState;
 
             int toolSlot = -1;
             ItemMiningSpeed miningSpeed = new ItemMiningSpeed(1f, 0);
@@ -432,40 +445,10 @@ public class AutoTools {
                 if (!AutoToolsConfig.TOGGLE && client.player.isCreative()) {
                     inventory.setItem(inventory.getSuitableHotbarSlot(), new ItemStack(Items.NETHERITE_SWORD));
                 }
-            } else if (toolSlot <= 8) {
-                inventory.selected = toolSlot;
             } else {
                 selectItem(client, inventory, toolSlot);
             }
 
-        }
-    }
-
-    public static final class ItemMiningSpeed {
-        public Float miningSpeed;
-        public int priority;
-
-        ItemMiningSpeed(Float miningSpeed, int priority) {
-            this.miningSpeed = miningSpeed;
-            this.priority = priority;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ItemMiningSpeed that = (ItemMiningSpeed) o;
-            return priority == that.priority && Objects.equals(miningSpeed, that.miningSpeed);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(miningSpeed, priority);
-        }
-
-        @Override
-        public String toString() {
-            return "ItemMiningSpeed("+miningSpeed+","+priority+")";
         }
     }
 }
