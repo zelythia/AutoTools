@@ -36,11 +36,11 @@ public class AutoToolsConfigImpl {
     private static String defaultConfig(String filename) {
         return "#AutoTools config\n" +
                 "\n" +
-                "#AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.\n" +
+                "#AutoTools will always be active and try to get you the best tool. Can be toggled with the set key\n" +
                 "toggle=false\n" +
                 "#Disables AutoTools in creative-mode if toggle is enabled\n" +
                 "disableCreative=true\n" +
-                "#Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.\n" +
+                "#Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics\n" +
                 "keepSlot=false\n" +
                 "#AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability\n" +
                 "preferHotBarTool=true\n" +
