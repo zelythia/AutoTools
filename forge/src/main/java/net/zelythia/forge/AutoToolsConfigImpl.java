@@ -37,7 +37,7 @@ public class AutoToolsConfigImpl {
                 .define("preferLowDurability", false);
         ALWAYS_PREFER_FORTUNE = BUILDER.comment("Autotools will try to always get a tool with Fortune for gravel and leaves")
                 .define("alwaysPreferFortune", false);
-        BUILDER.comment("");
+        BUILDER.comment(" ");
 
         ONLY_SWITCH_IF_NECESSARY = BUILDER.comment("AutoTools only tries to get a new tool if it is needed to break the block")
                 .define("onlySwitchIfNecessary", false);
@@ -47,11 +47,11 @@ public class AutoToolsConfigImpl {
                 .define("showDPS", true);
         CHANGE_FOR_ENTITIES = BUILDER.comment("AutoTools will change to the tool with the most DPS when looking at an entity.")
                 .define("changeForEntities", true);
-        BUILDER.comment("");
+        BUILDER.comment(" ");
 
         PREFER_SILK_TOUCH = BUILDER.comment("Autotools will prefer Silk Touch: never, always, always_ores, except_ores")
                 .define("preferSilkTouch", "except_ores");
-        BUILDER.comment("");
+        BUILDER.comment(" ");
 
         CUSTOM_TOOLS = BUILDER.comment("Add custom block-tool-configurations in JSON format\n" +
                         "e.g. customTools={\\\"minecraft:block_id\\\":\\\"minecraft:tool_id\\\"} or customTools={\\\"minecraft:block_id\\\":[\\\"minecraft:tool_id_1\\\", \\\"minecraft:tool_id_2\\\"]}\n" +
