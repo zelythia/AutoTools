@@ -19,13 +19,14 @@ public class AutoToolsConfigImpl {
     private static final ForgeConfigSpec.ConfigValue<Boolean> PREFER_LOW_DURABILITY;
     private static final ForgeConfigSpec.ConfigValue<Boolean> SWITCH_BACK;
     private static final ForgeConfigSpec.ConfigValue<Boolean> CHANGE_FOR_ENTITIES;
+    private static final ForgeConfigSpec.ConfigValue<Boolean> KEEP_AXE;
 
     private static final ForgeConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
 
     static {
         BUILDER.push("AutoTools");
 
-        TOGGLE = BUILDER.comment("AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.")
+        TOGGLE = BUILDER.comment("AutoTools will always be active and try to get you the best tool. Can be toggled with the set key")
                 .define("toggle", false);
         DISABLECREATIVE = BUILDER.comment("Disables AutoTools in creative if toggle is enabled")
                 .define("disableCreative", true);
@@ -45,8 +46,10 @@ public class AutoToolsConfigImpl {
                 .define("switchBack", false);
         SHOWDPS = BUILDER.comment("Displays the weapons Dps when hovering over it.")
                 .define("showDPS", true);
-        CHANGE_FOR_ENTITIES = BUILDER.comment("AutoTools will change to the tool with the most DPS when looking at an entity.")
+        CHANGE_FOR_ENTITIES = BUILDER.comment("AutoTools will change to the tool with the most DPS when looking at an entity")
                 .define("changeForEntities", true);
+        KEEP_AXE = BUILDER.comment("AutoTools won't change to a better weapon(e.g. a sword) when holding an axe")
+                .define("changeForEntities", false);
         BUILDER.comment(" ");
 
         PREFER_SILK_TOUCH = BUILDER.comment("Autotools will prefer Silk Touch: never, always, always_ores, except_ores")
@@ -77,6 +80,7 @@ public class AutoToolsConfigImpl {
         PREFER_LOW_DURABILITY.set(AutoToolsConfig.PREFER_LOW_DURABILITY);
         SWITCH_BACK.set(AutoToolsConfig.SWITCH_BACK);
         CHANGE_FOR_ENTITIES.set(AutoToolsConfig.CHANGE_FOR_ENTITIES);
+        KEEP_AXE.set(AutoToolsConfig.KEEP_AXE);
 
         SPEC.save();
     }
@@ -94,5 +98,6 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.CUSTOM_TOOLS = CUSTOM_TOOLS.get();
         AutoToolsConfig.SWITCH_BACK = SWITCH_BACK.get();
         AutoToolsConfig.CHANGE_FOR_ENTITIES = CHANGE_FOR_ENTITIES.get();
+        AutoToolsConfig.KEEP_AXE = KEEP_AXE.get();
     }
 }
