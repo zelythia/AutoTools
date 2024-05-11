@@ -62,6 +62,10 @@ public class AutoTools {
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
     public static BlockState lastBlock = null;
+    /**
+     * Used for SWITCH_BACK when toggle is disabled
+     */
+    public static boolean startedMining = false;
 
 
     /**
@@ -275,9 +279,11 @@ public class AutoTools {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
 
-            //Don't check for new tool if the BlockState is the same Object as the last one
-            if (Objects.equals(lastBlock, blockState)) return;
-            lastBlock = blockState;
+            //Don't check for new tool if mining the same block when toggle is enabled
+            if (AutoToolsConfig.TOGGLE) {
+                if (Objects.equals(lastBlock, blockState)) return;
+                lastBlock = blockState;
+            }
 
             int toolSlot = -1;
             ItemMiningSpeed miningSpeed = new ItemMiningSpeed(1f, 0);

@@ -92,14 +92,19 @@ public class AutoToolsForge {
                 }
             } else {
                 if (key_changeTool.consumeClick()) {
+                    AutoTools.startedMining = false;
                     AutoTools.getCorrectTool(client.hitResult, client);
                 }
             }
         } else if (event.phase == TickEvent.Phase.END) {
-            if (!Minecraft.getInstance().options.keyAttack.isDown()) {
-                //Detecting switchBack for entities
-                if (AutoToolsConfig.SWITCH_BACK && AutoTools.lastBlock == null) {
-                    AutoTools.switchBack();
+            if (AutoToolsConfig.SWITCH_BACK) {
+                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                    AutoTools.startedMining = true;
+                } else {
+                    //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
+                    if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                        AutoTools.switchBack();
+                    }
                 }
             }
         }

@@ -38,6 +38,7 @@ public class AutoToolsFabric implements ClientModInitializer {
 
         KeyMapping key_changeTool = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.autotools.get_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category"));
 
+
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (AutoToolsConfig.TOGGLE) {
                 //Changing the toggle setting:
@@ -57,6 +58,7 @@ public class AutoToolsFabric implements ClientModInitializer {
                 }
             } else {
                 if (key_changeTool.consumeClick()) {
+                    AutoTools.startedMining = false;
                     AutoTools.getCorrectTool(client.hitResult, client);
                 }
             }
@@ -64,10 +66,14 @@ public class AutoToolsFabric implements ClientModInitializer {
 
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!Minecraft.getInstance().options.keyAttack.isDown()) {
-                //Detecting switchBack for entities
-                if (AutoToolsConfig.SWITCH_BACK && AutoTools.lastBlock == null) {
-                    AutoTools.switchBack();
+            if (AutoToolsConfig.SWITCH_BACK) {
+                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                    AutoTools.startedMining = true;
+                } else {
+                    //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
+                    if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                        AutoTools.switchBack();
+                    }
                 }
             }
         });

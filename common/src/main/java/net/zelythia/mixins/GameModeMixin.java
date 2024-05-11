@@ -27,26 +27,30 @@ public class GameModeMixin {
         AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
     }
 
+    @Inject(at = @At("HEAD"), method = "attack")
+    private void attack(CallbackInfo ci) {
+        //SwitchBack doesn't really make sense for mobs
+        if (!AutoToolsConfig.SWITCH_BACK) {
+            AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
+        }
+    }
+
     /**
      * For detecting when the destroy progress cancelled
      */
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "stopDestroyBlock")
     private void stopDestroyBlock(CallbackInfo ci){
-        AutoTools.lastBlock = null;
-        AutoTools.switchBack();
+        if (AutoToolsConfig.TOGGLE) {
+            AutoTools.switchBack();
+            AutoTools.lastBlock = null;
+        }
     }
 
     @Inject(at = @At(value = "HEAD"), method = "destroyBlock")
     private void destroyBlock(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir){
-        AutoTools.lastBlock = null;
-        AutoTools.switchBack();
-    }
-
-    @Inject(at = @At("HEAD"), method = "attack")
-    private void attack(CallbackInfo ci){
-        //SwitchBack doesn't really make sense for mobs
-        if(!AutoToolsConfig.SWITCH_BACK){
-            AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
+        if (AutoToolsConfig.TOGGLE) {
+            AutoTools.switchBack();
+            AutoTools.lastBlock = null;
         }
     }
 }
