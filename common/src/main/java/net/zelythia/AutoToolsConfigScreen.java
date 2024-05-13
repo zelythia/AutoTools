@@ -46,10 +46,10 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
     );
 
     public static final CycleOption<Boolean> ALWAYS_PREFER_FORTUNE = CycleOption.createOnOff(
-            "ui.config.preferFortune",
+            "ui.config.alwaysPreferFortune",
             new TranslatableComponent("ui.desc.preferFortune"),
             gameOptions -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE,
-            (gameOptions, option, preferFortune) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = preferFortune
+            (gameOptions, option, alwaysPreferFortune) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = alwaysPreferFortune
     );
 
     public static final CycleOption<String> PREFER_SILK_TOUCH = CycleOption.create(
@@ -72,10 +72,10 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
     ).setTooltip(minecraft -> (preferSilkTouch) -> minecraft.font.split(new TranslatableComponent("ui.desc.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH), 200));
 
     public static final CycleOption<Boolean> ONLY_SWITCH_IF_NECESSARY = CycleOption.createOnOff(
-            "ui.config.onlyNecessary",
-            new TranslatableComponent("ui.desc.onlyNecessary"),
+            "ui.config.onlySwitchIfNecessary",
+            new TranslatableComponent("ui.desc.onlySwitchIfNecessary"),
             gameOptions1 -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY,
-            (gameOptions, option, switchNecessary) -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = switchNecessary
+            (gameOptions, option, onlySwitchIfNecessary) -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = onlySwitchIfNecessary
     );
 
     public static final CycleOption<Boolean> PREFER_HOTBAR_TOOL = CycleOption.createOnOff(
@@ -106,6 +106,13 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
             (gameOptions, option, change) -> AutoToolsConfig.CHANGE_FOR_ENTITIES = change
     );
 
+    public static final CycleOption<Boolean> KEEP_AXE = CycleOption.createOnOff(
+            "ui.config.keepAxe",
+            new TranslatableComponent("ui.desc.keepAxe"),
+            keepAxe -> AutoToolsConfig.KEEP_AXE,
+            (gameOptions, option, keepAxe) -> AutoToolsConfig.KEEP_AXE = keepAxe
+    );
+
 
     public AutoToolsConfigScreen(Screen parent) {
         super(parent, Minecraft.getInstance().options, new TextComponent("AutoTools Config"));
@@ -128,6 +135,7 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
         this.addRenderableWidget(SWITCH_BACK.createButton(this.options, this.width / 2 + 5, y + 24, 150));
         this.addRenderableWidget(SHOWDPS.createButton(this.options, this.width / 2 + 5, y + 48, 150));
         this.addRenderableWidget(CHANGE_FOR_ENTITIES.createButton(this.options, this.width / 2 + 5, y + 72, 150));
+        this.addRenderableWidget(KEEP_AXE.createButton(this.options, this.width / 2 + 5, y + 96, 150));
 
         this.addRenderableWidget(PREFER_SILK_TOUCH.createButton(this.options, this.width / 2 - 155, y + 144, 310));
 

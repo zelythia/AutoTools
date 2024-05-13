@@ -5,8 +5,6 @@ import net.zelythia.fabric.config.SimpleConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
-
 public class AutoToolsConfigImpl {
 
     private static final Logger LOGGER = LogManager.getLogger("AutoToolsConfig");
@@ -26,6 +24,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.PREFER_LOW_DURABILITY = config.getOrDefault("preferLowDurability", false);
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
+        AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
 
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
     }
@@ -38,11 +37,11 @@ public class AutoToolsConfigImpl {
         return """
                 #AutoTools config
 
-                #AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.
+                #AutoTools will always be active and try to get you the best tool. Can be toggled with the set key
                 toggle=false
                 #Disables AutoTools in creative-mode if toggle is enabled
                 disableCreative=true
-                #Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.
+                #Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics
                 keepSlot=false
                 #AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability
                 preferHotBarTool=true
@@ -59,6 +58,8 @@ public class AutoToolsConfigImpl {
                 showDPS=true
                 #AutoTools will change to the tool with the most DPS when looking at an entity
                 changeForEntities=true
+                #AutoTools won't change to a better weapon(e.g. a sword) when holding an axe
+                keepAxe=false
 
                 #Autotools will prefer Silk Touch:
                 # never, always, always_ores, except_ores
@@ -74,7 +75,6 @@ public class AutoToolsConfigImpl {
                 """;
     }
 
-    @Nullable
     public static SimpleConfig getConfig() {
         if (config != null) {
             return config;
@@ -85,7 +85,7 @@ public class AutoToolsConfigImpl {
     }
 
     public static void save() {
-        if(getConfig() == null) return;
+        if (getConfig() == null) return;
         getConfig().setOrCreate("toggle", AutoToolsConfig.TOGGLE);
         getConfig().setOrCreate("showDPS", AutoToolsConfig.SHOWDPS);
         getConfig().setOrCreate("keepSlot", AutoToolsConfig.KEEPSLOT);
@@ -97,6 +97,7 @@ public class AutoToolsConfigImpl {
         getConfig().setOrCreate("preferLowDurability", AutoToolsConfig.PREFER_LOW_DURABILITY);
         getConfig().setOrCreate("switchBack", AutoToolsConfig.SWITCH_BACK);
         getConfig().setOrCreate("changeForEntities", AutoToolsConfig.CHANGE_FOR_ENTITIES);
+        getConfig().setOrCreate("keepAxe", AutoToolsConfig.KEEP_AXE);
     }
 
     public static void load() {
@@ -114,5 +115,6 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
+        AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
     }
 }

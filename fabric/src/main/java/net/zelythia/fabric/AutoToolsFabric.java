@@ -2,21 +2,24 @@ package net.zelythia.fabric;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
-import net.zelythia.fabric.events.ClientBlockBreakEvent;
+import net.zelythia.TooltipHelper;
 import org.lwjgl.glfw.GLFW;
 
+@Environment(EnvType.CLIENT)
 public class AutoToolsFabric implements ClientModInitializer {
-    public static boolean switchItem = true;
     private boolean keyPressed = false;
-    public static boolean blockBroken = false;
 
     @Override
     public void onInitializeClient() {
@@ -30,8 +33,8 @@ public class AutoToolsFabric implements ClientModInitializer {
                 //When toggling the keybinding should only be reacted to once per press
                 if (key_changeTool.consumeClick()) {
                     if (!keyPressed) {
-                        switchItem = !switchItem;
-                        client.player.sendMessage(new TextComponent(switchItem ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
+                        AutoTools.toggle = !AutoTools.toggle;
+                        client.player.sendMessage(new TextComponent(AutoTools.toggle ? new TranslatableComponent("chat.enabled_autotools").getString() : new TranslatableComponent("chat.disabled_autotools").getString()), client.player.getUUID());
                         keyPressed = true;
                     }
                     //resetting the keyPressed-count
@@ -43,26 +46,33 @@ public class AutoToolsFabric implements ClientModInitializer {
                 }
             } else {
                 if (key_changeTool.consumeClick()) {
+                    AutoTools.startedMining = false;
                     AutoTools.getCorrectTool(client.hitResult, client);
                 }
             }
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!Minecraft.getInstance().options.keyAttack.isDown()) {
-                if (AutoToolsConfig.SWITCH_BACK && (AutoToolsConfig.TOGGLE || blockBroken)) {
-                    AutoTools.switchBack();
-                    blockBroken = false;
+            if (AutoToolsConfig.SWITCH_BACK) {
+                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                    AutoTools.startedMining = true;
+                } else {
+                    //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
+                    if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                        AutoTools.switchBack();
+                    }
                 }
             }
         });
 
-        ClientBlockBreakEvent.EVENT.register((levelAccessor, blockPos, blockState) -> {
-            if (AutoToolsConfig.SWITCH_BACK && !AutoToolsConfig.TOGGLE) {
-                blockBroken = true;
-            }
+
+        ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
+            TooltipHelper.applyTooltip(stack, lines);
+        });
+
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            AutoTools.swaps.clear();
+            AutoTools.lastBlock = null;
         });
     }
-
-
 }
