@@ -317,6 +317,7 @@ public class AutoTools {
                     return;
                 } else {
                     selectItem(client, inventory, toolSlot);
+                    return;
                 }
             }
 
