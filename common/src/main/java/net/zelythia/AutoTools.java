@@ -155,6 +155,7 @@ public class AutoTools {
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
         if(swaps.peek() != sourceSlot) swaps.push(sourceSlot);
+        if (swaps.peek() != destSlot) swaps.push(destSlot);
 
         if (Screen.hasShiftDown()) {
             //Simulating a click on the toolSlot and the swappableSlot with the ClickType = SWAP, so it updates on the server
