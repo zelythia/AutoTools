@@ -3,7 +3,6 @@ package net.zelythia;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -54,23 +53,18 @@ public class TooltipHelper {
                 }
 
                 if (attackDamage > 1) {
-                    //Searching for the index of the Attack Speed tooltip
+
+                    //Searching for the index of the last stat(green) tooltip
                     int index = 0;
-                    for (int i = 0; i < tooltip.size(); i++) {
-                        if (tooltip.get(i) instanceof TextComponent) {
-                            TextComponent textComponent = (TextComponent) tooltip.get(i);
-                            if (!textComponent.getSiblings().isEmpty()) {
-                                Component c = textComponent.getSiblings().get(0);
-                                if (c instanceof TranslatableComponent) {
-                                    TranslatableComponent translatableComponent = (TranslatableComponent) c;
-                                    if (translatableComponent.getKey().equals("attribute.modifier.equals.0")) {
-                                        index = i;
-                                        break;
-                                    }
-                                }
+                    for (int i = tooltip.size() - 1; i >= 0; i--) {
+                        if (tooltip.get(i).getStyle().getColor() != null) {
+                            if (tooltip.get(i).getStyle().getColor().getValue() == 43520) {
+                                index = i;
+                                break;
                             }
                         }
                     }
+
                     if (index < tooltip.size()) index++;
 
                     String damage = (optionalAttackDamage > attackDamage) ?
