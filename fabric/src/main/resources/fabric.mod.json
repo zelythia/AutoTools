@@ -32,6 +32,8 @@
     "java": ">=17",
     "fabric-key-binding-api-v1": "*",
     "fabric-lifecycle-events-v1": "*",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-item-api-v1": "*",
+    "fabric-networking-api-v1": "*"
   }
 }

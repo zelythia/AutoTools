@@ -50,7 +50,7 @@ public class AutoTools {
     public static final TagKey<Block> FORTUNE_SETTING = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "fortune_setting"));
     public static final TagKey<Block> DO_NOT_SWAP_UNLESS_ENCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "do_not_swap_unless_ench"));
 
-    public static final HashMap<ResourceLocation, ResourceLocation[]> CUSTOM_TOOLS = new HashMap<>();
+    public static final HashMap<ResourceLocation, List<ResourceLocation>> CUSTOM_TOOLS = new HashMap<>();
     private static final HashMap<String, ResourceLocation[]> TOOL_LISTS = new HashMap<>() {{
         put("autotools:pickaxe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_pickaxe"), new ResourceLocation("minecraft:diamond_pickaxe"), new ResourceLocation("minecraft:iron_pickaxe"), new ResourceLocation("minecraft:golden_pickaxe"), new ResourceLocation("minecraft:stone_pickaxe"), new ResourceLocation("minecraft:wooden_pickaxe")});
         put("autotools:shovel", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_shovel"), new ResourceLocation("minecraft:diamond_shovel"), new ResourceLocation("minecraft:iron_shovel"), new ResourceLocation("minecraft:golden_shovel"), new ResourceLocation("minecraft:stone_shovel"), new ResourceLocation("minecraft:wooden_shovel")});
@@ -59,7 +59,13 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_axe"), new ResourceLocation("minecraft:diamond_axe"), new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:golden_axe"), new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:wooden_axe")});
     }};
 
-    private static final Stack<Integer> swaps = new Stack<>();
+    public static final Stack<Integer> swaps = new Stack<>();
+    public static boolean toggle = true;
+    public static BlockState lastBlock = null;
+    /**
+     * Used for SWITCH_BACK when toggle is disabled
+     */
+    public static boolean startedMining = false;
 
 
     /**
@@ -68,6 +74,8 @@ public class AutoTools {
     public static void init() {
         AutoToolsConfig.load();
 
+        //Not the best way of adding custom tools. Fine as long as it won't get any more
+        CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
     }
 
@@ -97,12 +105,24 @@ public class AutoTools {
                     } else tools.add(new ResourceLocation(jsonObject.get(key).getAsString()));
                 }
 
-                CUSTOM_TOOLS.put(new ResourceLocation(key), Arrays.copyOf(tools.toArray(), tools.size(), ResourceLocation[].class));
+                CUSTOM_TOOLS.computeIfAbsent(new ResourceLocation(key), k -> new ArrayList<>()).addAll(tools);
             }
 
             LOGGER.info("Loaded custom block configs: " + CUSTOM_TOOLS.keySet());
         } catch (Exception e) {
             LOGGER.error("Error while parsing custom blocks");
+        }
+    }
+
+    public static void onBlockBreaking(Minecraft client, HitResult hitResult) {
+        if (AutoToolsConfig.TOGGLE && AutoTools.toggle) {
+            if (client.player.isCreative()) {
+                if (!AutoToolsConfig.DISABLECREATIVE) {
+                    AutoTools.getCorrectTool(hitResult, client);
+                }
+            } else {
+                AutoTools.getCorrectTool(hitResult, client);
+            }
         }
     }
 
@@ -118,7 +138,7 @@ public class AutoTools {
 
         if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
             if (swaps.get(swaps.size() - 1) != inventory.selected) {
-                swaps.push(inventory.selected);
+                if(swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
             inventory.selected = sourceSlot;
 
@@ -126,18 +146,21 @@ public class AutoTools {
         }
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
-        swaps.push(sourceSlot);
+        if(swaps.peek() != sourceSlot) swaps.push(sourceSlot);
+        if (swaps.peek() != destSlot) swaps.push(destSlot);
 
         client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
 
         inventory.selected = destSlot;
+        inventory.setChanged();
     }
 
     /**
      * Used for AutoToolsConfig.SWITCH_BACK to switch to the last tool the player was holding before using AutoTools
      */
     public static void switchBack() {
-        if (swaps.empty()) return;
+        //Don't switch if the player wants to mine another block || swaps.empty()
+        if (Minecraft.getInstance().options.keyAttack.isDown() || swaps.empty()) return;
         Minecraft client = Minecraft.getInstance();
         if (client.player == null || client.gameMode == null) return;
 
@@ -147,12 +170,19 @@ public class AutoTools {
             int i = swaps.pop();
 
             if (i <= 8) {
+                if (AutoToolsConfig.KEEPSLOT && i != inventory.selected) {
+                    client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, inventory.selected + 36, i, ClickType.SWAP, client.player);
+                    return;
+                }
+
                 inventory.selected = i;
                 return;
             }
 
             client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, i, inventory.selected, ClickType.SWAP, client.player);
         }
+
+        inventory.setChanged();
     }
 
     /**
@@ -242,7 +272,7 @@ public class AutoTools {
 
             //Detection for custom tools
             if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
-                ResourceLocation[] tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
+                List<ResourceLocation> tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
 
                 for (ResourceLocation resourceLocation : tools) {
                     if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
@@ -326,6 +356,10 @@ public class AutoTools {
             int toolSlot = -1;
             float attackDamage = 0;
 
+            if (AutoToolsConfig.KEEP_AXE && Arrays.asList(TOOL_LISTS.get("autotools:axe")).contains(BuiltInRegistries.ITEM.getKey(inventory.getSelected().getItem()))) {
+                return;
+            }
+
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 Item item = inventory.getItem(i).getItem();
 
@@ -334,6 +368,7 @@ public class AutoTools {
 
 
                     if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
+                        //Only switch if the player can hurt the entity with the current item
                         if (entity instanceof LivingEntity livingEntity) {
                             if (!item.hurtEnemy(inventory.getItem(i), livingEntity, inventory.player)) {
                                 continue;
@@ -342,7 +377,7 @@ public class AutoTools {
 
                         //Custom tool detection
                         if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
-                            ResourceLocation[] tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+                            List<ResourceLocation> tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
 
                             for (ResourceLocation resourceLocation : tools) {
                                 if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled")))
@@ -396,35 +431,10 @@ public class AutoTools {
                 if (!AutoToolsConfig.TOGGLE && client.player.isCreative()) {
                     inventory.setItem(inventory.getSuitableHotbarSlot(), new ItemStack(Items.NETHERITE_SWORD));
                 }
-            } else if (toolSlot <= 8) {
-                inventory.selected = toolSlot;
             } else {
                 selectItem(client, inventory, toolSlot);
             }
 
-        }
-    }
-
-    public static final class ItemMiningSpeed {
-        public Float miningSpeed;
-        public int priority;
-
-        ItemMiningSpeed(Float miningSpeed, int priority) {
-            this.miningSpeed = miningSpeed;
-            this.priority = priority;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ItemMiningSpeed that = (ItemMiningSpeed) o;
-            return priority == that.priority && Objects.equals(miningSpeed, that.miningSpeed);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(miningSpeed, priority);
         }
     }
 }

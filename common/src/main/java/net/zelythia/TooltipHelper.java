@@ -1,5 +1,4 @@
-package net.zelythia.fabric.mixins;
-
+package net.zelythia;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -11,32 +10,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.zelythia.AutoToolsConfig;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.List;
 
-@Mixin(ItemStack.class)
-public abstract class ItemStackMixin {
+public class TooltipHelper {
 
-    @Shadow
-    public abstract ItemStack copy();
-
-    @Shadow
-    public abstract Item getItem();
-
-    @Shadow
-    public abstract boolean isEnchanted();
-
-    @SuppressWarnings("InvalidInjectorMethodSignature")
-    @ModifyVariable(method = "getTooltipLines", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hasTag()Z", ordinal = 1), name = "list", ordinal = 0)
-    public List<Component> addDPSTooltip(List<Component> list) {
+    public static void applyTooltip(ItemStack stack, List<Component> tooltip) {
         if (AutoToolsConfig.SHOWDPS) {
-            ItemStack stack = this.copy();
-            Item item = this.getItem();
+            Item item = stack.getItem();
 
             if (item != Items.AIR) {
                 double attackDamage = 1.0;
@@ -58,7 +39,7 @@ public abstract class ItemStackMixin {
 
                 double optionalAttackDamage = attackDamage;
                 //Check for enchantments
-                if (this.isEnchanted()) {
+                if (stack.isEnchanted()) {
                     attackDamage += EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
 
                     if (optionalAttackDamage + EnchantmentHelper.getDamageBonus(stack, MobType.UNDEAD) > attackDamage) {
@@ -71,15 +52,25 @@ public abstract class ItemStackMixin {
                 }
 
                 if (attackDamage > 1) {
+                    //Searching for the index of the last stat(green) tooltip
+                    int index = 0;
+                    for (int i = tooltip.size() - 1; i >= 0; i--) {
+                        if (tooltip.get(i).getStyle().getColor() != null) {
+                            if (tooltip.get(i).getStyle().getColor().getValue() == 43520) {
+                                index = i;
+                                break;
+                            }
+                        }
+                    }
+                    if (index < tooltip.size()) index++;
+
                     String damage = (optionalAttackDamage > attackDamage) ?
                             (double) Math.round(attackDamage * 10d) / 10d + " (" + (double) Math.round(optionalAttackDamage * 10d) / 10d + ")" :
                             String.valueOf((double) Math.round(attackDamage * 10d) / 10d);
-                    list.add(Component.literal(" " + damage + " Dps").withStyle(ChatFormatting.DARK_GREEN));
+
+                    tooltip.add(index, Component.literal(" " + damage + " Dps").withStyle(ChatFormatting.DARK_GREEN));
                 }
             }
         }
-
-        return list;
     }
-
 }
