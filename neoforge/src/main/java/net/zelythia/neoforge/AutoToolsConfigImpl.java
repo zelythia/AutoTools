@@ -20,6 +20,7 @@ public class AutoToolsConfigImpl {
     private static final ModConfigSpec.BooleanValue PREFER_LOW_DURABILITY;
     private static final ModConfigSpec.BooleanValue SWITCH_BACK;
     private static final ModConfigSpec.BooleanValue CHANGE_FOR_ENTITIES;
+    private static final ModConfigSpec.BooleanValue KEEP_AXE;
 
     private static final ModConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
 
@@ -39,7 +40,7 @@ public class AutoToolsConfigImpl {
                 .define("preferLowDurability", false);
         ALWAYS_PREFER_FORTUNE = BUILDER.comment("Autotools will try to always get a tool with Fortune for gravel and leaves")
                 .define("alwaysPreferFortune", false);
-        BUILDER.comment("");
+        BUILDER.comment(" ");
 
         ONLY_SWITCH_IF_NECESSARY = BUILDER.comment("AutoTools only tries to get a new tool if it is needed to break the block")
                 .define("onlySwitchIfNecessary", false);
@@ -49,11 +50,13 @@ public class AutoToolsConfigImpl {
                 .define("showDPS", true);
         CHANGE_FOR_ENTITIES = BUILDER.comment("AutoTools will change to the tool with the most DPS when looking at an entity.")
                 .define("changeForEntities", true);
-        BUILDER.comment("");
+        KEEP_AXE = BUILDER.comment("AutoTools won't change to a better weapon(e.g. a sword) when holding an axe")
+                .define("changeForEntities", false);
+        BUILDER.comment(" ");
 
         PREFER_SILK_TOUCH = BUILDER.comment("Autotools will prefer Silk Touch: never, always, always_ores, except_ores")
                 .define("preferSilkTouch", "except_ores");
-        BUILDER.comment("");
+        BUILDER.comment(" ");
 
         CUSTOM_TOOLS = BUILDER.comment("Add custom block-tool-configurations in JSON format\n" +
                         "e.g. customTools={\\\"minecraft:block_id\\\":\\\"minecraft:tool_id\\\"} or customTools={\\\"minecraft:block_id\\\":[\\\"minecraft:tool_id_1\\\", \\\"minecraft:tool_id_2\\\"]}\n" +
@@ -79,6 +82,7 @@ public class AutoToolsConfigImpl {
         PREFER_LOW_DURABILITY.set(AutoToolsConfig.PREFER_LOW_DURABILITY);
         SWITCH_BACK.set(AutoToolsConfig.SWITCH_BACK);
         CHANGE_FOR_ENTITIES.set(AutoToolsConfig.CHANGE_FOR_ENTITIES);
+        KEEP_AXE.set(AutoToolsConfig.KEEP_AXE);
 
         SPEC.save();
     }
@@ -96,5 +100,6 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.CUSTOM_TOOLS = CUSTOM_TOOLS.get();
         AutoToolsConfig.SWITCH_BACK = SWITCH_BACK.get();
         AutoToolsConfig.CHANGE_FOR_ENTITIES = CHANGE_FOR_ENTITIES.get();
+        AutoToolsConfig.KEEP_AXE = KEEP_AXE.get();
     }
 }

@@ -1,27 +1,16 @@
 package net.zelythia.forge;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -31,15 +20,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 import net.zelythia.AutoToolsConfigScreen;
+import net.zelythia.TooltipHelper;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 @Mod(AutoTools.MOD_ID)
 public class AutoToolsForge {
-
-    private boolean switchItem = true;
     private boolean keyPressed = false;
-    public static boolean blockBroken = false;
 
     public static final KeyMapping key_changeTool = new KeyMapping("key.autotools.get_tool", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category");
 
@@ -70,13 +57,6 @@ public class AutoToolsForge {
 
 
     @SubscribeEvent
-    public void BlockBreakEvent(BlockEvent.BreakEvent event) {
-        if (AutoToolsConfig.SWITCH_BACK && !AutoToolsConfig.TOGGLE) {
-            blockBroken = true;
-        }
-    }
-
-    @SubscribeEvent
     public void ClientTickEvent(@NotNull TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             Minecraft client = Minecraft.getInstance();
@@ -85,8 +65,8 @@ public class AutoToolsForge {
                 //Handling key presses
                 if (key_changeTool.consumeClick()) {
                     if (!keyPressed) {
-                        switchItem = !switchItem;
-                        client.player.sendSystemMessage(switchItem ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
+                        AutoTools.toggle = !AutoTools.toggle;
+                        client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
                         keyPressed = true;
                     }
                 } else {
@@ -94,31 +74,19 @@ public class AutoToolsForge {
                 }
             } else {
                 if (key_changeTool.consumeClick()) {
+                    AutoTools.startedMining = false;
                     AutoTools.getCorrectTool(client.hitResult, client);
                 }
             }
         } else if (event.phase == TickEvent.Phase.END) {
-            if (!Minecraft.getInstance().options.keyAttack.isDown()) {
-                if (AutoToolsConfig.SWITCH_BACK && (AutoToolsConfig.TOGGLE || blockBroken)) {
-                    AutoTools.switchBack();
-                    blockBroken = false;
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void ClickInputEvent(InputEvent.InteractionKeyMappingTriggered event) {
-        if (event.isAttack()) {
-            if (AutoToolsConfig.TOGGLE && switchItem) {
-                Minecraft instance = Minecraft.getInstance();
-
-                if (instance.player.isCreative()) {
-                    if (!AutoToolsConfig.DISABLECREATIVE) {
-                        AutoTools.getCorrectTool(instance.hitResult, instance);
-                    }
+            if (AutoToolsConfig.SWITCH_BACK) {
+                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                    AutoTools.startedMining = true;
                 } else {
-                    AutoTools.getCorrectTool(instance.hitResult, instance);
+                    //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
+                    if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                        AutoTools.switchBack();
+                    }
                 }
             }
         }
@@ -126,65 +94,12 @@ public class AutoToolsForge {
 
     @SubscribeEvent
     public void onToolTip(ItemTooltipEvent event) {
-        if (AutoToolsConfig.SHOWDPS) {
-            ItemStack stack = event.getItemStack();
-            Item item = stack.getItem();
+        TooltipHelper.applyTooltip(event.getItemStack(), event.getToolTip());
+    }
 
-            if (item != Items.AIR) {
-                double attackDamage = 1.0;
-
-                if (stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).toArray().length > 0) {
-                    //Every item with an attackDamage has an ATTACK_DAMAGE modifier
-                    if (stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {
-                        //Calculating DPS
-                        if (stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_SPEED)) {
-                            //Attack damage
-                            attackDamage = (1 + ((AttributeModifier) stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).toArray()[0]).getAmount())
-                                    * //Attack speed
-                                    (4F + ((AttributeModifier) stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_SPEED).toArray()[0]).getAmount());
-                        } else {
-                            attackDamage = 1 + ((AttributeModifier) stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).toArray()[0]).getAmount();
-                        }
-                    }
-                }
-
-                double optionalAttackDamage = attackDamage;
-                //Check for enchantments
-                if (stack.isEnchanted()) {
-                    attackDamage += EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
-
-                    if (optionalAttackDamage + EnchantmentHelper.getDamageBonus(stack, MobType.UNDEAD) > attackDamage) {
-                        optionalAttackDamage += EnchantmentHelper.getDamageBonus(stack, MobType.UNDEAD);
-                    } else if (optionalAttackDamage + EnchantmentHelper.getDamageBonus(stack, MobType.ARTHROPOD) > attackDamage) {
-                        optionalAttackDamage += EnchantmentHelper.getDamageBonus(stack, MobType.ARTHROPOD);
-                    } else if (optionalAttackDamage + EnchantmentHelper.getDamageBonus(stack, MobType.WATER) > attackDamage) {
-                        optionalAttackDamage += EnchantmentHelper.getDamageBonus(stack, MobType.WATER);
-                    }
-                }
-
-                if (attackDamage > 1) {
-
-                    //Needs to be an array because variables used in for-each loops have to be final
-                    final int[] index = {0};
-
-                    event.getToolTip().forEach((toolTip) -> {
-                        if (toolTip.getString().equals(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) {
-                            index[0] = event.getToolTip().indexOf(toolTip);
-                        }
-                    });
-
-
-                    String damage = (optionalAttackDamage > attackDamage) ?
-                            (double) Math.round(attackDamage * 10d) / 10d + " (" + (double) Math.round(optionalAttackDamage * 10d) / 10d + ")" :
-                            String.valueOf((double) Math.round(attackDamage * 10d) / 10d);
-
-                    if (index[0] > 0 && index[0] < event.getToolTip().size()) {
-                        event.getToolTip().add(index[0] - 1, Component.literal(" " + damage + " Dps").withStyle(ChatFormatting.DARK_GREEN));
-                    } else {
-                        event.getToolTip().add(Component.literal(" " + damage + " Dps").withStyle(ChatFormatting.DARK_GREEN));
-                    }
-                }
-            }
-        }
+    @SubscribeEvent
+    public void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+        AutoTools.swaps.clear();
+        AutoTools.lastBlock = null;
     }
 }

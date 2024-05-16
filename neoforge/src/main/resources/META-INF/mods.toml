@@ -17,13 +17,16 @@ Automatically switch to the correct tool to use on a block/mob.
 [[dependencies.autotools]]
 modId = "neoforge"
 type="required"
-versionRange = "[20.4,)"
+versionRange = "[20.6,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.autotools]]
 modId = "minecraft"
 type="required"
-versionRange = "[1.20.4]"
+versionRange = "[1.20.5,1.21)"
 ordering = "NONE"
 side = "CLIENT"
+
+[[mixins]]
+config = "autotools.mixins.json"
