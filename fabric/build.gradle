@@ -43,6 +43,8 @@ dependencies {
     includeFabricApiModule "fabric-key-binding-api-v1"
     includeFabricApiModule "fabric-lifecycle-events-v1"
     includeFabricApiModule "fabric-api-base"
+    includeFabricApiModule "fabric-item-api-v1"
+    includeFabricApiModule "fabric-networking-api-v1"
 }
 
 def includeFabricApiModule(String moduleName) {
@@ -64,18 +66,13 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
-}
-
-jar {
-    classifier "dev"
 }
 
 sourcesJar {

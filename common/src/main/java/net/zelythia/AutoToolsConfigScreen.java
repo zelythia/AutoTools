@@ -59,21 +59,20 @@ public class AutoToolsConfigScreen extends Screen {
         );
 
         this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.ALWAYS_PREFER_FORTUNE)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.preferFortune")))
+                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.alwaysPreferFortune")))
                 .create(this.width / 2 - 155, y + 120, 150, 20,
-                        Component.translatable("ui.config.preferFortune"),
+                        Component.translatable("ui.config.alwaysPreferFortune"),
                         (cycleButton, boolean_) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = boolean_)
         );
-
 
         //
         //
         //
 
         this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY)
-                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.onlyNecessary")))
+                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.onlySwitchIfNecessary")))
                 .create(this.width / 2 + 5, y, 150, 20,
-                        Component.translatable("ui.config.onlyNecessary"),
+                        Component.translatable("ui.config.onlySwitchIfNecessary"),
                         (cycleButton, boolean_) -> AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = boolean_)
         );
 
@@ -97,6 +96,13 @@ public class AutoToolsConfigScreen extends Screen {
                 .create(this.width / 2 + 5, y + 72, 150, 20,
                         Component.translatable("ui.config.changeForEntities"),
                         (cycleButton, boolean_) -> AutoToolsConfig.CHANGE_FOR_ENTITIES = boolean_)
+        );
+
+        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.KEEP_AXE)
+                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.keepAxe")))
+                .create(this.width / 2 + 5, y + 96, 150, 20,
+                        Component.translatable("ui.config.keepAxe"),
+                        (cycleButton, boolean_) -> AutoToolsConfig.KEEP_AXE = boolean_)
         );
 
         //
