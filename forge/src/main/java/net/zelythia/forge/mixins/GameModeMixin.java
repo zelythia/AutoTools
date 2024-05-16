@@ -1,4 +1,4 @@
-package net.zelythia.mixins;
+package net.zelythia.forge.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
