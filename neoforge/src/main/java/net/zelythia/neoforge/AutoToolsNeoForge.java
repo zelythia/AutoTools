@@ -75,6 +75,7 @@ public class AutoToolsNeoForge {
         }
     }
 
+    @SubscribeEvent
     public void ClientTickEnd(ClientTickEvent.Post event) {
         if (AutoToolsConfig.SWITCH_BACK) {
             if (Minecraft.getInstance().options.keyAttack.isDown()) {

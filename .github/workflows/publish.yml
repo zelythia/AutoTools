@@ -7,7 +7,7 @@ env:
   VERSION: 2.1
   FABRIC_API_VERSION: 0.98.0+1.20.6
   FORGE: ${{ false }}
-  NEOFORGE: ${{ false }}
+  NEOFORGE: ${{ true }}
   FABRIC: ${{ true }}
 
 jobs:
