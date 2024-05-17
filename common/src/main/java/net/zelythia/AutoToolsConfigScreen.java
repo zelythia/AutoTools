@@ -12,7 +12,7 @@ public class AutoToolsConfigScreen extends Screen {
     public final Screen parent;
 
     public AutoToolsConfigScreen(Screen screen) {
-        super(Component.translatable("ui.title"));
+        super(Component.translatable("ui.autotools.title"));
         parent = screen;
     }
 
@@ -136,7 +136,7 @@ public class AutoToolsConfigScreen extends Screen {
 
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         this.renderDirtBackground(guiGraphics);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 15, 0xffffff);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 15, 16777215);
 
         super.render(guiGraphics, mouseX, mouseY, delta);
     }

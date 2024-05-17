@@ -5,6 +5,7 @@
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",
     "chat.disabled_autotools": "§4Disabled§f AutoTools!",
 
+    "ui.autotools.title": "AutoTools Config",
     "ui.config.toggle" : "Toggle",
     "ui.config.showDPS" : "Show Dps",
     "ui.config.keepSlot": "Keep selected slot",
