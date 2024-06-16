@@ -3,9 +3,9 @@ name: Publish on GitHub, CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:
-  MINECRAFT_VERSION: 1.20.6
+  MINECRAFT_VERSION: 1.21
   VERSION: 2.1
-  FABRIC_API_VERSION: 0.98.0+1.20.6
+  FABRIC_API_VERSION: 0.100.1+1.21
   FORGE: ${{ false }}
   NEOFORGE: ${{ true }}
   FABRIC: ${{ true }}

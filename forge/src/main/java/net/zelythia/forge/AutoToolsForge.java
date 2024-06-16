@@ -57,36 +57,37 @@ public class AutoToolsForge {
 
 
     @SubscribeEvent
-    public void ClientTickEvent(@NotNull TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            Minecraft client = Minecraft.getInstance();
+    public void ClientTickStart(@NotNull TickEvent.ClientTickEvent.Pre event) {
+        Minecraft client = Minecraft.getInstance();
 
-            if (AutoToolsConfig.TOGGLE) {
-                //Handling key presses
-                if (key_changeTool.consumeClick()) {
-                    if (!keyPressed) {
-                        AutoTools.toggle = !AutoTools.toggle;
-                        client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
-                        keyPressed = true;
-                    }
-                } else {
-                    keyPressed = false;
+        if (AutoToolsConfig.TOGGLE) {
+            //Handling key presses
+            if (key_changeTool.consumeClick()) {
+                if (!keyPressed) {
+                    AutoTools.toggle = !AutoTools.toggle;
+                    client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
+                    keyPressed = true;
                 }
             } else {
-                if (key_changeTool.consumeClick()) {
-                    AutoTools.startedMining = false;
-                    AutoTools.getCorrectTool(client.hitResult, client);
-                }
+                keyPressed = false;
             }
-        } else if (event.phase == TickEvent.Phase.END) {
-            if (AutoToolsConfig.SWITCH_BACK) {
-                if (Minecraft.getInstance().options.keyAttack.isDown()) {
-                    AutoTools.startedMining = true;
-                } else {
-                    //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
-                    if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
-                        AutoTools.switchBack();
-                    }
+        } else {
+            if (key_changeTool.consumeClick()) {
+                AutoTools.startedMining = false;
+                AutoTools.getCorrectTool(client.hitResult, client);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void ClientTickEnd(@NotNull TickEvent.ClientTickEvent.Post event){
+        if (AutoToolsConfig.SWITCH_BACK) {
+            if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                AutoTools.startedMining = true;
+            } else {
+                //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
+                if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                    AutoTools.switchBack();
                 }
             }
         }

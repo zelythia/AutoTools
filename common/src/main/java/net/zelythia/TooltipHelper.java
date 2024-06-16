@@ -1,15 +1,21 @@
 package net.zelythia;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ConditionalEffect;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 
 import java.util.List;
 
@@ -20,45 +26,51 @@ public class TooltipHelper {
             Item item = stack.getItem();
 
             if (item != Items.AIR) {
-                double attackDamage = 0;
-                double attackSpeed = 0;
-
-                attackDamage = stack.getDamageValue();
+                float baseAttackDamage = 0;
+                float attackDamage = 0;
+                float attackSpeed = 0;
 
                 for (ItemAttributeModifiers.Entry modifier : stack.get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
-                    if(modifier.attribute().is(Attributes.ATTACK_DAMAGE)){
-                        attackDamage = modifier.modifier().amount();
+                    if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))){
+                        baseAttackDamage = (float) modifier.modifier().amount();
                     }
-                    else if(modifier.attribute().is(Attributes.ATTACK_SPEED)){
-                        attackSpeed = modifier.modifier().amount();
+                    else if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))){
+                        attackSpeed = (float) modifier.modifier().amount();
                     }
                 }
 
-                if(attackDamage > 0){
+                if(baseAttackDamage > 0){
                     if(attackSpeed > 0){
-                        attackDamage = (1 + attackDamage) * (4F + attackSpeed);
+                        attackDamage = (1 + baseAttackDamage) * (4F + attackSpeed);
                     }
                     else{
-                        attackDamage = attackDamage + 1;
+                        attackDamage = baseAttackDamage + 1;
                     }
                 }
-//
-                double optionalAttackDamage = attackDamage;
-                //Check for enchantments
-                if (stack.isEnchanted()) {
-                    attackDamage += EnchantmentHelper.getDamageBonus(stack, null);
 
-                    if (optionalAttackDamage + EnchantmentHelper.getDamageBonus(stack, EntityType.ZOMBIE) > attackDamage) {
-                        optionalAttackDamage += EnchantmentHelper.getDamageBonus(stack, EntityType.ZOMBIE);
-                    } else if (optionalAttackDamage + EnchantmentHelper.getDamageBonus(stack, EntityType.SPIDER) > attackDamage) {
-                        optionalAttackDamage += EnchantmentHelper.getDamageBonus(stack, EntityType.SPIDER);
-                    } else if (optionalAttackDamage + EnchantmentHelper.getDamageBonus(stack, EntityType.GUARDIAN) > attackDamage) {
-                        optionalAttackDamage += EnchantmentHelper.getDamageBonus(stack, EntityType.GUARDIAN);
+                //Check for enchantments
+                float optionalAttackDamage = baseAttackDamage;
+                if (stack.isEnchanted()) {
+                    ItemEnchantments itemEnchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+                    for (Object2IntMap.Entry<Holder<Enchantment>> entry : itemEnchantments.entrySet()) {
+                        Enchantment enchantment = entry.getKey().value();
+                        List<ConditionalEffect<EnchantmentValueEffect>> effects = enchantment.getEffects(EnchantmentEffectComponents.DAMAGE);
+
+                        for (ConditionalEffect<EnchantmentValueEffect> effect : effects) {
+                            optionalAttackDamage = effect.effect().process(entry.getIntValue(), RandomSource.create(), optionalAttackDamage);
+                        }
+                    }
+
+                    if(attackSpeed > 0){
+                        optionalAttackDamage = (1 + optionalAttackDamage) * (4F + attackSpeed);
+                    }
+                    else{
+                        optionalAttackDamage = optionalAttackDamage + 1;
                     }
                 }
+
 
                 if (attackDamage > 1) {
-
                     int index = 0;
                     for (int i = tooltip.size() - 1; i >= 0; i--) {
                         if(tooltip.get(i).getStyle().getColor() != null){

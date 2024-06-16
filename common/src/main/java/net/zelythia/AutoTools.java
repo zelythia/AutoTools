@@ -4,15 +4,26 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.ClickType;
@@ -20,11 +31,17 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.enchantment.*;
+import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -38,22 +55,22 @@ public class AutoTools {
     public static final String MOD_ID = "autotools";
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
-    public static final TagKey<Block> SHEARS = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch"));
-    public static final TagKey<Block> SILK_TOUCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_ORES = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always_ores"));
-    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always_exc_ores"));
-    public static final TagKey<Block> FORTUNE = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "fortune"));
-    public static final TagKey<Block> FORTUNE_SETTING = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "fortune_setting"));
-    public static final TagKey<Block> DO_NOT_SWAP_UNLESS_ENCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "do_not_swap_unless_ench"));
+    public static final TagKey<Block> SHEARS = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch"));
+    public static final TagKey<Block> SILK_TOUCH = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch"));
+    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always"));
+    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_ORES = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_ores"));
+    public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_exc_ores"));
+    public static final TagKey<Block> FORTUNE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "fortune"));
+    public static final TagKey<Block> FORTUNE_SETTING = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "fortune_setting"));
+    public static final TagKey<Block> DO_NOT_SWAP_UNLESS_ENCH = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "do_not_swap_unless_ench"));
 
     public static final HashMap<ResourceLocation, List<ResourceLocation>> CUSTOM_TOOLS = new HashMap<>();
     private static final HashMap<String, ResourceLocation[]> TOOL_LISTS = new HashMap<>() {{
-        put("autotools:pickaxe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_pickaxe"), new ResourceLocation("minecraft:diamond_pickaxe"), new ResourceLocation("minecraft:iron_pickaxe"), new ResourceLocation("minecraft:golden_pickaxe"), new ResourceLocation("minecraft:stone_pickaxe"), new ResourceLocation("minecraft:wooden_pickaxe")});
-        put("autotools:shovel", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_shovel"), new ResourceLocation("minecraft:diamond_shovel"), new ResourceLocation("minecraft:iron_shovel"), new ResourceLocation("minecraft:golden_shovel"), new ResourceLocation("minecraft:stone_shovel"), new ResourceLocation("minecraft:wooden_shovel")});
-        put("autotools:hoe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_hoe"), new ResourceLocation("minecraft:diamond_hoe"), new ResourceLocation("minecraft:iron_hoe"), new ResourceLocation("minecraft:golden_hoe"), new ResourceLocation("minecraft:stone_hoe"), new ResourceLocation("minecraft:wooden_hoe")});
-        put("autotools:sword", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_sword"), new ResourceLocation("minecraft:diamond_sword"), new ResourceLocation("minecraft:iron_sword"), new ResourceLocation("minecraft:golden_sword"), new ResourceLocation("minecraft:stone_sword"), new ResourceLocation("minecraft:wooden_sword")});
-        put("autotools:axe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_axe"), new ResourceLocation("minecraft:diamond_axe"), new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:golden_axe"), new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:wooden_axe")});
+        put("autotools:pickaxe", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_pickaxe"), ResourceLocation.parse("minecraft:diamond_pickaxe"), ResourceLocation.parse("minecraft:iron_pickaxe"), ResourceLocation.parse("minecraft:golden_pickaxe"), ResourceLocation.parse("minecraft:stone_pickaxe"), ResourceLocation.parse("minecraft:wooden_pickaxe")});
+        put("autotools:shovel", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_shovel"), ResourceLocation.parse("minecraft:diamond_shovel"), ResourceLocation.parse("minecraft:iron_shovel"), ResourceLocation.parse("minecraft:golden_shovel"), ResourceLocation.parse("minecraft:stone_shovel"), ResourceLocation.parse("minecraft:wooden_shovel")});
+        put("autotools:hoe", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_hoe"), ResourceLocation.parse("minecraft:diamond_hoe"), ResourceLocation.parse("minecraft:iron_hoe"), ResourceLocation.parse("minecraft:golden_hoe"), ResourceLocation.parse("minecraft:stone_hoe"), ResourceLocation.parse("minecraft:wooden_hoe")});
+        put("autotools:sword", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_sword"), ResourceLocation.parse("minecraft:diamond_sword"), ResourceLocation.parse("minecraft:iron_sword"), ResourceLocation.parse("minecraft:golden_sword"), ResourceLocation.parse("minecraft:stone_sword"), ResourceLocation.parse("minecraft:wooden_sword")});
+        put("autotools:axe", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_axe"), ResourceLocation.parse("minecraft:diamond_axe"), ResourceLocation.parse("minecraft:iron_axe"), ResourceLocation.parse("minecraft:golden_axe"), ResourceLocation.parse("minecraft:stone_axe"), ResourceLocation.parse("minecraft:wooden_axe")});
     }};
 
     public static final Stack<Integer> swaps = new Stack<>();
@@ -72,7 +89,7 @@ public class AutoTools {
         AutoToolsConfig.load();
 
         //Not the best way of adding custom tools. Fine as long as it won't get any more
-        CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
+        CUSTOM_TOOLS.put(ResourceLocation.fromNamespaceAndPath("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
     }
 
@@ -94,15 +111,15 @@ public class AutoTools {
                             continue;
                         }
 
-                        tools.add(new ResourceLocation(toolsArray.get(i).getAsString()));
+                        tools.add(ResourceLocation.parse(toolsArray.get(i).getAsString()));
                     }
                 } else {
                     if (TOOL_LISTS.containsKey(jsonObject.get(key).getAsString())) {
                         tools.addAll(List.of(TOOL_LISTS.get(jsonObject.get(key).getAsString())));
-                    } else tools.add(new ResourceLocation(jsonObject.get(key).getAsString()));
+                    } else tools.add(ResourceLocation.parse(jsonObject.get(key).getAsString()));
                 }
 
-                CUSTOM_TOOLS.computeIfAbsent(new ResourceLocation(key), k -> new ArrayList<>()).addAll(tools);
+                CUSTOM_TOOLS.computeIfAbsent(ResourceLocation.parse(key), k -> new ArrayList<>()).addAll(tools);
             }
 
             LOGGER.info("Loaded custom block configs: " + CUSTOM_TOOLS.keySet());
@@ -185,19 +202,48 @@ public class AutoTools {
     /**
      * Returns the miningSpeed and priority of an item [default = (1,0)]
      */
-    public static ItemMiningSpeed getMiningSpeed(ItemStack stack, BlockState blockState, BlockPos pos) {
+    public static ItemMiningSpeed getMiningSpeed(ItemStack stack, BlockState blockState, BlockPos pos, Player player, Level level) {
         float modifier = 1F;
         int priority = 0;
         float miningSpeed = stack.getDestroySpeed(blockState);
 
-        if (stack.isEnchanted()) {
-            //Efficiency
-            if (blockState.getDestroySpeed(null, pos) != 0) {
-                modifier += (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.EFFICIENCY, stack) * 20F) / 100F;
+        //Vanilla check for mining speed
+        if (miningSpeed > 1.0F) {
+            miningSpeed += (float)player.getAttributeValue(Attributes.MINING_EFFICIENCY);
+        }
+        if (MobEffectUtil.hasDigSpeed(player)) {
+            miningSpeed *= 1.0F + (float)(MobEffectUtil.getDigSpeedAmplification(player) + 1) * 0.2F;
+        }
+        if (player.hasEffect(MobEffects.DIG_SLOWDOWN)) {
+            float g;
+            switch (player.getEffect(MobEffects.DIG_SLOWDOWN).getAmplifier()) {
+                case 0:
+                    g = 0.3F;
+                    break;
+                case 1:
+                    g = 0.09F;
+                    break;
+                case 2:
+                    g = 0.0027F;
+                    break;
+                case 3:
+                default:
+                    g = 8.1E-4F;
             }
 
+            miningSpeed *= g;
+        }
+        miningSpeed *= (float)player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED);
+        if (player.isEyeInFluid(FluidTags.WATER)) {
+            miningSpeed *= (float)player.getAttribute(Attributes.SUBMERGED_MINING_SPEED).getValue();
+        }
+
+
+        if (stack.isEnchanted()) {
+            HolderLookup.RegistryLookup<Enchantment> EnchantmentsLookup = level.registryAccess().lookup(Registries.ENCHANTMENT).get();
+
             //SilkTouch
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 1) {
+            if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 1) {
                 if (ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())
                         || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
                         || AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
@@ -206,10 +252,10 @@ public class AutoTools {
                 }
             }
             //Fortune
-            else if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FORTUNE, stack) >= 1) {
+            else if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.FORTUNE).get(), stack) >= 1) {
                 if (ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
                         || AutoToolsConfig.ALWAYS_PREFER_FORTUNE && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock())) {
-                    priority += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FORTUNE, stack);
+                    priority += EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.FORTUNE).get(), stack);
                 }
             }
 
@@ -217,20 +263,21 @@ public class AutoTools {
             if (ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock()) && ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock()) && stack.getItem() instanceof HoeItem) {
                 priority += 1;
             }
-        }
 
-        if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
-                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores"))
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
+
+            if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
+                if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
+                    if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
+                            || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores"))
+                            || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
+                        priority += 1;
+                    }
+                }
+
+                if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.FORTUNE).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
+                        && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock()) && !AutoToolsConfig.ALWAYS_PREFER_FORTUNE) {
                     priority += 1;
                 }
-            }
-
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FORTUNE, stack) == 0 && !ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
-                    && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock()) && !AutoToolsConfig.ALWAYS_PREFER_FORTUNE) {
-                priority += 1;
             }
         }
 
@@ -270,7 +317,7 @@ public class AutoTools {
                 List<ResourceLocation> tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
 
                 for (ResourceLocation resourceLocation : tools) {
-                    if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
+                    if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled"))) return;
 
                     toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
                     if (toolSlot != -1) break;
@@ -315,7 +362,7 @@ public class AutoTools {
                     ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
-                        newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos());
+                        newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos(), inventory.player, client.level);
                     }
 
                     if (newMiningSpeed.equals(miningSpeed)) {
@@ -361,7 +408,6 @@ public class AutoTools {
                 if (item != Items.AIR) {
                     double newAttackDamage = 1.0;
 
-
                     if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
                         if (entity instanceof LivingEntity livingEntity) {
                             if (!item.hurtEnemy(inventory.getItem(i), livingEntity, inventory.player)) {
@@ -374,7 +420,7 @@ public class AutoTools {
                             List<ResourceLocation> tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
 
                             for (ResourceLocation resourceLocation : tools) {
-                                if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled")))
+                                if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled")))
                                     return;
 
                                 toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
@@ -388,28 +434,49 @@ public class AutoTools {
                             }
                         }
 
-/*
-                        //Every item with an attackDamage larger than 1 has an ATTACK_DAMAGE attribute/modifier
-                        if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {
+                        float baseAttackDamage = 0;
+                        float baseAttackSpeed = 0;
+                        if(inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)){
+                            for (ItemAttributeModifiers.Entry modifier : inventory.getItem(i).get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
+                                if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))){
+                                    baseAttackDamage = (float) modifier.modifier().amount();
+                                    continue;
+                                }
+                                if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))){
+                                    baseAttackSpeed = (float) modifier.modifier().amount();
+                                }
+                            }
+                        }
+
+                        if (baseAttackDamage > 0) {
+                            if(inventory.getItem(i).isEnchanted()){
+                                //We want to call this, but it requires a ServerLevel:
+                                //EnchantmentHelper.modifyDamage(client.level, inventory.getItem(i), ((EntityHitResult) hit).getEntity(), client.level.damageSources().generic(), (float) baseAttackDamage);
+
+                                DamageSource damageSource = client.level.damageSources().playerAttack(client.player);
+                                LootParams lootParams = (new LootParams.Builder(null)).withParameter(LootContextParams.THIS_ENTITY, entity).withParameter(LootContextParams.ENCHANTMENT_LEVEL, i).withParameter(LootContextParams.ORIGIN, entity.position()).withParameter(LootContextParams.DAMAGE_SOURCE, damageSource).withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity()).withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity()).create(LootContextParamSets.ENCHANTED_DAMAGE);
+                                LootContext lootContext = new LootContext(lootParams, RandomSource.create(), client.level.registryAccess().asGetterLookup());
+
+                                ItemEnchantments itemEnchantments = inventory.getItem(i).getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+                                for (Object2IntMap.Entry<Holder<Enchantment>> entry : itemEnchantments.entrySet()) {
+                                    Enchantment enchantment = entry.getKey().value();
+                                    List<ConditionalEffect<EnchantmentValueEffect>> effects = enchantment.getEffects(EnchantmentEffectComponents.DAMAGE);
+
+                                    for (ConditionalEffect<EnchantmentValueEffect> effect : effects) {
+                                        if(effect.matches(lootContext)){
+                                            baseAttackDamage = effect.effect().process(entry.getIntValue(), entity.getRandom(), baseAttackDamage);
+                                        }
+                                    }
+                                }
+                            }
+
                             //Calculating DPS
-                            if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_SPEED)) {
-                                //Damage
-                                newAttackDamage = (1 + ((AttributeModifier) inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).toArray()[0]).getAmount())
-                                        //Attack speed
-                                        * (4F + ((AttributeModifier) inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_SPEED).toArray()[0]).getAmount());
+                            if (baseAttackSpeed > 0) {
+                                newAttackDamage = (1 + baseAttackDamage) * (4F + baseAttackSpeed);
                             } else {
-                                newAttackDamage = 1 + ((AttributeModifier) inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).toArray()[0]).getAmount();
+                                newAttackDamage = 1 + baseAttackDamage;
                             }
                         }
-
-                        //Enchantments
-                        if (inventory.getItem(i).isEnchanted()) {
-                            if (((EntityHitResult) hit).getEntity() instanceof LivingEntity livingEntity) {
-                                newAttackDamage += EnchantmentHelper.getDamageBonus(inventory.getItem(i), livingEntity.getMobType());
-                            }
-                        }
-
- */
 
                         if (newAttackDamage > attackDamage || (newAttackDamage == attackDamage && toolSlot != -1 && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())) {
                             attackDamage = (float) newAttackDamage;
