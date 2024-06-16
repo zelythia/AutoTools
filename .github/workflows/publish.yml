@@ -8,7 +8,7 @@ env:
   FABRIC_API_VERSION: 0.100.1+1.21
   FORGE: false
   NEOFORGE: true
-  FABRIC: false
+  FABRIC: true
 
 jobs:
   build:
@@ -33,19 +33,19 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Forge
-        if: ${{ env.FORGE }}
+        if: env.FORGE == 'true'
         run: ./gradlew forge:build
 
       - name: Build Neoforge
-        if: ${{ env.NEOFORGE }}
+        if: env.NEOFORGE == 'true'
         run: ./gradlew neoforge:build
 
       - name: Build Fabric
-        if: ${{ env.FABRIC }}
+        if: env.FABRIC == 'true'
         run: ./gradlew fabric:build
 
       - name: Publish Forge-Mod on (Curseforge/Modrinth)
-        if: ${{ env.FORGE }}
+        if: env.FORGE == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -65,7 +65,7 @@ jobs:
             forge
 
       - name: Publish Neoforge-Mod on (Curseforge/Modrinth)
-        if: ${{ env.NEOFORGE }}
+        if: env.NEOFORGE == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -85,7 +85,7 @@ jobs:
             neoforge
 
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
-        if: ${{ env.FABRIC }}
+        if: env.FABRIC == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
