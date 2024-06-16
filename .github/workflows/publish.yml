@@ -6,9 +6,9 @@ env:
   MINECRAFT_VERSION: 1.21
   VERSION: 2.1
   FABRIC_API_VERSION: 0.100.1+1.21
-  FORGE: ${{ false }}
-  NEOFORGE: ${{ true }}
-  FABRIC: ${{ true }}
+  FORGE: false
+  NEOFORGE: true
+  FABRIC: false
 
 jobs:
   build:
@@ -35,9 +35,11 @@ jobs:
       - name: Build Forge
         if: ${{ env.FORGE }}
         run: ./gradlew forge:build
+
       - name: Build Neoforge
         if: ${{ env.NEOFORGE }}
         run: ./gradlew neoforge:build
+
       - name: Build Fabric
         if: ${{ env.FABRIC }}
         run: ./gradlew fabric:build
