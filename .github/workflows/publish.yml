@@ -32,8 +32,15 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
 
-      - name: Build
-        run: ./gradlew clean build
+      - name: Build Forge
+        if: ${{ env.FORGE }}
+        run: ./gradlew forge:build
+      - name: Build Neoforge
+        if: ${{ env.NEOFORGE }}
+        run: ./gradlew neoforge:build
+      - name: Build Fabric
+        if: ${{ env.FABRIC }}
+        run: ./gradlew fabric:build
 
       - name: Publish Forge-Mod on (Curseforge/Modrinth)
         if: ${{ env.FORGE }}
