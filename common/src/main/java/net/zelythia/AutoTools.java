@@ -38,7 +38,7 @@ public class AutoTools {
     public static final String MOD_ID = "autotools";
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
-    public static final TagKey<Block> SHEARS = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch"));
+    public static final TagKey<Block> SHEARS = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "shears"));
     public static final TagKey<Block> SILK_TOUCH = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch"));
     public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always"));
     public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_ORES = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "silk_touch_setting_always_ores"));
