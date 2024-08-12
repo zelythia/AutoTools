@@ -194,7 +194,8 @@ public class AutoTools {
         if (stack.isEnchanted()) {
             //Efficiency
             if (blockState.getDestroySpeed(null, pos) != 0) {
-                modifier += (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.EFFICIENCY, stack) * 20F) / 100F;
+                if(stack.isCorrectToolForDrops(blockState))
+                    modifier += (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.EFFICIENCY, stack) * 20F) / 100F;
             }
 
             //SilkTouch
