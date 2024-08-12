@@ -157,6 +157,7 @@ public class AutoTools {
      * Used for AutoToolsConfig.SWITCH_BACK to switch to the last tool the player was holding before using AutoTools
      */
     public static void switchBack() {
+        if(!AutoToolsConfig.SWITCH_BACK) return;    //Shouldn't be necessary, but just in case
         //Don't switch if the player wants to mine another block || swaps.empty()
         if (Minecraft.getInstance().options.keyAttack.isDown() || swaps.empty()) return;
         Minecraft client = Minecraft.getInstance();
