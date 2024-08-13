@@ -462,6 +462,16 @@ public class AutoTools {
                             }
                         }
 
+
+                        if(AutoToolsConfig.MIN_DURABILITY < 1){
+                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
+                            if(durability < AutoToolsConfig.MIN_DURABILITY)
+                                continue;
+                        }
+                        else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                            continue;
+
+
                         float baseAttackDamage = 0;
                         float baseAttackSpeed = 0;
                         if(inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)){
