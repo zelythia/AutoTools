@@ -118,6 +118,5 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.IGNORED_SLOTS = IGNORED_SLOTS.get();
         AutoToolsConfig.TARGET_SLOTS = TARGET_SLOTS.get();
         AutoToolsConfig.MIN_DURABILITY = MIN_DURABILITY.get();
-
     }
 }
