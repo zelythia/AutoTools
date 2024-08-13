@@ -114,7 +114,6 @@ public class AutoToolsConfigImpl {
         getConfig().setOrCreate("switchBack", AutoToolsConfig.SWITCH_BACK);
         getConfig().setOrCreate("changeForEntities", AutoToolsConfig.CHANGE_FOR_ENTITIES);
         getConfig().setOrCreate("keepAxe", AutoToolsConfig.KEEP_AXE);
-        getConfig().setOrCreate("minDurability", AutoToolsConfig.MIN_DURABILITY);
     }
 
     public static void load() {
