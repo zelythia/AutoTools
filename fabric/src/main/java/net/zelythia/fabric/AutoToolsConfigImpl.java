@@ -71,11 +71,13 @@ public class AutoToolsConfigImpl {
                 # never, always, always_ores, except_ores
                 preferSilkTouch=except_ores
                 
-                #
+                #AutoTools won't do anything if the currently selected slot is in ignoredSlots
                 ignoredSlots=[]
-                #
+                #AutoTools only puts tools in these slots:
                 targetSlots=[1,2,3,4,5,6,7,8,9]
-                #
+                
+                #If < 1: Seen as a percentage: Tools below minDurability won't be selected
+                #Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
                 minDurability=0.0
 
                 #Add custom block-tool-configurations in JSON format
