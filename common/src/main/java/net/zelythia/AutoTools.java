@@ -79,7 +79,7 @@ public class AutoTools {
     }
 
 
-    public static void reloadConfig(){
+    public static void reloadConfig() {
         AutoToolsConfig.load();
 
         //Not the best way of adding custom tools. Fine as long as it won't get any more
@@ -88,25 +88,23 @@ public class AutoTools {
 
 
         for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
-            if(s.isEmpty()) continue;
-            try{
+            if (s.isEmpty()) continue;
+            try {
                 int i = Integer.parseInt(s) - 1;
-                if(i < 9) AutoTools.IGNORED_SLOTS.add(i);
+                if (i < 9) AutoTools.IGNORED_SLOTS.add(i);
                 else LOGGER.error("Incorrect config entry for ignoredSlots: " + i + " must be between 1-9");
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 LOGGER.error("Incorrect config entry for ignoredSlots: unknown number: " + s);
             }
         }
 
         for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
-            if(s.isEmpty()) continue;
-            try{
+            if (s.isEmpty()) continue;
+            try {
                 int i = Integer.parseInt(s) - 1;
-                if(i < 9) AutoTools.TARGET_SLOTS.add(i);
+                if (i < 9) AutoTools.TARGET_SLOTS.add(i);
                 else LOGGER.error("Incorrect config entry for targetSlots: " + i + " must be between 1-9");
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 LOGGER.error("Incorrect config entry for targetSlots: unknown number: " + s);
             }
         }
@@ -179,12 +177,12 @@ public class AutoTools {
         }
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
-        if(!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.getFirst();
+        if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.getFirst();
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
-        if(sourceSlot > 8)
+        if (sourceSlot > 8)
             client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
 
         inventory.selected = destSlot;
@@ -192,17 +190,20 @@ public class AutoTools {
     }
 
 
+    /**
+     * Mirroring Inventory.getSuitableHotbarSlot() with regards for TARGET_SLOTS
+     */
     public static int getSuitableHotbarSlot(Inventory inventory) {
         int i;
         int j;
-        for(i = 0; i < 9; ++i) {
+        for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
             if (TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
                 return j;
             }
         }
 
-        for(i = 0; i < 9; ++i) {
+        for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
             if (TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
                 return j;
@@ -213,12 +214,11 @@ public class AutoTools {
     }
 
 
-
     /**
      * Used for AutoToolsConfig.SWITCH_BACK to switch to the last tool the player was holding before using AutoTools
      */
     public static void switchBack() {
-        if(!AutoToolsConfig.SWITCH_BACK) return;    //Shouldn't be necessary, but just in case
+        if (!AutoToolsConfig.SWITCH_BACK) return;    //Shouldn't be necessary, but just in case
         //Don't switch if the player wants to mine another block || swaps.empty()
         if (Minecraft.getInstance().options.keyAttack.isDown() || swaps.empty()) return;
         Minecraft client = Minecraft.getInstance();
@@ -256,7 +256,7 @@ public class AutoTools {
         if (stack.isEnchanted()) {
             //Efficiency
             if (blockState.getDestroySpeed(null, pos) != 0) {
-                if(stack.isCorrectToolForDrops(blockState))
+                if (stack.isCorrectToolForDrops(blockState))
                     modifier += (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.EFFICIENCY, stack) * 20F) / 100F;
             }
 
@@ -322,7 +322,7 @@ public class AutoTools {
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.getInventory();
 
-        if(IGNORED_SLOTS.contains(inventory.selected)) return;
+        if (IGNORED_SLOTS.contains(inventory.selected)) return;
 
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
@@ -381,12 +381,11 @@ public class AutoTools {
                     ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
-                        if(AutoToolsConfig.MIN_DURABILITY < 1){
+                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
                             double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
-                            if(durability < AutoToolsConfig.MIN_DURABILITY)
+                            if (durability < AutoToolsConfig.MIN_DURABILITY)
                                 continue;
-                        }
-                        else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
                             continue;
 
                         newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos());
@@ -463,31 +462,30 @@ public class AutoTools {
                         }
 
 
-                        if(AutoToolsConfig.MIN_DURABILITY < 1){
+                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
                             double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
-                            if(durability < AutoToolsConfig.MIN_DURABILITY)
+                            if (durability < AutoToolsConfig.MIN_DURABILITY)
                                 continue;
-                        }
-                        else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
                             continue;
 
 
                         float baseAttackDamage = 0;
                         float baseAttackSpeed = 0;
-                        if(inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)){
+                        if (inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)) {
                             for (ItemAttributeModifiers.Entry modifier : inventory.getItem(i).get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
-                                if(modifier.attribute().is(Attributes.ATTACK_DAMAGE)){
+                                if (modifier.attribute().is(Attributes.ATTACK_DAMAGE)) {
                                     baseAttackDamage = (float) modifier.modifier().amount();
                                     continue;
                                 }
-                                if(modifier.attribute().is(Attributes.ATTACK_SPEED)){
+                                if (modifier.attribute().is(Attributes.ATTACK_SPEED)) {
                                     baseAttackSpeed = (float) modifier.modifier().amount();
                                 }
                             }
                         }
 
                         if (baseAttackDamage > 0) {
-                            if(inventory.getItem(i).isEnchanted()){
+                            if (inventory.getItem(i).isEnchanted()) {
                                 if (inventory.getItem(i).isEnchanted()) {
                                     if (((EntityHitResult) hit).getEntity() instanceof LivingEntity livingEntity) {
                                         baseAttackDamage += EnchantmentHelper.getDamageBonus(inventory.getItem(i), livingEntity.getType());
