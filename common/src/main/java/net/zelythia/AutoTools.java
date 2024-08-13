@@ -83,7 +83,9 @@ public class AutoTools {
         CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
 
+
         for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            if(s.isEmpty()) continue;
             try{
                 int i = Integer.parseInt(s) - 1;
                 if(i < 9) AutoTools.IGNORED_SLOTS.add(i);
@@ -95,6 +97,7 @@ public class AutoTools {
         }
 
         for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            if(s.isEmpty()) continue;
             try{
                 int i = Integer.parseInt(s) - 1;
                 if(i < 9) AutoTools.TARGET_SLOTS.add(i);
@@ -104,8 +107,6 @@ public class AutoTools {
                 LOGGER.error("Incorrect config entry for targetSlots: unknown number: " + s);
             }
         }
-
-        System.out.println("");
     }
 
     private static void loadCustomItems() {
@@ -377,6 +378,14 @@ public class AutoTools {
                     ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
+                        if(AutoToolsConfig.MIN_DURABILITY < 1){
+                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
+                            if(durability < AutoToolsConfig.MIN_DURABILITY)
+                                continue;
+                        }
+                        else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                            continue;
+
                         newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos());
                     }
 

@@ -19,6 +19,7 @@ public class AutoToolsConfig {
     public static String CUSTOM_TOOLS;
     public static String IGNORED_SLOTS;
     public static String TARGET_SLOTS;
+    public static double MIN_DURABILITY;
 
     @ExpectPlatform
     static void save() {

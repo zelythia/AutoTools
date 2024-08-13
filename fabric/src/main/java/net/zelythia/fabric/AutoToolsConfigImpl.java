@@ -31,6 +31,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
         AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
+        AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
     }
 
 
@@ -74,6 +75,8 @@ public class AutoToolsConfigImpl {
                 ignoredSlots=[]
                 #
                 targetSlots=[1,2,3,4,5,6,7,8,9]
+                #
+                minDurability=0.0
 
                 #Add custom block-tool-configurations in JSON format
                 #e.g. customTools={"minecraft:block_id":"minecraft:tool_id"} or customTools={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]}
@@ -109,6 +112,7 @@ public class AutoToolsConfigImpl {
         getConfig().setOrCreate("switchBack", AutoToolsConfig.SWITCH_BACK);
         getConfig().setOrCreate("changeForEntities", AutoToolsConfig.CHANGE_FOR_ENTITIES);
         getConfig().setOrCreate("keepAxe", AutoToolsConfig.KEEP_AXE);
+        getConfig().setOrCreate("minDurability", AutoToolsConfig.MIN_DURABILITY);
     }
 
     public static void load() {
@@ -130,5 +134,6 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
         AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
+        AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
     }
 }
