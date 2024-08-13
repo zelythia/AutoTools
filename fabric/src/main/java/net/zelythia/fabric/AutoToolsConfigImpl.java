@@ -29,6 +29,8 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
 
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
+        AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
+        AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
     }
 
 
@@ -67,6 +69,11 @@ public class AutoToolsConfigImpl {
                 #Autotools will prefer Silk Touch:
                 # never, always, always_ores, except_ores
                 preferSilkTouch=except_ores
+                
+                #
+                ignoredSlots=[]
+                #
+                targetSlots=[1,2,3,4,5,6,7,8,9]
 
                 #Add custom block-tool-configurations in JSON format
                 #e.g. customTools={"minecraft:block_id":"minecraft:tool_id"} or customTools={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]}
@@ -116,9 +123,12 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.PREFER_SILK_TOUCH = config.getOrDefault("preferSilkTouch", "except_ores");
         AutoToolsConfig.PREFER_HOTBAR_TOOL = config.getOrDefault("preferHotBarTool", true);
         AutoToolsConfig.PREFER_LOW_DURABILITY = config.getOrDefault("preferLowDurability", false);
-        AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
         AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
+
+        AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
+        AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
+        AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
     }
 }

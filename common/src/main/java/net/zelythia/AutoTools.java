@@ -56,6 +56,9 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_axe"), new ResourceLocation("minecraft:diamond_axe"), new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:golden_axe"), new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:wooden_axe")});
     }};
 
+    public static final List<Integer> IGNORED_SLOTS = new ArrayList<>();
+    public static final List<Integer> TARGET_SLOTS = new ArrayList<>();
+
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
     public static BlockState lastBlock = null;
@@ -69,14 +72,43 @@ public class AutoTools {
      * To be called by forge/fabric client-initialized methods
      */
     public static void init() {
+        reloadConfig();
+    }
+
+
+    public static void reloadConfig(){
         AutoToolsConfig.load();
 
         //Not the best way of adding custom tools. Fine as long as it won't get any more
         CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
+
+        for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            try{
+                int i = Integer.parseInt(s) - 1;
+                if(i < 9) AutoTools.IGNORED_SLOTS.add(i);
+                else LOGGER.error("Incorrect config entry for ignoredSlots: " + i + " must be between 1-9");
+            }
+            catch (NumberFormatException e){
+                LOGGER.error("Incorrect config entry for ignoredSlots: unknown number: " + s);
+            }
+        }
+
+        for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            try{
+                int i = Integer.parseInt(s) - 1;
+                if(i < 9) AutoTools.TARGET_SLOTS.add(i);
+                else LOGGER.error("Incorrect config entry for targetSlots: " + i + " must be between 1-9");
+            }
+            catch (NumberFormatException e){
+                LOGGER.error("Incorrect config entry for targetSlots: unknown number: " + s);
+            }
+        }
+
+        System.out.println("");
     }
 
-    public static void loadCustomItems() {
+    private static void loadCustomItems() {
         try {
             JsonElement jsonElement = JsonParser.parseString(AutoToolsConfig.CUSTOM_TOOLS);
             if (!jsonElement.isJsonObject()) return;
@@ -142,7 +174,9 @@ public class AutoTools {
             return;
         }
 
-        int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
+        int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
+        if(!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.getFirst();
+
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
@@ -152,6 +186,29 @@ public class AutoTools {
         inventory.selected = destSlot;
         inventory.setChanged();
     }
+
+
+    public static int getSuitableHotbarSlot(Inventory inventory) {
+        int i;
+        int j;
+        for(i = 0; i < 9; ++i) {
+            j = (inventory.selected + i) % 9;
+            if (TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
+                return j;
+            }
+        }
+
+        for(i = 0; i < 9; ++i) {
+            j = (inventory.selected + i) % 9;
+            if (TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
+                return j;
+            }
+        }
+
+        return inventory.selected;
+    }
+
+
 
     /**
      * Used for AutoToolsConfig.SWITCH_BACK to switch to the last tool the player was holding before using AutoTools
@@ -260,6 +317,8 @@ public class AutoTools {
 
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.getInventory();
+
+        if(IGNORED_SLOTS.contains(inventory.selected)) return;
 
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
