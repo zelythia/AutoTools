@@ -6,12 +6,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -20,6 +22,7 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -459,28 +462,37 @@ public class AutoTools {
                             }
                         }
 
-/*
-                        //Every item with an attackDamage larger than 1 has an ATTACK_DAMAGE attribute/modifier
-                        if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {
+                        float baseAttackDamage = 0;
+                        float baseAttackSpeed = 0;
+                        if(inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)){
+                            for (ItemAttributeModifiers.Entry modifier : inventory.getItem(i).get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
+                                if(modifier.attribute().is(Attributes.ATTACK_DAMAGE)){
+                                    baseAttackDamage = (float) modifier.modifier().amount();
+                                    continue;
+                                }
+                                if(modifier.attribute().is(Attributes.ATTACK_SPEED)){
+                                    baseAttackSpeed = (float) modifier.modifier().amount();
+                                }
+                            }
+                        }
+
+                        if (baseAttackDamage > 0) {
+                            if(inventory.getItem(i).isEnchanted()){
+                                if (inventory.getItem(i).isEnchanted()) {
+                                    if (((EntityHitResult) hit).getEntity() instanceof LivingEntity livingEntity) {
+                                        baseAttackDamage += EnchantmentHelper.getDamageBonus(inventory.getItem(i), livingEntity.getType());
+                                    }
+                                }
+                            }
+
                             //Calculating DPS
-                            if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_SPEED)) {
-                                //Damage
-                                newAttackDamage = (1 + ((AttributeModifier) inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).toArray()[0]).getAmount())
-                                        //Attack speed
-                                        * (4F + ((AttributeModifier) inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_SPEED).toArray()[0]).getAmount());
+                            if (baseAttackSpeed > 0) {
+                                newAttackDamage = (1 + baseAttackDamage) * (4F + baseAttackSpeed);
                             } else {
-                                newAttackDamage = 1 + ((AttributeModifier) inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).toArray()[0]).getAmount();
+                                newAttackDamage = 1 + baseAttackDamage;
                             }
                         }
 
-                        //Enchantments
-                        if (inventory.getItem(i).isEnchanted()) {
-                            if (((EntityHitResult) hit).getEntity() instanceof LivingEntity livingEntity) {
-                                newAttackDamage += EnchantmentHelper.getDamageBonus(inventory.getItem(i), livingEntity.getMobType());
-                            }
-                        }
-
- */
 
                         if (newAttackDamage > attackDamage || (newAttackDamage == attackDamage && toolSlot != -1 && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())) {
                             attackDamage = (float) newAttackDamage;
