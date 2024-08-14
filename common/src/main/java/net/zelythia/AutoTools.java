@@ -87,6 +87,7 @@ public class AutoTools {
         loadCustomItems();
 
 
+        AutoTools.IGNORED_SLOTS.clear();
         for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
             if (s.isEmpty()) continue;
             try {
@@ -98,6 +99,7 @@ public class AutoTools {
             }
         }
 
+        AutoTools.TARGET_SLOTS.clear();
         for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
             if (s.isEmpty()) continue;
             try {
@@ -176,14 +178,15 @@ public class AutoTools {
             return;
         }
 
+        if(sourceSlot <= 8) sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
+
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
         if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.getFirst();
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
-        if (sourceSlot > 8)
-            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
+        client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
 
         inventory.selected = destSlot;
         inventory.setChanged();
