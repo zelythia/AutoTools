@@ -1,5 +1,5 @@
 {
-    "key.autotools.get_tool" : "Pick Tool",
+    "key.autotools.get_tool" : "Pick Tool/Toggle",
     "key.autotools.category" : "AutoTools",
 
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",

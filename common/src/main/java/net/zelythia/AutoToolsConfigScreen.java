@@ -18,8 +18,7 @@ public class AutoToolsConfigScreen extends Screen {
 
     @Override
     protected void init() {
-        AutoToolsConfig.load();
-        AutoTools.loadCustomItems();
+        AutoTools.reloadConfig();
 
         final int y = this.height / 6 - 12;
 
