@@ -1,5 +1,5 @@
 {
-    "key.autotools.get_tool" : "Werkzeug auswählen",
+  "key.autotools.get_tool": "Werkzeug auswählen/Umschalten",
     "key.autotools.category" : "AutoTools",
 
     "chat.enabled_autotools": "AutoTools §4an§f!",

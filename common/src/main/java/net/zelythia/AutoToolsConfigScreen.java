@@ -128,8 +128,7 @@ public class AutoToolsConfigScreen extends OptionsSubScreen {
 
     @Override
     protected void init() {
-        AutoToolsConfig.load();
-        AutoTools.loadCustomItems();
+        AutoTools.reloadConfig();
 
         int y = this.height / 6 - 12;
         this.addButton(TOGGLE.createButton(this.options, this.width / 2 - 155, y, 150));

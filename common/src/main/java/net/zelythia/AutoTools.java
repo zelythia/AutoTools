@@ -59,6 +59,9 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_axe"), new ResourceLocation("minecraft:diamond_axe"), new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:golden_axe"), new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:wooden_axe")});
     }};
 
+    public static final List<Integer> IGNORED_SLOTS = new ArrayList<>();
+    public static final List<Integer> TARGET_SLOTS = new ArrayList<>();
+
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
     public static BlockState lastBlock = null;
@@ -72,14 +75,43 @@ public class AutoTools {
      * To be called by forge/fabric client-initialized methods
      */
     public static void init() {
+        reloadConfig();
+    }
+
+    public static void reloadConfig() {
         AutoToolsConfig.load();
 
         //Not the best way of adding custom tools. Fine as long as it won't get any more
         CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
+
+
+        AutoTools.IGNORED_SLOTS.clear();
+        for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            if (s.isEmpty()) continue;
+            try {
+                int i = Integer.parseInt(s) - 1;
+                if (i < 9) AutoTools.IGNORED_SLOTS.add(i);
+                else LOGGER.error("Incorrect config entry for ignoredSlots: " + i + " must be between 1-9");
+            } catch (NumberFormatException e) {
+                LOGGER.error("Incorrect config entry for ignoredSlots: unknown number: " + s);
+            }
+        }
+
+        AutoTools.TARGET_SLOTS.clear();
+        for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            if (s.isEmpty()) continue;
+            try {
+                int i = Integer.parseInt(s) - 1;
+                if (i < 9) AutoTools.TARGET_SLOTS.add(i);
+                else LOGGER.error("Incorrect config entry for targetSlots: " + i + " must be between 1-9");
+            } catch (NumberFormatException e) {
+                LOGGER.error("Incorrect config entry for targetSlots: unknown number: " + s);
+            }
+        }
     }
 
-    public static void loadCustomItems() {
+    private static void loadCustomItems() {
 
         JsonParser jsonParser = new JsonParser();
 
@@ -146,15 +178,17 @@ public class AutoTools {
 
         if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
             if (swaps.get(swaps.size() - 1) != inventory.selected) {
-                if(swaps.peek() != sourceSlot) swaps.push(inventory.selected);
+                if (swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
             inventory.selected = sourceSlot;
 
             return;
         }
 
-        int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
-        if(swaps.peek() != sourceSlot) swaps.push(sourceSlot);
+        int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
+        if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.get(0);
+
+        if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
         if (Screen.hasShiftDown()) {
@@ -168,6 +202,29 @@ public class AutoTools {
 
         inventory.selected = destSlot;
         inventory.setChanged();
+    }
+
+    /**
+     * Mirroring Inventory.getSuitableHotbarSlot() with regards for TARGET_SLOTS
+     */
+    public static int getSuitableHotbarSlot(Inventory inventory) {
+        int i;
+        int j;
+        for (i = 0; i < 9; ++i) {
+            j = (inventory.selected + i) % 9;
+            if (TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
+                return j;
+            }
+        }
+
+        for (i = 0; i < 9; ++i) {
+            j = (inventory.selected + i) % 9;
+            if (TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
+                return j;
+            }
+        }
+
+        return inventory.selected;
     }
 
     /**
@@ -210,7 +267,7 @@ public class AutoTools {
 
         if (stack.isEnchanted()) {
             //Efficiency
-            if (blockState.getDestroySpeed(null, pos) != 0) {
+            if (blockState.getDestroySpeed(null, pos) != 0 && stack.isCorrectToolForDrops(blockState)) {
                 modifier += (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack) * 20F) / 100F;
             }
 
@@ -276,6 +333,8 @@ public class AutoTools {
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.inventory;
 
+        if (IGNORED_SLOTS.contains(inventory.selected)) return;
+
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
@@ -340,6 +399,13 @@ public class AutoTools {
                     ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(blockState) || !blockState.requiresCorrectToolForDrops()) {
+                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
+                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
+                            if (durability < AutoToolsConfig.MIN_DURABILITY)
+                                continue;
+                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                            continue;
+
                         newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos());
                     }
 
@@ -415,6 +481,13 @@ public class AutoTools {
                                 return;
                             }
                         }
+
+                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
+                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
+                            if (durability < AutoToolsConfig.MIN_DURABILITY)
+                                continue;
+                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                            continue;
 
                         //Every item with an attackDamage larger than 1 has an ATTACK_DAMAGE attribute/modifier
                         if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {
