@@ -41,7 +41,7 @@ public class GameModeMixin {
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "stopDestroyBlock")
     private void stopDestroyBlock(CallbackInfo ci){
         if (AutoToolsConfig.TOGGLE) {
-            AutoTools.switchBack();
+            if(AutoToolsConfig.SWITCH_BACK) AutoTools.switchBack();
             AutoTools.lastBlock = null;
         }
     }
@@ -49,7 +49,7 @@ public class GameModeMixin {
     @Inject(at = @At(value = "HEAD"), method = "destroyBlock")
     private void destroyBlock(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir){
         if (AutoToolsConfig.TOGGLE) {
-            AutoTools.switchBack();
+            if(AutoToolsConfig.SWITCH_BACK) AutoTools.switchBack();
             AutoTools.lastBlock = null;
         }
     }

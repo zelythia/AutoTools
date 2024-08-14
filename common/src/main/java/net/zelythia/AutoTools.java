@@ -55,7 +55,7 @@ public class AutoTools {
     public static final String MOD_ID = "autotools";
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
-    public static final TagKey<Block> SHEARS = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch"));
+    public static final TagKey<Block> SHEARS = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "shears"));
     public static final TagKey<Block> SILK_TOUCH = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch"));
     public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always"));
     public static final TagKey<Block> SILK_TOUCH_SETTING_ALWAYS_ORES = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_ores"));
@@ -73,6 +73,9 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_axe"), ResourceLocation.parse("minecraft:diamond_axe"), ResourceLocation.parse("minecraft:iron_axe"), ResourceLocation.parse("minecraft:golden_axe"), ResourceLocation.parse("minecraft:stone_axe"), ResourceLocation.parse("minecraft:wooden_axe")});
     }};
 
+    public static final List<Integer> IGNORED_SLOTS = new ArrayList<>();
+    public static final List<Integer> TARGET_SLOTS = new ArrayList<>();
+
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
     public static BlockState lastBlock = null;
@@ -86,14 +89,43 @@ public class AutoTools {
      * To be called by forge/fabric client-initialized methods
      */
     public static void init() {
+        reloadConfig();
+    }
+
+    public static void reloadConfig() {
         AutoToolsConfig.load();
 
         //Not the best way of adding custom tools. Fine as long as it won't get any more
         CUSTOM_TOOLS.put(ResourceLocation.fromNamespaceAndPath("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
+
+
+        AutoTools.IGNORED_SLOTS.clear();
+        for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            if (s.isEmpty()) continue;
+            try {
+                int i = Integer.parseInt(s) - 1;
+                if (i < 9) AutoTools.IGNORED_SLOTS.add(i);
+                else LOGGER.error("Incorrect config entry for ignoredSlots: " + i + " must be between 1-9");
+            } catch (NumberFormatException e) {
+                LOGGER.error("Incorrect config entry for ignoredSlots: unknown number: " + s);
+            }
+        }
+
+        AutoTools.TARGET_SLOTS.clear();
+        for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
+            if (s.isEmpty()) continue;
+            try {
+                int i = Integer.parseInt(s) - 1;
+                if (i < 9) AutoTools.TARGET_SLOTS.add(i);
+                else LOGGER.error("Incorrect config entry for targetSlots: " + i + " must be between 1-9");
+            } catch (NumberFormatException e) {
+                LOGGER.error("Incorrect config entry for targetSlots: unknown number: " + s);
+            }
+        }
     }
 
-    public static void loadCustomItems() {
+    private static void loadCustomItems() {
         try {
             JsonElement jsonElement = JsonParser.parseString(AutoToolsConfig.CUSTOM_TOOLS);
             if (!jsonElement.isJsonObject()) return;
@@ -159,7 +191,11 @@ public class AutoTools {
             return;
         }
 
-        int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : inventory.getSuitableHotbarSlot();
+        if(sourceSlot <= 8) sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
+
+        int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
+        if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.get(0);
+
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
@@ -167,6 +203,29 @@ public class AutoTools {
 
         inventory.selected = destSlot;
         inventory.setChanged();
+    }
+
+    /**
+     * Mirroring Inventory.getSuitableHotbarSlot() with regards for TARGET_SLOTS
+     */
+    public static int getSuitableHotbarSlot(Inventory inventory) {
+        int i;
+        int j;
+        for (i = 0; i < 9; ++i) {
+            j = (inventory.selected + i) % 9;
+            if (TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
+                return j;
+            }
+        }
+
+        for (i = 0; i < 9; ++i) {
+            j = (inventory.selected + i) % 9;
+            if (TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
+                return j;
+            }
+        }
+
+        return inventory.selected;
     }
 
     /**
@@ -209,10 +268,10 @@ public class AutoTools {
 
         //Vanilla check for mining speed
         if (miningSpeed > 1.0F) {
-            miningSpeed += (float)player.getAttributeValue(Attributes.MINING_EFFICIENCY);
+            miningSpeed += (float) player.getAttributeValue(Attributes.MINING_EFFICIENCY);
         }
         if (MobEffectUtil.hasDigSpeed(player)) {
-            miningSpeed *= 1.0F + (float)(MobEffectUtil.getDigSpeedAmplification(player) + 1) * 0.2F;
+            miningSpeed *= 1.0F + (float) (MobEffectUtil.getDigSpeedAmplification(player) + 1) * 0.2F;
         }
         if (player.hasEffect(MobEffects.DIG_SLOWDOWN)) {
             float g;
@@ -233,9 +292,9 @@ public class AutoTools {
 
             miningSpeed *= g;
         }
-        miningSpeed *= (float)player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED);
+        miningSpeed *= (float) player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED);
         if (player.isEyeInFluid(FluidTags.WATER)) {
-            miningSpeed *= (float)player.getAttribute(Attributes.SUBMERGED_MINING_SPEED).getValue();
+            miningSpeed *= (float) player.getAttribute(Attributes.SUBMERGED_MINING_SPEED).getValue();
         }
 
 
@@ -305,6 +364,8 @@ public class AutoTools {
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.getInventory();
 
+        if (IGNORED_SLOTS.contains(inventory.selected)) return;
+
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
@@ -317,7 +378,8 @@ public class AutoTools {
                 List<ResourceLocation> tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
 
                 for (ResourceLocation resourceLocation : tools) {
-                    if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled"))) return;
+                    if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled")))
+                        return;
 
                     toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
                     if (toolSlot != -1) break;
@@ -362,6 +424,13 @@ public class AutoTools {
                     ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
+                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
+                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
+                            if (durability < AutoToolsConfig.MIN_DURABILITY)
+                                continue;
+                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                            continue;
+
                         newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos(), inventory.player, client.level);
                     }
 
@@ -434,22 +503,29 @@ public class AutoTools {
                             }
                         }
 
+                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
+                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
+                            if (durability < AutoToolsConfig.MIN_DURABILITY)
+                                continue;
+                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+                            continue;
+
                         float baseAttackDamage = 0;
                         float baseAttackSpeed = 0;
-                        if(inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)){
+                        if (inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)) {
                             for (ItemAttributeModifiers.Entry modifier : inventory.getItem(i).get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
-                                if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))){
+                                if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))) {
                                     baseAttackDamage = (float) modifier.modifier().amount();
                                     continue;
                                 }
-                                if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))){
+                                if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))) {
                                     baseAttackSpeed = (float) modifier.modifier().amount();
                                 }
                             }
                         }
 
                         if (baseAttackDamage > 0) {
-                            if(inventory.getItem(i).isEnchanted()){
+                            if (inventory.getItem(i).isEnchanted()) {
                                 //We want to call this, but it requires a ServerLevel:
                                 //EnchantmentHelper.modifyDamage(client.level, inventory.getItem(i), ((EntityHitResult) hit).getEntity(), client.level.damageSources().generic(), (float) baseAttackDamage);
 
@@ -463,7 +539,7 @@ public class AutoTools {
                                     List<ConditionalEffect<EnchantmentValueEffect>> effects = enchantment.getEffects(EnchantmentEffectComponents.DAMAGE);
 
                                     for (ConditionalEffect<EnchantmentValueEffect> effect : effects) {
-                                        if(effect.matches(lootContext)){
+                                        if (effect.matches(lootContext)) {
                                             baseAttackDamage = effect.effect().process(entry.getIntValue(), entity.getRandom(), baseAttackDamage);
                                         }
                                     }
