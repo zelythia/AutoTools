@@ -4,7 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 1.18.2
-  VERSION: 2.1
+  VERSION: 2.2
   FABRIC_API_VERSION: 0.76.0+1.18.2
 
 jobs:

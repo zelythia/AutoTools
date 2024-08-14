@@ -24,7 +24,7 @@
     ]
   },
   "mixins": [
-    "autotools.mixins.json"
+    "autotools-common.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.9",
@@ -35,5 +35,8 @@
     "fabric-api-base": "*",
     "fabric-item-api-v1": "*",
     "fabric-networking-api-v1": "*"
+  },
+  "recommends": {
+    "minecraft": "1.18.2"
   }
 }

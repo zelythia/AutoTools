@@ -27,6 +27,9 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
 
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
+        AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
+        AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
+        AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
     }
 
 
@@ -64,6 +67,15 @@ public class AutoToolsConfigImpl {
                 #Autotools will prefer Silk Touch:
                 # never, always, always_ores, except_ores
                 preferSilkTouch=except_ores
+                
+                #AutoTools won't do anything if the currently selected slot is in ignoredSlots
+                ignoredSlots=[]
+                #AutoTools only puts tools in these slots:
+                targetSlots=[1,2,3,4,5,6,7,8,9]
+                
+                #If < 1: Seen as a percentage: Tools below minDurability won't be selected
+                #Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
+                minDurability=0.0
 
                 #Add custom block-tool-configurations in JSON format
                 #e.g. customTools={"minecraft:block_id":"minecraft:tool_id"} or customTools={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]}
@@ -112,9 +124,13 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.PREFER_SILK_TOUCH = config.getOrDefault("preferSilkTouch", "except_ores");
         AutoToolsConfig.PREFER_HOTBAR_TOOL = config.getOrDefault("preferHotBarTool", true);
         AutoToolsConfig.PREFER_LOW_DURABILITY = config.getOrDefault("preferLowDurability", false);
-        AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
         AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
+
+        AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
+        AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
+        AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
+        AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
     }
 }

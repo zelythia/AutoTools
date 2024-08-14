@@ -22,6 +22,9 @@ public class AutoToolsConfigImpl {
     private static final ForgeConfigSpec.ConfigValue<Boolean> KEEP_AXE;
 
     private static final ForgeConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
+    private static final ForgeConfigSpec.ConfigValue<String> IGNORED_SLOTS;
+    private static final ForgeConfigSpec.ConfigValue<String> TARGET_SLOTS;
+    private static final ForgeConfigSpec.ConfigValue<Double> MIN_DURABILITY;
 
     static {
         BUILDER.push("AutoTools");
@@ -54,6 +57,16 @@ public class AutoToolsConfigImpl {
 
         PREFER_SILK_TOUCH = BUILDER.comment("Autotools will prefer Silk Touch: never, always, always_ores, except_ores")
                 .define("preferSilkTouch", "except_ores");
+        BUILDER.comment(" ");
+
+        IGNORED_SLOTS = BUILDER.comment("AutoTools won't do anything if the currently selected slot is in ignoredSlots")
+                .define("ignoredSlots", "[]");
+        TARGET_SLOTS = BUILDER.comment("AutoTools only puts tools in these slots:")
+                .define("targetSlots", "[1,2,3,4,5,6,7,8,9]");
+        BUILDER.comment(" ");
+
+        MIN_DURABILITY = BUILDER.comment("If < 1: Seen as a percentage: Tools below minDurability won't be selected\\Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)")
+                .define("minDurability", 0d);
         BUILDER.comment(" ");
 
         CUSTOM_TOOLS = BUILDER.comment("Add custom block-tool-configurations in JSON format\n" +
@@ -95,9 +108,13 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = ONLY_SWITCH_IF_NECESSARY.get();
         AutoToolsConfig.PREFER_HOTBAR_TOOL = PREFER_HOTBAR_TOOL.get();
         AutoToolsConfig.PREFER_LOW_DURABILITY = PREFER_LOW_DURABILITY.get();
-        AutoToolsConfig.CUSTOM_TOOLS = CUSTOM_TOOLS.get();
         AutoToolsConfig.SWITCH_BACK = SWITCH_BACK.get();
         AutoToolsConfig.CHANGE_FOR_ENTITIES = CHANGE_FOR_ENTITIES.get();
         AutoToolsConfig.KEEP_AXE = KEEP_AXE.get();
+
+        AutoToolsConfig.CUSTOM_TOOLS = CUSTOM_TOOLS.get();
+        AutoToolsConfig.IGNORED_SLOTS = IGNORED_SLOTS.get();
+        AutoToolsConfig.TARGET_SLOTS = TARGET_SLOTS.get();
+        AutoToolsConfig.MIN_DURABILITY = MIN_DURABILITY.get();
     }
 }
