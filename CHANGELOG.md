@@ -1,8 +1,11 @@
-- Fixed #2: AutoTools now works with baritone
-- Fixed #4: Fixing multiple issues with switchBack and keepSelectedSlot
-- Fixed #5: AutoTools now prefers swords for breaking bamboo
-- Fixed #6: ClientTags now properly work on Forge
-- Fixed DPS-Tooltip position issues
+- Fixed #7: Fixed Shears not working correctly
+- Fixed #12: Tools goes to crafting slot after breaking block
+- Fixed #13: Fixed wrong tools being selected on blocks that don't require any specific tool
+- Fixed #16: SwitchBack still active after disabling in config
 
 
-- Added #3: Option to not switch when holding an axe in combat
+- Added #8: ignored and target Slots config option
+- Added #14: minDurability config option
+
+
+- Changed naming of keybind for better clarity
