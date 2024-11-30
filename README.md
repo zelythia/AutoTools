@@ -40,7 +40,7 @@ for [shears.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/m
         - never: Autotools will only use SilkTouch if its required to mine a block.
     - **customTools**
         - Add custom tool-configurations in JSON format (e.g. customTools={"minecraft:block_id":"minecraft:tool_id"}
-          or customBlocks={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]})
+          or customTools={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]})
         - **Note**: On **Forge** and **NeoForge** you have the use customTools="{\"minecraft:block_id\":\"minecraft:
           tool_id\"}"
         - When adding multiple tools, the first one has the highest priority
