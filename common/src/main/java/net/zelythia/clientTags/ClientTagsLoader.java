@@ -75,11 +75,11 @@ public class ClientTagsLoader {
 
 		for (TagEntry tagEntry : tags) {
 			tagEntry.build(new TagEntry.Lookup<>() {
-				@Nullable
+
 				@Override
-				public ResourceLocation element(ResourceLocation id) {
-					immediateChildIds.add(id);
-					return id;
+				public @Nullable ResourceLocation element(ResourceLocation resourceLocation, boolean bl) {
+					immediateChildIds.add(resourceLocation);
+					return resourceLocation;
 				}
 
 				@Nullable

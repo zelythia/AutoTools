@@ -30,17 +30,17 @@ public class AutoToolsForge {
 
     public static final KeyMapping key_changeTool = new KeyMapping("key.autotools.get_tool", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category");
 
-    public AutoToolsForge() {
+    public AutoToolsForge(FMLJavaModLoadingContext  context) {
         //Registering the clientSetup method
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerKeyBinding);
+        context.getModEventBus().addListener(this::clientSetup);
+        context.getModEventBus().addListener(this::registerKeyBinding);
 
         // Registering mod for game events
         MinecraftForge.EVENT_BUS.register(this);
 
         //Registering the config
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AutoToolsConfigImpl.SPEC, "autotools.toml");
-        ModLoadingContext.get().registerExtensionPoint(
+        context.registerConfig(ModConfig.Type.CLIENT, AutoToolsConfigImpl.SPEC, "autotools.toml");
+        context.registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory(((minecraft, screen) -> new AutoToolsConfigScreen(screen)))
         );
@@ -65,7 +65,7 @@ public class AutoToolsForge {
             if (key_changeTool.consumeClick()) {
                 if (!keyPressed) {
                     AutoTools.toggle = !AutoTools.toggle;
-                    client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
+                    client.player.displayClientMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"), false);
                     keyPressed = true;
                 }
             } else {

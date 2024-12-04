@@ -381,8 +381,11 @@ public class AutoTools {
                     if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled")))
                         return;
 
-                    toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
-                    if (toolSlot != -1) break;
+                    Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(resourceLocation);
+                    if(itemReference.isPresent()) {
+                        toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
+                        if (toolSlot != -1) break;
+                    }
                 }
 
                 if (toolSlot == -1) {
@@ -492,8 +495,11 @@ public class AutoTools {
                                 if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled")))
                                     return;
 
-                                toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation)));
-                                if (toolSlot != -1) break;
+                                Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(resourceLocation);
+                                if(itemReference.isPresent()) {
+                                    toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
+                                    if (toolSlot != -1) break;
+                                }
                             }
 
                             if (toolSlot == -1) {
@@ -531,7 +537,7 @@ public class AutoTools {
 
                                 DamageSource damageSource = client.level.damageSources().playerAttack(client.player);
                                 LootParams lootParams = (new LootParams.Builder(null)).withParameter(LootContextParams.THIS_ENTITY, entity).withParameter(LootContextParams.ENCHANTMENT_LEVEL, i).withParameter(LootContextParams.ORIGIN, entity.position()).withParameter(LootContextParams.DAMAGE_SOURCE, damageSource).withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity()).withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity()).create(LootContextParamSets.ENCHANTED_DAMAGE);
-                                LootContext lootContext = new LootContext(lootParams, RandomSource.create(), client.level.registryAccess().asGetterLookup());
+                                LootContext lootContext = new LootContext(lootParams, RandomSource.create(), client.level.registryAccess());
 
                                 ItemEnchantments itemEnchantments = inventory.getItem(i).getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
                                 for (Object2IntMap.Entry<Holder<Enchantment>> entry : itemEnchantments.entrySet()) {
