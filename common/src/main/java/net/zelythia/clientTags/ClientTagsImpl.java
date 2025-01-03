@@ -46,7 +46,7 @@ public class ClientTagsImpl {
 
 		if (maybeRegistry.isPresent()) {
 			// Check the synced tag exists and use that
-			if (maybeRegistry.get().getTag(tagKey).isPresent()) {
+			if (maybeRegistry.get().get(tagKey).isPresent()) {
 				return registryEntry.is(tagKey);
 			}
 		}
@@ -83,7 +83,7 @@ public class ClientTagsImpl {
 			if (Minecraft.getInstance().level != null) {
 				if (Minecraft.getInstance().level.registryAccess() != null) {
 					Optional<? extends Registry<T>> maybeRegistry = Minecraft.getInstance().level
-							.registryAccess().registry(tagKey.registry());
+							.registryAccess().lookup(tagKey.registry());
 					if (maybeRegistry.isPresent()) return maybeRegistry;
 				}
 			}
@@ -104,7 +104,7 @@ public class ClientTagsImpl {
 
 		Optional<ResourceKey<T>> maybeKey = registry.getResourceKey(entry);
 
-		return maybeKey.map(registry::getHolderOrThrow);
+		return maybeKey.map(registry::getOrThrow);
 	}
 
 	public static ClientTagsLoader.LoadedTag getOrCreatePartiallySyncedTag(TagKey<?> tagKey) {

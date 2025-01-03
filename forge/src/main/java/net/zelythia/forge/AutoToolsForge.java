@@ -65,7 +65,7 @@ public class AutoToolsForge {
             if (key_changeTool.consumeClick()) {
                 if (!keyPressed) {
                     AutoTools.toggle = !AutoTools.toggle;
-                    client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
+                    client.gui.setOverlayMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"), true);
                     keyPressed = true;
                 }
             } else {
