@@ -12,7 +12,7 @@ public class AutoToolsConfigScreen extends Screen {
     public final Screen parent;
 
     public AutoToolsConfigScreen(Screen screen) {
-        super(Component.translatable("ui.title"));
+        super(Component.translatable("ui.config.autotools.config_screen"));
         parent = screen;
     }
 
