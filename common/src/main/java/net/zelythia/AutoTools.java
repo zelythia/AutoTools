@@ -13,6 +13,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -298,8 +299,8 @@ public class AutoTools {
         }
 
 
+        HolderLookup.RegistryLookup<Enchantment> EnchantmentsLookup = level.registryAccess().lookup(Registries.ENCHANTMENT).get();
         if (stack.isEnchanted()) {
-            HolderLookup.RegistryLookup<Enchantment> EnchantmentsLookup = level.registryAccess().lookup(Registries.ENCHANTMENT).get();
 
             //SilkTouch
             if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 1) {
@@ -322,21 +323,20 @@ public class AutoTools {
             if (ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock()) && ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock()) && stack.getItem() instanceof HoeItem) {
                 priority += 1;
             }
+        }
 
-
-            if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
-                if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
-                    if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
-                            || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores"))
-                            || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
-                        priority += 1;
-                    }
-                }
-
-                if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.FORTUNE).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
-                        && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock()) && !AutoToolsConfig.ALWAYS_PREFER_FORTUNE) {
+        if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
+            if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
+                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores"))
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
                     priority += 1;
                 }
+            }
+
+            if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.FORTUNE).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
+                    && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock()) && !AutoToolsConfig.ALWAYS_PREFER_FORTUNE) {
+                priority += 1;
             }
         }
 
