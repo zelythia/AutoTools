@@ -29,8 +29,12 @@ public class TooltipHelper {
                 float baseAttackDamage = 0;
                 float attackDamage = 0;
                 float attackSpeed = 0;
+                ItemAttributeModifiers modifiers = stack.get(DataComponents.ATTRIBUTE_MODIFIERS);
+                
+                if (modifiers == null)
+                    return;
 
-                for (ItemAttributeModifiers.Entry modifier : stack.get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
+                for (ItemAttributeModifiers.Entry modifier : modifiers.modifiers()) {
                     if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))){
                         baseAttackDamage = (float) modifier.modifier().amount();
                     }
