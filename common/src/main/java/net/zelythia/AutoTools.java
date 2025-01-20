@@ -553,11 +553,7 @@ public class AutoTools {
                             }
 
                             //Calculating DPS
-                            if (baseAttackSpeed > 0) {
-                                newAttackDamage = (1 + baseAttackDamage) * (4F + baseAttackSpeed);
-                            } else {
-                                newAttackDamage = 1 + baseAttackDamage;
-                            }
+                            newAttackDamage = (1 + baseAttackDamage) * (4F + baseAttackSpeed);
                         }
 
                         if (newAttackDamage > attackDamage || (newAttackDamage == attackDamage && toolSlot != -1 && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())) {

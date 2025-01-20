@@ -42,11 +42,7 @@ public class TooltipHelper {
                 }
 
                 if (baseAttackDamage > 0) {
-                    if (attackSpeed > 0) {
-                        attackDamage = (1 + baseAttackDamage) * (4F + attackSpeed);
-                    } else {
-                        attackDamage = baseAttackDamage + 1;
-                    }
+                    attackDamage = (1 + baseAttackDamage) * (4F + attackSpeed);
                 }
 
                 //Check for enchantments
@@ -62,11 +58,7 @@ public class TooltipHelper {
                         }
                     }
 
-                    if (attackSpeed > 0) {
-                        optionalAttackDamage = (1 + optionalAttackDamage) * (4F + attackSpeed);
-                    } else {
-                        optionalAttackDamage = optionalAttackDamage + 1;
-                    }
+                    optionalAttackDamage = (1 + optionalAttackDamage) * (4F + attackSpeed);
                 }
 
 
