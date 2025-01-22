@@ -21,6 +21,7 @@ public class AutoToolsConfigImpl {
     private static final ModConfigSpec.BooleanValue SWITCH_BACK;
     private static final ModConfigSpec.BooleanValue CHANGE_FOR_ENTITIES;
     private static final ModConfigSpec.BooleanValue KEEP_AXE;
+    private static final ModConfigSpec.ConfigValue<String> ENABLED;
 
     private static final ModConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
     private static final ModConfigSpec.ConfigValue<String> IGNORED_SLOTS;
@@ -71,6 +72,9 @@ public class AutoToolsConfigImpl {
                 .define("minDurability", 0d);
         BUILDER.comment(" ");
 
+        ENABLED = BUILDER.comment("AutoTools will only work and swap to the best tool if you are already holding: always, tool, no_tool")
+                .define("enabled", "always");
+
         CUSTOM_TOOLS = BUILDER.comment("Add custom block-tool-configurations in JSON format\n" +
                         "e.g. customTools={\\\"minecraft:block_id\\\":\\\"minecraft:tool_id\\\"} or customTools={\\\"minecraft:block_id\\\":[\\\"minecraft:tool_id_1\\\", \\\"minecraft:tool_id_2\\\"]}\n" +
                         "When adding multiple tools, the first one has the highest priority\n" +
@@ -96,6 +100,7 @@ public class AutoToolsConfigImpl {
         SWITCH_BACK.set(AutoToolsConfig.SWITCH_BACK);
         CHANGE_FOR_ENTITIES.set(AutoToolsConfig.CHANGE_FOR_ENTITIES);
         KEEP_AXE.set(AutoToolsConfig.KEEP_AXE);
+        ENABLED.set(AutoToolsConfig.ENABLED);
 
         SPEC.save();
     }
@@ -113,6 +118,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.SWITCH_BACK = SWITCH_BACK.get();
         AutoToolsConfig.CHANGE_FOR_ENTITIES = CHANGE_FOR_ENTITIES.get();
         AutoToolsConfig.KEEP_AXE = KEEP_AXE.get();
+        AutoToolsConfig.ENABLED = ENABLED.get();
 
         AutoToolsConfig.CUSTOM_TOOLS = CUSTOM_TOOLS.get();
         AutoToolsConfig.IGNORED_SLOTS = IGNORED_SLOTS.get();

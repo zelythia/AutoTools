@@ -24,6 +24,11 @@
     "ui.config.changeForEntities": "Change for entites",
     "ui.config.keepAxe": "Keep Axe",
 
+    "ui.config.enabled": "Enabled",
+    "ui.config.enabled.always": "Always",
+    "ui.config.enabled.tool": "Tool in Hand",
+    "ui.config.enabled.no_tool": "No Tool in Hand",
+
     "ui.desc.toggle" : "AutoTools will always be active and try to get you the best tool. Can be toggled with the set key. (works best with \"Switch Back\")",
     "ui.desc.showDPS" : "Displays the weapons Dps when hovering over it",
     "ui.desc.keepSlot" : "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics",
@@ -33,6 +38,10 @@
     "ui.desc.preferSilkTouch.always_ores": "AutoTools additionally will use SilkTouch for ores",
     "ui.desc.preferSilkTouch.except_ores": "Autotools additionally will SilkTouch for: grass, stone, leaves, snow",
     "ui.desc.preferSilkTouch.never": "Autotools will use SilkTouch if its required to mine a block.",
+
+    "ui.desc.enabled.always": "AutoTools will always be active",
+    "ui.desc.enabled.tool": "AutoTools will only work when you are already holding a tool in you hand",
+    "ui.desc.enabled.no_tool": "AutoTools will only work when you aren't already holding a tool in you hand",
 
     "ui.desc.alwaysPreferFortune": "Autotools will use Fortune for Gravel and Leaves",
     "ui.desc.onlySwitchIfNecessary": "AutoTools will only switch items if you can't mine a block with your current one",

@@ -32,6 +32,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
         AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
         AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
+        AutoToolsConfig.ENABLED = config.getOrDefault("enabled", "always");
     }
 
 
@@ -79,6 +80,9 @@ public class AutoToolsConfigImpl {
                 #If < 1: Seen as a percentage: Tools below minDurability won't be selected
                 #Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
                 minDurability=0.0
+                
+                #AutoTools will only work and swap to the best tool if you are already holding: always, tool, no_tool
+                enabled=always
 
                 #Add custom block-tool-configurations in JSON format
                 #e.g. customTools={"minecraft:block_id":"minecraft:tool_id"} or customTools={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]}
@@ -120,6 +124,7 @@ public class AutoToolsConfigImpl {
         c.setOrCreate("ignoredSlots", AutoToolsConfig.IGNORED_SLOTS);
         c.setOrCreate("targetSlots", AutoToolsConfig.TARGET_SLOTS);
         c.setOrCreate("minDurability", AutoToolsConfig.MIN_DURABILITY);
+        c.setOrCreate("enabled", AutoToolsConfig.ENABLED);
     }
 
     public static void load() {
@@ -142,5 +147,6 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
         AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
         AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
+        AutoToolsConfig.ENABLED = config.getOrDefault("enabled", "always");
     }
 }

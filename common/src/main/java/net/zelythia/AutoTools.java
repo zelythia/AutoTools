@@ -13,7 +13,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -365,6 +364,10 @@ public class AutoTools {
         Inventory inventory = client.player.getInventory();
 
         if (IGNORED_SLOTS.contains(inventory.selected)) return;
+
+        ItemStack stack = inventory.getSelected();
+        if(AutoToolsConfig.ENABLED.equals("tool") && !stack.getComponents().has(DataComponents.TOOL)) return;
+        else if(AutoToolsConfig.ENABLED.equals("no_tool") && stack.getComponents().has(DataComponents.TOOL)) return;
 
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;

@@ -5,6 +5,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.commands.arguments.selector.SelectorPattern;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
@@ -105,6 +106,25 @@ public class AutoToolsConfigScreen extends Screen {
                         (cycleButton, boolean_) -> AutoToolsConfig.KEEP_AXE = boolean_)
         );
 
+        this.addRenderableWidget(CycleButton.builder(
+                        (String string) -> switch (string) {
+                            case "always" -> Component.translatable("ui.config.enabled.always");
+                            case "tool" -> Component.translatable("ui.config.enabled.tool");
+                            case "no_tool" -> Component.translatable("ui.config.enabled.no_tool");
+                            default -> Component.translatable("ui.config.error");
+                        })
+                .withValues("no_tool", "tool", "always")
+                .withInitialValue(AutoToolsConfig.ENABLED)
+                .withTooltip(s -> Tooltip.create(Component.translatable("ui.desc.enabled." + AutoToolsConfig.ENABLED)))
+                .create(this.width / 2 + 5, y + 120, 150, 20,
+                        Component.translatable("ui.config.enabled"),
+                        (cycleButton, string) -> {
+                            cycleButton.setTooltip(Tooltip.create(Component.translatable("ui.desc.enabled." + string)));
+                            AutoToolsConfig.ENABLED = string;
+                        }
+                ))
+        ;
+
         //
         //
         //
@@ -124,7 +144,10 @@ public class AutoToolsConfigScreen extends Screen {
                 .withTooltip(s -> Tooltip.create(Component.translatable("ui.desc.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH)))
                 .create(this.width / 2 - 155, y + 144, 310, 20,
                         Component.translatable("ui.config.preferSilkTouch"),
-                        (cycleButton, string) -> AutoToolsConfig.PREFER_SILK_TOUCH = string
+                        (cycleButton, string) -> {
+                            cycleButton.setTooltip(Tooltip.create(Component.translatable("ui.desc.preferSilkTouch." + string)));
+                            AutoToolsConfig.PREFER_SILK_TOUCH = string;
+                        }
                 ))
         ;
 
