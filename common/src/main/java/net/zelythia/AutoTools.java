@@ -359,6 +359,19 @@ public class AutoTools {
         return -1;
     }
 
+    /**
+     * @return If the ItemStack should be considered a valid tool based on the MIN_DURABILITY config option
+     */
+    public static boolean checkDurability(ItemStack stack){
+        if (AutoToolsConfig.MIN_DURABILITY < 1) {
+            double durability = (double) (stack.getMaxDamage() - stack.getDamageValue()) / stack.getMaxDamage();
+            if (durability < AutoToolsConfig.MIN_DURABILITY)
+                return false;
+        } else if (stack.getMaxDamage() - stack.getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+            return false;
+
+        return true;
+    }
 
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.getInventory();
@@ -430,12 +443,7 @@ public class AutoTools {
                     ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
-                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
-                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
-                            if (durability < AutoToolsConfig.MIN_DURABILITY)
-                                continue;
-                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
-                            continue;
+                        if(!checkDurability(inventory.getItem(i))) continue;
 
                         newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos(), inventory.player, client.level);
                     }
@@ -512,12 +520,7 @@ public class AutoTools {
                             }
                         }
 
-                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
-                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
-                            if (durability < AutoToolsConfig.MIN_DURABILITY)
-                                continue;
-                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
-                            continue;
+                        if(!checkDurability(inventory.getItem(i))) continue;
 
                         float baseAttackDamage = 0;
                         float baseAttackSpeed = 0;

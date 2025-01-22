@@ -22,6 +22,7 @@ public class AutoToolsConfigImpl {
     private static final ModConfigSpec.BooleanValue CHANGE_FOR_ENTITIES;
     private static final ModConfigSpec.BooleanValue KEEP_AXE;
     private static final ModConfigSpec.ConfigValue<String> ENABLED;
+    private static final ModConfigSpec.BooleanValue DURABILITY_CHECK;
 
     private static final ModConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
     private static final ModConfigSpec.ConfigValue<String> IGNORED_SLOTS;
@@ -70,6 +71,8 @@ public class AutoToolsConfigImpl {
 
         MIN_DURABILITY = BUILDER.comment("If < 1: Seen as a percentage: Tools below minDurability won't be selected\\Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)")
                 .define("minDurability", 0d);
+        DURABILITY_CHECK = BUILDER.comment("Prevents mining when going under minDurability")
+                .define("durabilityCheck", true);
         BUILDER.comment(" ");
 
         ENABLED = BUILDER.comment("AutoTools will only work and swap to the best tool if you are already holding: always, tool, no_tool")
@@ -101,6 +104,7 @@ public class AutoToolsConfigImpl {
         CHANGE_FOR_ENTITIES.set(AutoToolsConfig.CHANGE_FOR_ENTITIES);
         KEEP_AXE.set(AutoToolsConfig.KEEP_AXE);
         ENABLED.set(AutoToolsConfig.ENABLED);
+        DURABILITY_CHECK.set(AutoToolsConfig.DURABILITY_CHECK);
 
         SPEC.save();
     }
@@ -119,6 +123,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.CHANGE_FOR_ENTITIES = CHANGE_FOR_ENTITIES.get();
         AutoToolsConfig.KEEP_AXE = KEEP_AXE.get();
         AutoToolsConfig.ENABLED = ENABLED.get();
+        AutoToolsConfig.DURABILITY_CHECK = DURABILITY_CHECK.get();
 
         AutoToolsConfig.CUSTOM_TOOLS = CUSTOM_TOOLS.get();
         AutoToolsConfig.IGNORED_SLOTS = IGNORED_SLOTS.get();

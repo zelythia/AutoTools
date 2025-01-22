@@ -15,6 +15,7 @@ public class AutoToolsConfig {
     public static boolean SWITCH_BACK;
     public static boolean CHANGE_FOR_ENTITIES;
     public static boolean KEEP_AXE;
+    public static boolean DURABILITY_CHECK;
 
     public static String CUSTOM_TOOLS;
     public static String IGNORED_SLOTS;

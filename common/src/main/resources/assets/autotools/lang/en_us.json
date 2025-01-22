@@ -5,6 +5,8 @@
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",
     "chat.disabled_autotools": "§4Disabled§f AutoTools!",
 
+    "ui.toast.durability_warning": "Durability too low: %s",
+
     "ui.config.autotools.config_screen": "AutoTools Config",
 
     "ui.config.toggle" : "Toggle",

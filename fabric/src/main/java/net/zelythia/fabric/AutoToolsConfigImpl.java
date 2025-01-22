@@ -27,6 +27,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
         AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
+        AutoToolsConfig.DURABILITY_CHECK = config.getOrDefault("durabilityCheck", true);
 
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
@@ -80,7 +81,9 @@ public class AutoToolsConfigImpl {
                 #If < 1: Seen as a percentage: Tools below minDurability won't be selected
                 #Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
                 minDurability=0.0
-                
+                #Prevents mining when going under minDurability
+                durabilityCheck=true
+               
                 #AutoTools will only work and swap to the best tool if you are already holding: always, tool, no_tool
                 enabled=always
 
@@ -119,6 +122,7 @@ public class AutoToolsConfigImpl {
         c.setOrCreate("switchBack", AutoToolsConfig.SWITCH_BACK);
         c.setOrCreate("changeForEntities", AutoToolsConfig.CHANGE_FOR_ENTITIES);
         c.setOrCreate("keepAxe", AutoToolsConfig.KEEP_AXE);
+        c.setOrCreate("durabilityCheck", AutoToolsConfig.DURABILITY_CHECK);
 
         c.setOrCreate("customTools", AutoToolsConfig.CUSTOM_TOOLS);
         c.setOrCreate("ignoredSlots", AutoToolsConfig.IGNORED_SLOTS);
@@ -142,6 +146,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.SWITCH_BACK = config.getOrDefault("switchBack", false);
         AutoToolsConfig.CHANGE_FOR_ENTITIES = config.getOrDefault("changeForEntities", true);
         AutoToolsConfig.KEEP_AXE = config.getOrDefault("keepAxe", false);
+        AutoToolsConfig.DURABILITY_CHECK = config.getOrDefault("durabilityCheck", true);
 
         AutoToolsConfig.CUSTOM_TOOLS = config.getOrDefault("customTools", "{}");
         AutoToolsConfig.IGNORED_SLOTS = config.getOrDefault("ignoredSlots", "[]");
