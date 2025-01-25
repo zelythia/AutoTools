@@ -80,6 +80,8 @@ public class AutoToolsConfigImpl implements ConfigData {
     }
 
     public static void load() {
+        AutoTools.swaps.clear();
+
         AutoToolsConfigImpl config = AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).getConfig();
 
         AutoToolsConfig.TOGGLE = config.toggle;

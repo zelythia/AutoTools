@@ -2,6 +2,7 @@ package net.zelythia.neoforge;
 
 import com.google.gson.JsonParser;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 
 import java.util.List;
@@ -122,6 +123,8 @@ public class AutoToolsConfigImpl {
     }
 
     public static void load() {
+        AutoTools.swaps.clear();
+
         AutoToolsConfig.TOGGLE = TOGGLE.get();
         AutoToolsConfig.SHOWDPS = SHOWDPS.get();
         AutoToolsConfig.KEEPSLOT = KEEPSLOT.get();

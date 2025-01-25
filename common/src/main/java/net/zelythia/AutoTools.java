@@ -73,15 +73,11 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_axe"), ResourceLocation.parse("minecraft:diamond_axe"), ResourceLocation.parse("minecraft:iron_axe"), ResourceLocation.parse("minecraft:golden_axe"), ResourceLocation.parse("minecraft:stone_axe"), ResourceLocation.parse("minecraft:wooden_axe")});
     }};
 
-//    public static final List<Integer> IGNORED_SLOTS = new ArrayList<>();
-//    public static final List<Integer> TARGET_SLOTS = new ArrayList<>();
-
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
     public static BlockState lastBlock = null;
-    /**
-     * Used for SWITCH_BACK when toggle is disabled
-     */
+
+    //Used for SWITCH_BACK when toggle is disabled
     public static boolean startedMining = false;
 
     // Used for the experimental swap delay
@@ -187,6 +183,8 @@ public class AutoTools {
 
         inventory.selected = destSlot;
         inventory.setChanged();
+
+        if(!AutoToolsConfig.SWITCH_BACK) swaps.clear(); //Easy way to safe some memory because swaps are only needed for switchBack
     }
 
     /**
