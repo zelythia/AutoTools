@@ -239,6 +239,40 @@ public class AutoTools {
 
         Inventory inventory = client.player.getInventory();
 
+        //Minimizing swaps by removing reverted/duplicate . Flattening/Squashing the Stack. E.g. [0, 30, 0, 30, 0] -> [0]
+        boolean changed = true;
+        while(changed && swaps.size() > 1){
+            changed = false;
+
+            loop:
+            for (int intervalSize = swaps.size()/2; intervalSize >= 2; intervalSize--) {
+                for (int topOffset = 0; topOffset <= swaps.size()/ intervalSize; topOffset++) {
+                    boolean foundDuplicate = true;
+
+                    if(swaps.size() - 1 - topOffset >= 2* intervalSize){
+                        for (int j = topOffset; j < intervalSize + topOffset; j++) {
+                            if(swaps.elementAt(swaps.size() - j - 1) != swaps.elementAt(swaps.size() - 1 - intervalSize - j)){
+                                foundDuplicate = false;
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        foundDuplicate = false;
+                    }
+                    if(foundDuplicate) {
+                        int initialSize = swaps.size();
+                        for (int i = 0; i < intervalSize *2; i++) {
+                            swaps.remove(initialSize - topOffset - intervalSize *2);
+                        }
+
+                        changed = true;
+                        break loop;
+                    }
+                }
+            }
+        }
+
         while (!swaps.empty()) {
             int i = swaps.pop();
 
