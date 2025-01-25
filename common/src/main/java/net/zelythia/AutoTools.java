@@ -73,8 +73,8 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{ResourceLocation.parse("minecraft:netherite_axe"), ResourceLocation.parse("minecraft:diamond_axe"), ResourceLocation.parse("minecraft:iron_axe"), ResourceLocation.parse("minecraft:golden_axe"), ResourceLocation.parse("minecraft:stone_axe"), ResourceLocation.parse("minecraft:wooden_axe")});
     }};
 
-    public static final List<Integer> IGNORED_SLOTS = new ArrayList<>();
-    public static final List<Integer> TARGET_SLOTS = new ArrayList<>();
+//    public static final List<Integer> IGNORED_SLOTS = new ArrayList<>();
+//    public static final List<Integer> TARGET_SLOTS = new ArrayList<>();
 
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
@@ -102,30 +102,8 @@ public class AutoTools {
         CUSTOM_TOOLS.put(ResourceLocation.fromNamespaceAndPath("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
 
-
-        AutoTools.IGNORED_SLOTS.clear();
-        for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
-            if (s.isEmpty()) continue;
-            try {
-                int i = Integer.parseInt(s) - 1;
-                if (i < 9) AutoTools.IGNORED_SLOTS.add(i);
-                else LOGGER.error("Incorrect config entry for ignoredSlots: " + i + " must be between 1-9");
-            } catch (NumberFormatException e) {
-                LOGGER.error("Incorrect config entry for ignoredSlots: unknown number: " + s);
-            }
-        }
-
-        AutoTools.TARGET_SLOTS.clear();
-        for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
-            if (s.isEmpty()) continue;
-            try {
-                int i = Integer.parseInt(s) - 1;
-                if (i < 9) AutoTools.TARGET_SLOTS.add(i);
-                else LOGGER.error("Incorrect config entry for targetSlots: " + i + " must be between 1-9");
-            } catch (NumberFormatException e) {
-                LOGGER.error("Incorrect config entry for targetSlots: unknown number: " + s);
-            }
-        }
+        AutoToolsConfig.IGNORED_SLOTS = AutoToolsConfig.IGNORED_SLOTS.stream().map(i -> i - 1).toList();
+        AutoToolsConfig.TARGET_SLOTS = AutoToolsConfig.TARGET_SLOTS.stream().map(i -> i - 1).toList();
     }
 
     private static void loadCustomItems() {
@@ -199,7 +177,7 @@ public class AutoTools {
         if(sourceSlot <= 8) sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
-        if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.getFirst();
+        if (!AutoToolsConfig.TARGET_SLOTS.contains(destSlot)) destSlot = AutoToolsConfig.TARGET_SLOTS.getFirst();
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
@@ -219,14 +197,14 @@ public class AutoTools {
         int j;
         for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
-            if (TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
+            if (AutoToolsConfig.TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
                 return j;
             }
         }
 
         for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
-            if (TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
+            if (AutoToolsConfig.TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
                 return j;
             }
         }
@@ -346,7 +324,7 @@ public class AutoTools {
                 if (ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())
                         || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
                         || AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
+                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
                     priority = 6;
                 }
             }
@@ -367,7 +345,7 @@ public class AutoTools {
         if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
             if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
                 if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores"))
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("ores"))
                         || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
                     priority += 1;
                 }
@@ -416,7 +394,7 @@ public class AutoTools {
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.getInventory();
 
-        if (IGNORED_SLOTS.contains(inventory.selected)) return;
+        if (AutoToolsConfig.IGNORED_SLOTS.contains(inventory.selected)) return;
 
         ItemStack stack = inventory.getSelected();
         if(AutoToolsConfig.ENABLED.equals("tool") && !stack.getComponents().has(DataComponents.TOOL)) return;

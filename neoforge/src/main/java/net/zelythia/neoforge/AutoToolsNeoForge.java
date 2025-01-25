@@ -9,11 +9,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.jarjar.nio.util.Lazy;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
@@ -38,9 +40,11 @@ public class AutoToolsNeoForge {
         // Registering mod for game events
         NeoForge.EVENT_BUS.register(this);
 
+        modEventBus.addListener(this::ConfigLoaded);
+
         //Registering the config
         modContainer.registerConfig(ModConfig.Type.CLIENT, AutoToolsConfigImpl.SPEC, "autotools.toml");
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (client, screen) -> new AutoToolsConfigScreen(screen));
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
     //Called once when the client is set up
@@ -50,6 +54,10 @@ public class AutoToolsNeoForge {
 
     public void registerKeyBinding(RegisterKeyMappingsEvent event) {
         event.register(KEY_CHANGE_TOOL.get());
+    }
+
+    public void ConfigLoaded(ModConfigEvent.Reloading event) {
+        AutoToolsConfig.load();
     }
 
     @SubscribeEvent

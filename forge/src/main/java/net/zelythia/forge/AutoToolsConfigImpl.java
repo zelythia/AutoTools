@@ -56,7 +56,7 @@ public class AutoToolsConfigImpl {
                 .define("changeForEntities", false);
         BUILDER.comment(" ");
 
-        PREFER_SILK_TOUCH = BUILDER.comment("Autotools will prefer Silk Touch: never, always, always_ores, except_ores")
+        PREFER_SILK_TOUCH = BUILDER.comment("Autotools will prefer Silk Touch: never, always, ores, except_ores")
                 .define("preferSilkTouch", "except_ores");
         BUILDER.comment(" ");
 

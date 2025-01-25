@@ -5,51 +5,5 @@
     "chat.enabled_autotools": "AutoTools §4an§f!",
     "chat.disabled_autotools": "AutoTools! §4aus§f",
 
-    "ui.toast.autotools.durability_warning": "Haltbarkeit zu niedrig: %s",
-
-    "ui.config.autotools.autotools.config_screen": "AutoTools Einstellungen",
-
-    "ui.config.autotools.toggle" : "Umschalten",
-    "ui.config.autotools.showDPS" : "Dps Anzeigen",
-    "ui.config.autotools.keepSlot": "Ausgewählten Slot behalten",
-    "ui.config.autotools.disableCreative": "Nur Survival",
-    "ui.config.autotools.preferSilkTouch": "Behutsamkeit bevorzugen",
-    "ui.config.autotools.preferSilkTouch.always": "Immer",
-    "ui.config.autotools.preferSilkTouch.always_ores": "Erze",
-    "ui.config.autotools.preferSilkTouch.except_ores": "Außer Erze",
-    "ui.config.autotools.preferSilkTouch.never": "Nie",
-    "ui.config.autotools.alwaysPreferFortune": "Immer Glück bevorzugen",
-    "ui.config.autotools.onlySwitchIfNecessary": "Nur Tauschen wenn nötig",
-    "ui.config.autotools.preferHotbarTool": "Hotbar Slot bevorzugen",
-    "ui.config.autotools.preferLowDurability": "Geringe Haltbarkeit bevorzugen",
-    "ui.config.autotools.switchBack": "Zurücktauschen",
-    "ui.config.autotools.changeForEntities": "Wechsle für Entites",
-    "ui.config.autotools.keepAxe": "Axt behalten",
-
-    "ui.config.autotools.enabled": "Eingeschaltet",
-    "ui.config.autotools.enabled.always": "Immer",
-    "ui.config.autotools.enabled.tool": "Werkzeug Halten",
-    "ui.config.autotools.enabled.no_tool": "Kein Werkzeug Halten",
-
-    "ui.desc.autotools.toggle" : "AutoTools wird immer an sein und das beste Werkzeug auswählen. Kann mit der festgelegten Taste ein- und ausgeschalten werden. (Funktioniert sehr gut mit \"Zurücktauschen\")",
-    "ui.desc.autotools.showDPS" : "Zeigt den Dps der Waffe an wenn man mit der Maus darüber fährt",
-    "ui.desc.autotools.keepSlot" : "Behalte immer den ausgewählten slot anstatt die Vanilla-Mechaniken zu benutzen",
-    "ui.desc.autotools.disableCreative" : "Deaktiviert AutoTools im Kreativmodus wenn Umschalten an ist",
-
-    "ui.desc.autotools.preferSilkTouch.always": "AutoTools benutzt Behutsamkeit auch bei: Gras, Stein, Erzen, Blättern, Schnee",
-    "ui.desc.autotools.preferSilkTouch.always_ores": "AutoTools benutzt Behutsamkeit auch bei: Erzen",
-    "ui.desc.autotools.preferSilkTouch.except_ores": "AutoTools benutzt Behutsamkeit auch bei:Gras, Stein, Blättern, Schnee",
-    "ui.desc.autotools.preferSilkTouch.never": "AutoTools wird Behutsamkeit nur bevorzugen, wenn es zum Abbauen des Blockes benötigt wird",
-
-    "ui.desc.autotools.enabled.always": "AutoTools ist immer aktiv",
-    "ui.desc.autotools.enabled.tool": "AutoTools wird nur funktionieren, wenn du bereits ein Werkzeug in der Hand hältst",
-    "ui.desc.autotools.enabled.no_tool": "AutoTools wird nur funktionieren, wenn du nicht bereits ein Werkzeug in der Hand hältst",
-
-    "ui.desc.autotools.alwaysPreferFortune": "AutoTools benutzt Glück bei Kies und Blättern",
-    "ui.desc.autotools.onlySwitchIfNecessary": "AutoTools wird nur das Werkzeug nur ändern ,wenn es den Block nicht abbauen kann",
-    "ui.desc.autotools.preferHotbarTool": "AutoTools wird immer das Werkzeug in deiner Hotbar bevorzugen ohne Rücksicht auf die Haltbarkeit bei gleicher Abbaugeschwindigkeit",
-    "ui.desc.autotools.preferLowDurability": "AutoTools wird immer das Werkzeug mit der niedrigsten Haltbarkeit bevorzugen, wenn sie die gleiche Abbaugeschwindigkeit haben,",
-    "ui.desc.autotools.switchBack": "AutoTools wechselt nach dem Abbauen automatisch zum vorherigen Gegenstand zurück",
-    "ui.desc.autotools.changeForEntities": "AutoTools wird die Waffe mit dem meisten Schaden auswählen wenn mann auf ein Entity schaut",
-    "ui.desc.autotools.keepAxe": "AutoTools wird nicht zu einer besseren Waffe (z.B. ein Schwert wechseln), wenn man eine Axt in der Hand hat"
+    "ui.toast.autotools.durability_warning": "Haltbarkeit zu niedrig: %s"
 }
