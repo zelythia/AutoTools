@@ -32,7 +32,7 @@ public class GameModeMixin {
     private void startDestroyBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if(minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())){
             cir.setReturnValue(false);
-            SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
+            SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
         }
 
         AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
@@ -50,7 +50,7 @@ public class GameModeMixin {
     private void attack(CallbackInfo ci) {
         if(minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())){
             ci.cancel();
-            SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
+            SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
         }
 
         //SwitchBack doesn't really make sense for mobs
