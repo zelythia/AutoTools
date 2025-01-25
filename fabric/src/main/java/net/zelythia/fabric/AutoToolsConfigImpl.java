@@ -34,6 +34,8 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
         AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
         AutoToolsConfig.ENABLED = config.getOrDefault("enabled", "always");
+
+        AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = config.getOrDefault("experimental_break_delay", false);
     }
 
 
@@ -94,6 +96,10 @@ public class AutoToolsConfigImpl {
                 #Use "autotools:disabled" to disable AutoTools on a certain block
                 #Also works for entities: "minecraft:entity_id":"minecraft:tool_id"
                 customTools={}
+                
+                #Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch.
+                #Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.
+                experimental_break_delay=false
                 """;
     }
 
@@ -129,6 +135,8 @@ public class AutoToolsConfigImpl {
         c.setOrCreate("targetSlots", AutoToolsConfig.TARGET_SLOTS);
         c.setOrCreate("minDurability", AutoToolsConfig.MIN_DURABILITY);
         c.setOrCreate("enabled", AutoToolsConfig.ENABLED);
+
+        c.setOrCreate("experimental_break_delay", AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY);
     }
 
     public static void load() {
@@ -153,5 +161,8 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.TARGET_SLOTS = config.getOrDefault("targetSlots", "[1,2,3,4,5,6,7,8,9]");
         AutoToolsConfig.MIN_DURABILITY = config.getOrDefault("minDurability", 0d);
         AutoToolsConfig.ENABLED = config.getOrDefault("enabled", "always");
+
+        AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = config.getOrDefault("experimental_break_delay", false);
+
     }
 }

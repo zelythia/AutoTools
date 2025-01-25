@@ -84,6 +84,9 @@ public class AutoTools {
      */
     public static boolean startedMining = false;
 
+    // Used for the experimental swap delay
+    public static boolean swapped = false;
+
 
     /**
      * To be called by forge/fabric client-initialized methods
@@ -178,12 +181,14 @@ public class AutoTools {
      * @param sourceSlot The slot with the item you want to select
      */
     public static void selectItem(Minecraft client, Inventory inventory, int sourceSlot) {
+        if(sourceSlot == inventory.selected) return;
+
         if (swaps.empty()) {
             swaps.push(inventory.selected);
         }
 
         if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
-            if (swaps.get(swaps.size() - 1) != inventory.selected) {
+            if (swaps.getLast() != inventory.selected) {
                 if (swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
             inventory.selected = sourceSlot;
@@ -194,11 +199,12 @@ public class AutoTools {
         if(sourceSlot <= 8) sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
-        if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.get(0);
+        if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.getFirst();
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
+        swapped = true;
         client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
 
         inventory.selected = destSlot;

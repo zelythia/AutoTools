@@ -29,6 +29,7 @@ public class AutoToolsConfigImpl {
     private static final ModConfigSpec.ConfigValue<String> TARGET_SLOTS;
     private static final ModConfigSpec.ConfigValue<Double> MIN_DURABILITY;
 
+    private static final ModConfigSpec.BooleanValue EXPERIMENTAL_BREAK_DELAY;
 
     static {
         BUILDER.push("AutoTools");
@@ -86,6 +87,9 @@ public class AutoToolsConfigImpl {
                         "Also works for entities: \"minecraft:entity_id\":\"minecraft:tool_id")
                 .define("customTools", "{}");
 
+        EXPERIMENTAL_BREAK_DELAY = BUILDER.comment("Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch.\nEnable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.")
+                        .define("experimental_break_delay", false);
+
         BUILDER.pop();
         SPEC = BUILDER.build();
     }
@@ -105,6 +109,7 @@ public class AutoToolsConfigImpl {
         KEEP_AXE.set(AutoToolsConfig.KEEP_AXE);
         ENABLED.set(AutoToolsConfig.ENABLED);
         DURABILITY_CHECK.set(AutoToolsConfig.DURABILITY_CHECK);
+        EXPERIMENTAL_BREAK_DELAY.set(AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY);
 
         SPEC.save();
     }
@@ -129,5 +134,7 @@ public class AutoToolsConfigImpl {
         AutoToolsConfig.IGNORED_SLOTS = IGNORED_SLOTS.get();
         AutoToolsConfig.TARGET_SLOTS = TARGET_SLOTS.get();
         AutoToolsConfig.MIN_DURABILITY = MIN_DURABILITY.get();
+
+        AutoToolsConfig.DURABILITY_CHECK = EXPERIMENTAL_BREAK_DELAY.get();
     }
 }

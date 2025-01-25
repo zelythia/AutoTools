@@ -23,6 +23,8 @@ public class AutoToolsConfig {
     public static double MIN_DURABILITY;
     public static String ENABLED;
 
+    public static boolean EXPERIMENTAL_BREAK_DELAY;
+
     @ExpectPlatform
     static void save() {
         throw new AssertionError();

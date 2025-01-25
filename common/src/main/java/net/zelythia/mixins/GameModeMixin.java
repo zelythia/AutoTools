@@ -36,6 +36,14 @@ public class GameModeMixin {
         }
 
         AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
+
+        //Adds a 1 Tick = 50ms delay when breaking blocks to prevent desyncs like Ghost-Blocks
+        if(AutoToolsConfig.TOGGLE && AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY){
+            if(AutoTools.swapped){
+                cir.setReturnValue(false);
+                AutoTools.swapped = false;
+            }
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "attack", cancellable = true)

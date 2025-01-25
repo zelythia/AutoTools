@@ -51,5 +51,9 @@
     "ui.desc.preferLowDurability": "AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed",
     "ui.desc.switchBack": "AutoTools will switch back to the previous tool or item you had in your hand before breaking the block",
     "ui.desc.changeForEntities": "AutoTools will change to the tool with the most DPS when looking at an entity",
-    "ui.desc.keepAxe": "AutoTools won't change to a better weapon(e.g. a sword) when holding an axe"
+    "ui.desc.keepAxe": "AutoTools won't change to a better weapon(e.g. a sword) when holding an axe",
+
+
+    "ui.config.experimentalBreakDelay": "[Experimental] Break Delay",
+    "ui.desc.experimentalBreakDelay": "Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch. Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining."
 }

@@ -65,6 +65,13 @@ public class AutoToolsConfigScreen extends Screen {
                         (cycleButton, boolean_) -> AutoToolsConfig.ALWAYS_PREFER_FORTUNE = boolean_)
         );
 
+        this.addRenderableWidget(CycleButton.onOffBuilder(AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY)
+                .withTooltip(aBoolean -> Tooltip.create(Component.translatable("ui.desc.experimentalBreakDelay")))
+                .create(this.width / 2 - 155, y + 144, 150, 20,
+                        Component.translatable("ui.config.experimentalBreakDelay"),
+                        (cycleButton, boolean_) -> AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = boolean_)
+        );
+
 
         //
         //
@@ -142,7 +149,7 @@ public class AutoToolsConfigScreen extends Screen {
                 .withValues("never", "except_ores", "always_ores", "always")
                 .withInitialValue(AutoToolsConfig.PREFER_SILK_TOUCH)
                 .withTooltip(s -> Tooltip.create(Component.translatable("ui.desc.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH)))
-                .create(this.width / 2 - 155, y + 144, 310, 20,
+                .create(this.width / 2 - 155, y + 168, 310, 20,
                         Component.translatable("ui.config.preferSilkTouch"),
                         (cycleButton, string) -> {
                             cycleButton.setTooltip(Tooltip.create(Component.translatable("ui.desc.preferSilkTouch." + string)));
