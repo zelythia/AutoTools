@@ -17,15 +17,30 @@ for [shears.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/m
       key.
     - **disableCreative** \[true]: Disables AutoTools in creative-mode if toggle is enabled.
     - **keepSlot** \[false]: Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.
-    - **preferHotBarTool** \[true]: AutoTools will prefer the tool already in your hotbar if multiple tools have the same
+    - **preferHotBarTool** \[true]: AutoTools will prefer the tool already in your hotbar if multiple tools have the
+      same
       mining
       speed, regardless their durability.
-    - **preferLowDurability** \[false]: AutoTools will prefer the tool with the lower durability, instead of the higher one,
+    - **preferLowDurability** \[false]: AutoTools will prefer the tool with the lower durability, instead of the higher
+      one,
       if they
       have the same mining speed and enchantments.
     - **switchBack** \[false]: AutoTools will switch back to the item you had in your hand before breaking the block
     - **showDPS** \[true]: Displays the weapons Damage when hovering over it as a tooltip
     - **changeForEntities** \[true]: AutoTools will change to the tool with the most DPS when looking at an entity
+    - **keepAxe** \[false]: AutoTools won't change to a better weapon(e.g. a sword) when holding an axe
+    - **enabled** \[always]:
+        - always: AutoTools will always be active
+        - tool: AutoTools will only be active while holding a tool
+        - no_tool: AutoTools will only be active while not holding a tool
+    - **ignoredSlots** \[\[]]: AutoTools won't do anything if the currently selected one of these
+    - **targetSlots** \[\[1,2,3,4,5,6,7,8,9]]: AutoTools only puts tools in these slots
+    - **minDurability** \[0.0]: If < 1: Seen as a percentage: Tools below minDurability won't be selected  
+      Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
+    - **durabilityCheck** \[true]: Prevents mining when going under minDurability
+    - **experimentalBreakDelay** \[false]: Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking
+      a block after a tool switch.  
+      Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.
 
 - #### Block Behaviour:
     - **onlySwitchIfNecessary** \[false]: AutoTools only tries to get a new tool if it is needed to break the block
