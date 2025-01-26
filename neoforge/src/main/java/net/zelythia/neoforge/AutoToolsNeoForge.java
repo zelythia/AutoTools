@@ -22,7 +22,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
-import net.zelythia.AutoToolsConfigScreen;
 import net.zelythia.TooltipHelper;
 import org.lwjgl.glfw.GLFW;
 

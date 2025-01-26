@@ -320,9 +320,9 @@ public class AutoTools {
             //SilkTouch
             if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 1) {
                 if (ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
+                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.always && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
+                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.except_ores && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
+                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.ores && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
                     priority = 6;
                 }
             }
@@ -342,9 +342,9 @@ public class AutoTools {
 
         if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
             if (EnchantmentHelper.getItemEnchantmentLevel(EnchantmentsLookup.get(Enchantments.SILK_TOUCH).get(), stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
-                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("ores"))
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
+                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.except_ores)
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.ores)
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.always)) {
                     priority += 1;
                 }
             }
@@ -395,8 +395,8 @@ public class AutoTools {
         if (AutoToolsConfig.IGNORED_SLOTS.contains(inventory.selected)) return;
 
         ItemStack stack = inventory.getSelected();
-        if(AutoToolsConfig.ENABLED.equals("tool") && !stack.getComponents().has(DataComponents.TOOL)) return;
-        else if(AutoToolsConfig.ENABLED.equals("no_tool") && stack.getComponents().has(DataComponents.TOOL)) return;
+        if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.tool && !stack.getComponents().has(DataComponents.TOOL)) return;
+        else if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.no_tool && stack.getComponents().has(DataComponents.TOOL)) return;
 
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
