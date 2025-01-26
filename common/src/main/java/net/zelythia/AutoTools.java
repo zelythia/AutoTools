@@ -59,25 +59,20 @@ public class AutoTools {
         put("autotools:axe", new ResourceLocation[]{new ResourceLocation("minecraft:netherite_axe"), new ResourceLocation("minecraft:diamond_axe"), new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:golden_axe"), new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:wooden_axe")});
     }};
 
-    public static final List<Integer> IGNORED_SLOTS = new ArrayList<>();
-    public static final List<Integer> TARGET_SLOTS = new ArrayList<>();
-
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
     public static BlockState lastBlock = null;
-    /**
-     * Used for SWITCH_BACK when toggle is disabled
-     */
+
+    //Used for SWITCH_BACK when toggle is disable
     public static boolean startedMining = false;
 
+    // Used for the experimental swap delay
+    public static boolean swapped = false;
 
-    /**
-     * To be called by forge/fabric client-initialized methods
-     */
+    //To be called by forge/fabric client-initialized methods
     public static void init() {
         reloadConfig();
     }
-
 
     public static void reloadConfig() {
         AutoToolsConfig.load();
@@ -86,30 +81,8 @@ public class AutoTools {
         CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
         loadCustomItems();
 
-
-        AutoTools.IGNORED_SLOTS.clear();
-        for (String s : AutoToolsConfig.IGNORED_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
-            if (s.isEmpty()) continue;
-            try {
-                int i = Integer.parseInt(s) - 1;
-                if (i < 9) AutoTools.IGNORED_SLOTS.add(i);
-                else LOGGER.error("Incorrect config entry for ignoredSlots: " + i + " must be between 1-9");
-            } catch (NumberFormatException e) {
-                LOGGER.error("Incorrect config entry for ignoredSlots: unknown number: " + s);
-            }
-        }
-
-        AutoTools.TARGET_SLOTS.clear();
-        for (String s : AutoToolsConfig.TARGET_SLOTS.replaceAll("[\\[\\]]", "").split(",")) {
-            if (s.isEmpty()) continue;
-            try {
-                int i = Integer.parseInt(s) - 1;
-                if (i < 9) AutoTools.TARGET_SLOTS.add(i);
-                else LOGGER.error("Incorrect config entry for targetSlots: " + i + " must be between 1-9");
-            } catch (NumberFormatException e) {
-                LOGGER.error("Incorrect config entry for targetSlots: unknown number: " + s);
-            }
-        }
+        AutoToolsConfig.IGNORED_SLOTS = AutoToolsConfig.IGNORED_SLOTS.stream().map(i -> i - 1).toList();
+        AutoToolsConfig.TARGET_SLOTS = AutoToolsConfig.TARGET_SLOTS.stream().map(i -> i - 1).toList();
     }
 
     private static void loadCustomItems() {
@@ -165,12 +138,14 @@ public class AutoTools {
      * @param sourceSlot The slot with the item you want to select
      */
     public static void selectItem(Minecraft client, Inventory inventory, int sourceSlot) {
+        if(sourceSlot == inventory.selected) return;
+
         if (swaps.empty()) {
             swaps.push(inventory.selected);
         }
 
         if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
-            if (swaps.get(swaps.size() - 1) != inventory.selected) {
+            if (swaps.getLast() != inventory.selected) {
                 if (swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
             inventory.selected = sourceSlot;
@@ -178,18 +153,22 @@ public class AutoTools {
             return;
         }
 
-        if(sourceSlot <= 8) sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
+        if (sourceSlot <= 8)
+            sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
-        if (!TARGET_SLOTS.contains(destSlot)) destSlot = TARGET_SLOTS.getFirst();
+        if (!AutoToolsConfig.TARGET_SLOTS.contains(destSlot)) destSlot = AutoToolsConfig.TARGET_SLOTS.getFirst();
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
+        swapped = true;
         client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
 
         inventory.selected = destSlot;
         inventory.setChanged();
+
+        if(!AutoToolsConfig.SWITCH_BACK) swaps.clear(); //Easy way to safe some memory because swaps are only needed for switchBack
     }
 
 
@@ -201,14 +180,14 @@ public class AutoTools {
         int j;
         for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
-            if (TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
+            if (AutoToolsConfig.TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
                 return j;
             }
         }
 
         for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
-            if (TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
+            if (AutoToolsConfig.TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
                 return j;
             }
         }
@@ -228,6 +207,40 @@ public class AutoTools {
         if (client.player == null || client.gameMode == null) return;
 
         Inventory inventory = client.player.getInventory();
+
+        //Minimizing swaps by removing reverted/duplicate . Flattening/Squashing the Stack. E.g. [0, 30, 0, 30, 0] -> [0]
+        boolean changed = true;
+        while(changed && swaps.size() > 1){
+            changed = false;
+
+            loop:
+            for (int intervalSize = swaps.size()/2; intervalSize >= 2; intervalSize--) {
+                for (int topOffset = 0; topOffset <= swaps.size()/ intervalSize; topOffset++) {
+                    boolean foundDuplicate = true;
+
+                    if(swaps.size() - 1 - topOffset >= 2* intervalSize){
+                        for (int j = topOffset; j < intervalSize + topOffset; j++) {
+                            if(swaps.elementAt(swaps.size() - j - 1) != swaps.elementAt(swaps.size() - 1 - intervalSize - j)){
+                                foundDuplicate = false;
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        foundDuplicate = false;
+                    }
+                    if(foundDuplicate) {
+                        int initialSize = swaps.size();
+                        for (int i = 0; i < intervalSize *2; i++) {
+                            swaps.remove(initialSize - topOffset - intervalSize *2);
+                        }
+
+                        changed = true;
+                        break loop;
+                    }
+                }
+            }
+        }
 
         while (!swaps.empty()) {
             int i = swaps.pop();
@@ -266,9 +279,9 @@ public class AutoTools {
             //SilkTouch
             if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 1) {
                 if (ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores") && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
+                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.always && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
+                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.except_ores && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
+                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.ores && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
                     priority = 6;
                 }
             }
@@ -288,9 +301,9 @@ public class AutoTools {
 
         if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
             if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
-                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("except_ores"))
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always_ores"))
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && !AutoToolsConfig.PREFER_SILK_TOUCH.equals("always"))) {
+                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.except_ores)
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.ores)
+                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.always)) {
                     priority += 1;
                 }
             }
@@ -321,11 +334,29 @@ public class AutoTools {
         return -1;
     }
 
+    /**
+     * @return If the ItemStack should be considered a valid tool based on the MIN_DURABILITY config option
+     */
+    public static boolean checkDurability(ItemStack stack){
+        if (AutoToolsConfig.MIN_DURABILITY < 1) {
+            double durability = (double) (stack.getMaxDamage() - stack.getDamageValue()) / stack.getMaxDamage();
+            if (durability < AutoToolsConfig.MIN_DURABILITY)
+                return false;
+        } else if (stack.getMaxDamage() - stack.getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+            return false;
+
+        return true;
+    }
+
 
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.getInventory();
 
-        if (IGNORED_SLOTS.contains(inventory.selected)) return;
+        if (AutoToolsConfig.IGNORED_SLOTS.contains(inventory.selected)) return;
+
+        ItemStack stack = inventory.getSelected();
+        if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.tool && !stack.getComponents().has(DataComponents.TOOL)) return;
+        else if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.no_tool && stack.getComponents().has(DataComponents.TOOL)) return;
 
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
@@ -384,12 +415,7 @@ public class AutoTools {
                     ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
-                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
-                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
-                            if (durability < AutoToolsConfig.MIN_DURABILITY)
-                                continue;
-                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
-                            continue;
+                        if(!checkDurability(inventory.getItem(i))) continue;
 
                         newMiningSpeed = getMiningSpeed(inventory.getItem(i), blockState, blockHitResult.getBlockPos());
                     }
@@ -464,14 +490,7 @@ public class AutoTools {
                             }
                         }
 
-
-                        if (AutoToolsConfig.MIN_DURABILITY < 1) {
-                            double durability = (double) (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue()) / inventory.getItem(i).getMaxDamage();
-                            if (durability < AutoToolsConfig.MIN_DURABILITY)
-                                continue;
-                        } else if (inventory.getItem(i).getMaxDamage() - inventory.getItem(i).getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
-                            continue;
-
+                        if(!checkDurability(inventory.getItem(i))) continue;
 
                         float baseAttackDamage = 0;
                         float baseAttackSpeed = 0;

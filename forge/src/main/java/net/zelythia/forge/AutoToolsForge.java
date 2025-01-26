@@ -1,6 +1,7 @@
 package net.zelythia.forge;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -12,14 +13,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
-import net.zelythia.AutoToolsConfigScreen;
 import net.zelythia.TooltipHelper;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -30,19 +28,18 @@ public class AutoToolsForge {
 
     public static final KeyMapping key_changeTool = new KeyMapping("key.autotools.get_tool", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category");
 
-    public AutoToolsForge() {
+    public AutoToolsForge(FMLJavaModLoadingContext  context) {
         //Registering the clientSetup method
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerKeyBinding);
+        context.getModEventBus().addListener(this::clientSetup);
+        context.getModEventBus().addListener(this::registerKeyBinding);
 
         // Registering mod for game events
         MinecraftForge.EVENT_BUS.register(this);
 
         //Registering the config
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AutoToolsConfigImpl.SPEC, "autotools.toml");
-        ModLoadingContext.get().registerExtensionPoint(
+        context.registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory(((minecraft, screen) -> new AutoToolsConfigScreen(screen)))
+                () -> new ConfigScreenHandler.ConfigScreenFactory(((minecraft, screen) -> AutoConfig.getConfigScreen(AutoToolsConfigImpl.class, screen).get()))
         );
     }
 
@@ -57,36 +54,37 @@ public class AutoToolsForge {
 
 
     @SubscribeEvent
-    public void ClientTickEvent(@NotNull TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            Minecraft client = Minecraft.getInstance();
+    public void ClientTickStart(@NotNull TickEvent.ClientTickEvent.Pre event) {
+        Minecraft client = Minecraft.getInstance();
 
-            if (AutoToolsConfig.TOGGLE) {
-                //Handling key presses
-                if (key_changeTool.consumeClick()) {
-                    if (!keyPressed) {
-                        AutoTools.toggle = !AutoTools.toggle;
-                        client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
-                        keyPressed = true;
-                    }
-                } else {
-                    keyPressed = false;
+        if (AutoToolsConfig.TOGGLE) {
+            //Handling key presses
+            if (key_changeTool.consumeClick()) {
+                if (!keyPressed) {
+                    AutoTools.toggle = !AutoTools.toggle;
+                    client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
+                    keyPressed = true;
                 }
             } else {
-                if (key_changeTool.consumeClick()) {
-                    AutoTools.startedMining = false;
-                    AutoTools.getCorrectTool(client.hitResult, client);
-                }
+                keyPressed = false;
             }
-        } else if (event.phase == TickEvent.Phase.END) {
-            if (AutoToolsConfig.SWITCH_BACK) {
-                if (Minecraft.getInstance().options.keyAttack.isDown()) {
-                    AutoTools.startedMining = true;
-                } else {
-                    //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
-                    if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
-                        AutoTools.switchBack();
-                    }
+        } else {
+            if (key_changeTool.consumeClick()) {
+                AutoTools.startedMining = false;
+                AutoTools.getCorrectTool(client.hitResult, client);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void ClientTickEnd(@NotNull TickEvent.ClientTickEvent.Post event){
+        if (AutoToolsConfig.SWITCH_BACK) {
+            if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                AutoTools.startedMining = true;
+            } else {
+                //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
+                if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                    AutoTools.switchBack();
                 }
             }
         }

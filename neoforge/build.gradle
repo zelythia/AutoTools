@@ -6,6 +6,8 @@ repositories {
     maven {
         url = "https://maven.neoforged.net/releases"
     }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com/releases/" }
 }
 
 architectury {
@@ -30,6 +32,8 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
+
+    modApi("me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}")
 }
 
 base {

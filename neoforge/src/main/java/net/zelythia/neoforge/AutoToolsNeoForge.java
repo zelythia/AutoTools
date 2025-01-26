@@ -1,14 +1,16 @@
 package net.zelythia.neoforge;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.jarjar.nio.util.Lazy;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -20,7 +22,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
-import net.zelythia.AutoToolsConfigScreen;
 import net.zelythia.TooltipHelper;
 import org.lwjgl.glfw.GLFW;
 
@@ -39,12 +40,18 @@ public class AutoToolsNeoForge {
         NeoForge.EVENT_BUS.register(this);
 
         //Registering the config
-        modContainer.registerConfig(ModConfig.Type.CLIENT, AutoToolsConfigImpl.SPEC, "autotools.toml");
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (client, screen) -> new AutoToolsConfigScreen(screen));
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (client, parent) -> AutoConfig.getConfigScreen(AutoToolsConfigImpl.class, parent).get());
     }
 
     //Called once when the client is set up
     public void clientSetup(final FMLCommonSetupEvent event) {
+        AutoConfig.register(AutoToolsConfigImpl.class, GsonConfigSerializer::new);  //TODO switch to Jankson after Lists are fixed
+
+        AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).registerSaveListener((configHolder, autoToolsConfig) -> {
+            AutoToolsConfig.load();
+            return InteractionResult.SUCCESS;
+        });
+
         AutoTools.init();
     }
 

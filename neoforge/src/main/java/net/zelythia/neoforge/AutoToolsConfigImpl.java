@@ -1,122 +1,114 @@
 package net.zelythia.neoforge;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 
-public class AutoToolsConfigImpl {
+import java.util.List;
+
+@Config(name = "autotools")
+public class AutoToolsConfigImpl implements ConfigData {
+    @Comment("AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.")
+    boolean toggle = false;
+    @Comment("Disables AutoTools in creative-mode if toggle is disabled")
+    boolean disableCreative = true;
+    @Comment("Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics")
+    boolean keepSlot = false;
+    @Comment("AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability")
+    boolean preferHotbarTool = true;
+    @Comment("AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed")
+    boolean preferLowDurability = false;
+    @Comment("Autotools will use Fortune for Gravel and Leaves")
+    boolean alwaysPreferFortune = false;
+    @Comment("AutoTools will only switch items if you can't mine a block with your current one")
+    boolean onlySwitchIfNecessary = false;
+    @Comment("AutoTools will switch back to the previous tool or item you had in your hand before breaking the block")
+    boolean switchBack = false;
+    @Comment("Displays the weapons Dps when hovering over it")
+    boolean showDPS = false;
+    @Comment("AutoTools will change to the tool with the most DPS when looking at an entity")
+    boolean changeForEntities = true;
+    @Comment("AutoTools won't change to a better weapon(e.g. a sword) when holding an axe")
+    boolean keepAxe = false;
+
+    @Comment("Autotools additionally will prefer Silk Touch even if it isn't required to mine a block: ")
+    AutoToolsConfig.PreferSilkTouch preferSilkTouch = AutoToolsConfig.PreferSilkTouch.except_ores;
+    @Comment("AutoTools will only work and swap to the best tool if you are already holding: ")
+    AutoToolsConfig.Enabled enabled = AutoToolsConfig.Enabled.always;
+
+    @Comment("AutoTools won't do anything if the currently selected one of these:")
+    List<Integer> ignoredSlots = List.<Integer>of();
+    @Comment("AutoTools only puts tools in these slots:")
+    List<Integer> targetSlots = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+    @Comment("If < 1: Seen as a percentage: Tools below minDurability won't be selected\nElse: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)")
+    double minDurability = 0d;
+    @Comment("Prevents mining when going under minDurability")
+    boolean durabilityCheck = true;
+
+    @Comment("""
+            Add custom block-tool-configurations in JSON format
+                e.g. {"minecraft:block_id":"minecraft:tool_id"} or customTools={"minecraft:block_id":["minecraft:tool_id_1", "minecraft:tool_id_2"]}
+            When adding multiple tools, the first one has the highest priority.
+            There are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword
+            Use "autotools:disabled" to disable AutoTools on a certain block.
+            Also works for entities: "minecraft:entity_id":"minecraft:tool_id\"""")
+    String customTools = "{}";
+
+    @Comment("Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch. Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.")
+    boolean experimentalBreakDelay = false;
 
 
-    public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec SPEC;
+    @Override
+    public void validatePostLoad() throws ValidationException {
+        ConfigData.super.validatePostLoad();
 
-    private static final ModConfigSpec.BooleanValue TOGGLE;
-    private static final ModConfigSpec.BooleanValue SHOWDPS;
-    private static final ModConfigSpec.BooleanValue KEEPSLOT;
-    private static final ModConfigSpec.BooleanValue DISABLECREATIVE;
-    private static final ModConfigSpec.ConfigValue<String> PREFER_SILK_TOUCH;
-    private static final ModConfigSpec.BooleanValue ALWAYS_PREFER_FORTUNE;
-    private static final ModConfigSpec.BooleanValue ONLY_SWITCH_IF_NECESSARY;
-    private static final ModConfigSpec.BooleanValue PREFER_HOTBAR_TOOL;
-    private static final ModConfigSpec.BooleanValue PREFER_LOW_DURABILITY;
-    private static final ModConfigSpec.BooleanValue SWITCH_BACK;
-    private static final ModConfigSpec.BooleanValue CHANGE_FOR_ENTITIES;
-    private static final ModConfigSpec.BooleanValue KEEP_AXE;
+        ignoredSlots = ignoredSlots.stream().filter(i -> {
+            if (i >= 1 && i <= 9) return true;
+            AutoTools.LOGGER.warn("Removed Slot: ${} from ignoredSlots", i);
+            return false;
+        }).toList();
 
-    private static final ModConfigSpec.ConfigValue<String> CUSTOM_TOOLS;
-    private static final ModConfigSpec.ConfigValue<String> IGNORED_SLOTS;
-    private static final ModConfigSpec.ConfigValue<String> TARGET_SLOTS;
-    private static final ModConfigSpec.ConfigValue<Double> MIN_DURABILITY;
-
-
-    static {
-        BUILDER.push("AutoTools");
-
-        TOGGLE = BUILDER.comment("AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.")
-                .define("toggle", false);
-        DISABLECREATIVE = BUILDER.comment("Disables AutoTools in creative if toggle is enabled")
-                .define("disableCreative", true);
-        KEEPSLOT = BUILDER.comment("Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics")
-                .define("keepSlot", false);
-        PREFER_HOTBAR_TOOL = BUILDER.comment("utoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability")
-                .define("preferHotBarTool", true);
-        PREFER_LOW_DURABILITY = BUILDER.comment("AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed")
-                .define("preferLowDurability", false);
-        ALWAYS_PREFER_FORTUNE = BUILDER.comment("Autotools will try to always get a tool with Fortune for gravel and leaves")
-                .define("alwaysPreferFortune", false);
-        BUILDER.comment(" ");
-
-        ONLY_SWITCH_IF_NECESSARY = BUILDER.comment("AutoTools only tries to get a new tool if it is needed to break the block")
-                .define("onlySwitchIfNecessary", false);
-        SWITCH_BACK = BUILDER.comment("AutoTools will switch back to you previous tool or item you had in your hand before breaking the block")
-                .define("switchBack", false);
-        SHOWDPS = BUILDER.comment("Displays the weapons Dps when hovering over it.")
-                .define("showDPS", true);
-        CHANGE_FOR_ENTITIES = BUILDER.comment("AutoTools will change to the tool with the most DPS when looking at an entity.")
-                .define("changeForEntities", true);
-        KEEP_AXE = BUILDER.comment("AutoTools won't change to a better weapon(e.g. a sword) when holding an axe")
-                .define("changeForEntities", false);
-        BUILDER.comment(" ");
-
-        PREFER_SILK_TOUCH = BUILDER.comment("Autotools will prefer Silk Touch: never, always, always_ores, except_ores")
-                .define("preferSilkTouch", "except_ores");
-        BUILDER.comment(" ");
-
-        IGNORED_SLOTS = BUILDER.comment("AutoTools won't do anything if the currently selected slot is in ignoredSlots")
-                .define("ignoredSlots", "[]");
-        TARGET_SLOTS = BUILDER.comment("AutoTools only puts tools in these slots:")
-                .define("targetSlots", "[1,2,3,4,5,6,7,8,9]");
-        BUILDER.comment(" ");
-
-        MIN_DURABILITY = BUILDER.comment("If < 1: Seen as a percentage: Tools below minDurability won't be selected\\Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)")
-                .define("minDurability", 0d);
-        BUILDER.comment(" ");
-
-        CUSTOM_TOOLS = BUILDER.comment("Add custom block-tool-configurations in JSON format\n" +
-                        "e.g. customTools={\\\"minecraft:block_id\\\":\\\"minecraft:tool_id\\\"} or customTools={\\\"minecraft:block_id\\\":[\\\"minecraft:tool_id_1\\\", \\\"minecraft:tool_id_2\\\"]}\n" +
-                        "When adding multiple tools, the first one has the highest priority\n" +
-                        "There are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\ne" +
-                        "Use \"autotools:disabled\" to disable AutoTools on a certain block\n" +
-                        "Also works for entities: \"minecraft:entity_id\":\"minecraft:tool_id")
-                .define("customTools", "{}");
-
-        BUILDER.pop();
-        SPEC = BUILDER.build();
-    }
-
-    public static void save() {
-        TOGGLE.set(AutoToolsConfig.TOGGLE);
-        SHOWDPS.set(AutoToolsConfig.SHOWDPS);
-        KEEPSLOT.set(AutoToolsConfig.KEEPSLOT);
-        DISABLECREATIVE.set(AutoToolsConfig.DISABLECREATIVE);
-        PREFER_SILK_TOUCH.set(AutoToolsConfig.PREFER_SILK_TOUCH);
-        ALWAYS_PREFER_FORTUNE.set(AutoToolsConfig.ALWAYS_PREFER_FORTUNE);
-        ONLY_SWITCH_IF_NECESSARY.set(AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY);
-        PREFER_HOTBAR_TOOL.set(AutoToolsConfig.PREFER_HOTBAR_TOOL);
-        PREFER_LOW_DURABILITY.set(AutoToolsConfig.PREFER_LOW_DURABILITY);
-        SWITCH_BACK.set(AutoToolsConfig.SWITCH_BACK);
-        CHANGE_FOR_ENTITIES.set(AutoToolsConfig.CHANGE_FOR_ENTITIES);
-        KEEP_AXE.set(AutoToolsConfig.KEEP_AXE);
-
-        SPEC.save();
+        targetSlots = targetSlots.stream().filter(i -> {
+            if (i >= 1 && i <= 9) return true;
+            AutoTools.LOGGER.warn("Removed Slot: ${} from targetSlots", i);
+            return false;
+        }).toList();
     }
 
     public static void load() {
-        AutoToolsConfig.TOGGLE = TOGGLE.get();
-        AutoToolsConfig.SHOWDPS = SHOWDPS.get();
-        AutoToolsConfig.KEEPSLOT = KEEPSLOT.get();
-        AutoToolsConfig.DISABLECREATIVE = DISABLECREATIVE.get();
-        AutoToolsConfig.PREFER_SILK_TOUCH = PREFER_SILK_TOUCH.get();
-        AutoToolsConfig.ALWAYS_PREFER_FORTUNE = ALWAYS_PREFER_FORTUNE.get();
-        AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = ONLY_SWITCH_IF_NECESSARY.get();
-        AutoToolsConfig.PREFER_HOTBAR_TOOL = PREFER_HOTBAR_TOOL.get();
-        AutoToolsConfig.PREFER_LOW_DURABILITY = PREFER_LOW_DURABILITY.get();
-        AutoToolsConfig.SWITCH_BACK = SWITCH_BACK.get();
-        AutoToolsConfig.CHANGE_FOR_ENTITIES = CHANGE_FOR_ENTITIES.get();
-        AutoToolsConfig.KEEP_AXE = KEEP_AXE.get();
+        AutoTools.swaps.clear();
 
-        AutoToolsConfig.CUSTOM_TOOLS = CUSTOM_TOOLS.get();
-        AutoToolsConfig.IGNORED_SLOTS = IGNORED_SLOTS.get();
-        AutoToolsConfig.TARGET_SLOTS = TARGET_SLOTS.get();
-        AutoToolsConfig.MIN_DURABILITY = MIN_DURABILITY.get();
+        AutoToolsConfigImpl config = AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).getConfig();
+
+        AutoToolsConfig.TOGGLE = config.toggle;
+        AutoToolsConfig.DISABLECREATIVE = config.disableCreative;
+        AutoToolsConfig.KEEPSLOT = config.keepSlot;
+        AutoToolsConfig.PREFER_HOTBAR_TOOL = config.preferHotbarTool;
+        AutoToolsConfig.PREFER_LOW_DURABILITY = config.preferLowDurability;
+        AutoToolsConfig.ALWAYS_PREFER_FORTUNE = config.alwaysPreferFortune;
+        AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = config.onlySwitchIfNecessary;
+        AutoToolsConfig.SWITCH_BACK = config.switchBack;
+        AutoToolsConfig.SHOWDPS = config.showDPS;
+        AutoToolsConfig.CHANGE_FOR_ENTITIES = config.changeForEntities;
+        AutoToolsConfig.KEEP_AXE = config.keepAxe;
+
+        AutoToolsConfig.PREFER_SILK_TOUCH = config.preferSilkTouch;
+        AutoToolsConfig.ENABLED = config.enabled;
+
+        AutoToolsConfig.IGNORED_SLOTS = config.ignoredSlots;
+        AutoToolsConfig.TARGET_SLOTS = config.targetSlots;
+
+        AutoToolsConfig.MIN_DURABILITY = config.minDurability;
+        AutoToolsConfig.DURABILITY_CHECK = config.durabilityCheck;
+
+        AutoToolsConfig.CUSTOM_TOOLS = config.customTools;
+
+        AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = config.experimentalBreakDelay;
+
     }
 }
+
