@@ -1,10 +1,9 @@
-- Fixed #12: Tools goes to crafting slot after breaking block
-- Fixed #13: Fixed wrong tools being selected on blocks that don't require any specific tool
-- Fixed #16: SwitchBack still active after disabling in config
+#### \[Warning] AutoTools 3.0 changed the config format, breaking all config files
 
+- New config options:
+    - durabilityCheck: Prevents mining when going under minDurability (#21 by [Solowej2008](https://github.com/Solowej2008))
+    - enabled. AutoTools will only work when you are holding: always, tool, no_tool (#23 by [gamelamp](https://github.com/gamelamp) & [Matnns](https://github.com/Matnns))
+    - experimentalBreakDelay: Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch. Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining (#20)
 
-- Added #8: ignored and target Slots config option
-- Added #14: minDurability config option
-
-
-- Changed naming of keybind for better clarity
+- Switch to Cloth Config Api on Fabric and Forge
+- Minimized amount of swaps for switchBack

@@ -1,9 +1,13 @@
 package net.zelythia.mixins;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 import org.spongepowered.asm.mixin.Final;
@@ -22,13 +26,31 @@ public class GameModeMixin {
     @Final
     private Minecraft minecraft;
 
-    @Inject(at = @At("HEAD"), method = "startDestroyBlock")
+    @Inject(at = @At("HEAD"), method = "startDestroyBlock", cancellable = true)
     private void startDestroyBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        if(minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())){
+            cir.setReturnValue(false);
+            SystemToast.addOrUpdate(minecraft.getToasts(),  SystemToast. SystemToastIds.PERIODIC_NOTIFICATION, new TextComponent("AutoTools"), new TranslatableComponent("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
+        }
+
         AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
+
+        //Adds a 1 Tick = 50ms delay when breaking blocks to prevent desyncs like Ghost-Blocks
+        if(AutoToolsConfig.TOGGLE && AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY){
+            if(AutoTools.swapped){
+                cir.setReturnValue(false);
+                AutoTools.swapped = false;
+            }
+        }
     }
 
-    @Inject(at = @At("HEAD"), method = "attack")
+    @Inject(at = @At("HEAD"), method = "attack", cancellable = true)
     private void attack(CallbackInfo ci) {
+        if(minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())){
+            ci.cancel();
+            SystemToast.addOrUpdate(minecraft.getToasts(),  SystemToast. SystemToastIds.PERIODIC_NOTIFICATION, new TextComponent("AutoTools"), new TranslatableComponent("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
+        }
+
         //SwitchBack doesn't really make sense for mobs
         if (!AutoToolsConfig.SWITCH_BACK) {
             AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);

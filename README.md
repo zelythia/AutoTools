@@ -1,13 +1,16 @@
 # AutoTools
 
+[![modrinth](https://img.shields.io/modrinth/dt/minecraft_autotools?style=for-the-badge&logo=modrinth&label=Modrinth&color=1bd96a)](https://modrinth.com/mod/minecraft_autotools)
+[![modrinth](https://cf.way2muchnoise.eu/522205.svg?badge_style=for_the_badge)]([https://modrinth.com/mod/minecraft_autotools](https://www.curseforge.com/minecraft/mc-mods/autotools))
+
 AutoTools looks through your whole inventory and finds the best tool to mine a block or attack a mob. The tool is
 determined by mining speed, mining level, enchantments, and the DPS. the Mod features a high level of customisation with
 many config options. For blocks where SilkTouch is preferred
-see [silk_touch.json](https://github.com/zelythia/AutoTools/blob/1.18.2/common/src/main/resources/data/autotools/tags/blocks/silk_touch.json)
+see [silk_touch.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch.json)
 and for
-Fortune [fortune.json](https://github.com/zelythia/AutoTools/blob/1.18.2/common/src/main/resources/data/autotools/tags/blocks/fortune.json).
+Fortune [fortune.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/fortune.json).
 Shears will always pre preferred
-for [shears.json](https://github.com/zelythia/AutoTools/blob/1.18.2/common/src/main/resources/data/autotools/tags/blocks/shears.json)
+for [shears.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/shears.json)
 
 - #### Selection Config \[default]:
     - **toggle** \[false]: AutoTools will always be active and try to get you the best tool. Can be toggled with the set
@@ -25,16 +28,29 @@ for [shears.json](https://github.com/zelythia/AutoTools/blob/1.18.2/common/src/m
     - **switchBack** \[false]: AutoTools will switch back to the item you had in your hand before breaking the block
     - **showDPS** \[true]: Displays the weapons Damage when hovering over it as a tooltip
     - **changeForEntities** \[true]: AutoTools will change to the tool with the most DPS when looking at an entity
+    - **keepAxe** \[false]: AutoTools won't change to a better weapon(e.g. a sword) when holding an axe
+    - **enabled** \[always]:
+        - always: AutoTools will always be active
+        - tool: AutoTools will only be active while holding a tool
+        - no_tool: AutoTools will only be active while not holding a tool
+    - **ignoredSlots** \[\[]]: AutoTools won't do anything if the currently selected one of these
+    - **targetSlots** \[\[1,2,3,4,5,6,7,8,9]]: AutoTools only puts tools in these slots
+    - **minDurability** \[0.0]: If < 1: Seen as a percentage: Tools below minDurability won't be selected  
+      Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
+    - **durabilityCheck** \[true]: Prevents mining when going under minDurability
+    - **experimentalBreakDelay** \[false]: Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking
+      a block after a tool switch.  
+      Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.
 
 - #### Block Behaviour:
     - **onlySwitchIfNecessary** \[false]: AutoTools only tries to get a new tool if it is needed to break the block
     - **alwaysPreferFortune** \[false]: Autotools will use Fortune for Gravel and Leaves
     - **preferSilkTouch** \[except_ores]:
-        - [always](https://github.com/zelythia/AutoTools/blob/1.18.2/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always.json):
+        - [always](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always.json):
           Autotools additionally will use SilkTouch for: grass, stone, ores, leaves, snow
-        - [always_ores](https://github.com/zelythia/AutoTools/blob/1.18.2/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always_ores.json):
+        - [always_ores](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always_ores.json):
           AutoTools additionally will use SilkTouch for ores
-        - [except_ores](https://github.com/zelythia/AutoTools/blob/1.18.2/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always_exc_ores.json):
+        - [except_ores](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always_exc_ores.json):
           Autotools additionally will SilkTouch for: grass, stone, leaves, snow
         - never: Autotools will only use SilkTouch if its required to mine a block.
     - **customTools**

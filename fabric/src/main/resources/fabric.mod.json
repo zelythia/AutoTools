@@ -34,7 +34,8 @@
     "fabric-lifecycle-events-v1": "*",
     "fabric-api-base": "*",
     "fabric-item-api-v1": "*",
-    "fabric-networking-api-v1": "*"
+    "fabric-networking-api-v1": "*",
+    "cloth-config": "*"
   },
   "recommends": {
     "minecraft": "1.18.2"

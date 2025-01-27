@@ -4,8 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 1.18.2
-  VERSION: 2.2
-  FABRIC_API_VERSION: 0.76.0+1.18.2
+  VERSION: 3.0
 
 jobs:
   build:
@@ -53,7 +52,8 @@ jobs:
             quilt
 
           dependencies: |
-            fabric@${{env.FABRIC_API_VERSION}}(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
+            cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
+            fabric(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
 
       - name: Publish Forge-Mod on (Curseforge/Modrinth)
         uses: Kir-Antipov/mc-publish@v3.3
@@ -73,6 +73,9 @@ jobs:
           changelog-file: CHANGELOG.md
           loaders: |
             forge
+
+          dependencies: |
+            cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
             
 
       - name: Publish Mod on Github

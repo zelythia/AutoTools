@@ -5,38 +5,77 @@
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",
     "chat.disabled_autotools": "§4Disabled§f AutoTools!",
 
-    "ui.config.toggle" : "Toggle",
-    "ui.config.showDPS" : "Show Dps",
-    "ui.config.keepSlot": "Keep selected slot",
-    "ui.config.disableCreative": "Disable in Creative",
-    "ui.config.preferSilkTouch": "Prefer Silk Touch",
-    "ui.config.preferSilkTouch.always": "Always",
-    "ui.config.preferSilkTouch.always_ores": "Ores",
-    "ui.config.preferSilkTouch.except_ores": "Except ores",
-    "ui.config.preferSilkTouch.never": "Never",
-    "ui.config.alwaysPreferFortune": "Always prefer Fortune",
-    "ui.config.onlySwitchIfNecessary": "Only switch if necessary",
-    "ui.config.preferHotbarTool": "Prefer Hotbar slot",
-    "ui.config.preferLowDurability": "Prefer lower durability",
-    "ui.config.switchBack": "Switch Back",
-    "ui.config.changeForEntities": "Change for entites",
-    "ui.config.keepAxe": "Keep Axe",
+    "ui.toast.autotools.durability_warning": "Durability too low: %s",
 
-    "ui.desc.toggle" : "AutoTools will always be active and try to get you the best tool. Can be toggled with the set key. (works best with \"Switch Back\")",
-    "ui.desc.showDPS" : "Displays the weapons Dps when hovering over it",
-    "ui.desc.keepSlot" : "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics",
-    "ui.desc.disableCreative" : "Disables AutoTools in creative-mode if toggle is disabled",
 
-    "ui.desc.preferSilkTouch.always": "Autotools additionally will use SilkTouch for: grass, stone, ores, leaves, snow",
-    "ui.desc.preferSilkTouch.always_ores": "AutoTools additionally will use SilkTouch for ores",
-    "ui.desc.preferSilkTouch.except_ores": "Autotools additionally will SilkTouch for: grass, stone, leaves, snow",
-    "ui.desc.preferSilkTouch.never": "Autotools will use SilkTouch if its required to mine a block.",
+    "autotools.configuration.AutoTools": "AutoTools Config",
+    "autotools.configuration.toggle" : "Toggle",
+    "autotools.configuration.showDPS" : "Show Dps",
+    "autotools.configuration.keepSlot": "Keep selected slot",
+    "autotools.configuration.disableCreative": "Disable in Creative",
+    "autotools.configuration.preferSilkTouch": "Prefer Silk Touch",
+    "autotools.configuration.preferSilkTouch.always": "Always",
+    "autotools.configuration.preferSilkTouch.always_ores": "Ores",
+    "autotools.configuration.preferSilkTouch.except_ores": "Except ores",
+    "autotools.configuration.preferSilkTouch.never": "Never",
+    "autotools.configuration.alwaysPreferFortune": "Always prefer Fortune",
+    "autotools.configuration.onlySwitchIfNecessary": "Only switch if necessary",
+    "autotools.configuration.preferHotbarTool": "Prefer Hotbar slot",
+    "autotools.configuration.preferLowDurability": "Prefer lower durability",
+    "autotools.configuration.switchBack": "Switch Back",
+    "autotools.configuration.changeForEntities": "Change for entites",
+    "autotools.configuration.keepAxe": "Keep Axe",
 
-    "ui.desc.alwaysPreferFortune": "Autotools will use Fortune for Gravel and Leaves",
-    "ui.desc.onlySwitchIfNecessary": "AutoTools will only switch items if you can't mine a block with your current one",
-    "ui.desc.preferHotbarTool": "AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability",
-    "ui.desc.preferLowDurability": "AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed",
-    "ui.desc.switchBack": "AutoTools will switch back to the previous tool or item you had in your hand before breaking the block",
-    "ui.desc.changeForEntities": "AutoTools will change to the tool with the most DPS when looking at an entity",
-    "ui.desc.keepAxe": "AutoTools won't change to a better weapon(e.g. a sword) when holding an axe"
+    "autotools.configuration.enabled": "Enabled",
+    "autotools.configuration.enabled.always": "Always",
+    "autotools.configuration.enabled.tool": "Tool in Hand",
+    "autotools.configuration.enabled.no_tool": "No Tool in Hand",
+
+    "autotools.configuration.ignoredSlots": "Ignored Slots",
+    "autotools.configuration.targetSlots": "Target Slots",
+
+    "autotools.configuration.minDurability": "Minimum Durability",
+    "autotools.configuration.durabilityCheck": "Durability Checker",
+
+    "autotools.configuration.customTools": "Custom Tools",
+
+    "autotools.configuration.experimentalBreakDelay": "[Experimental] Break Delay",
+
+
+
+    "text.autoconfig.autotools.title": "AutoTools Config",
+
+    "text.autoconfig.autotools.option.toggle" : "Toggle",
+    "text.autoconfig.autotools.option.showDPS" : "Show Dps",
+    "text.autoconfig.autotools.option.keepSlot": "Keep selected slot",
+    "text.autoconfig.autotools.option.disableCreative": "Disable in Creative",
+    "text.autoconfig.autotools.option.preferSilkTouch": "Prefer Silk Touch",
+    "text.autoconfig.autotools.option.preferSilkTouch.always": "Always",
+    "text.autoconfig.autotools.option.preferSilkTouch.always_ores": "Ores",
+    "text.autoconfig.autotools.option.preferSilkTouch.except_ores": "Except ores",
+    "text.autoconfig.autotools.option.preferSilkTouch.never": "Never",
+    "text.autoconfig.autotools.option.alwaysPreferFortune": "Always prefer Fortune",
+    "text.autoconfig.autotools.option.onlySwitchIfNecessary": "Only switch if necessary",
+    "text.autoconfig.autotools.option.preferHotbarTool": "Prefer Hotbar slot",
+    "text.autoconfig.autotools.option.preferLowDurability": "Prefer lower durability",
+    "text.autoconfig.autotools.option.switchBack": "Switch Back",
+    "text.autoconfig.autotools.option.changeForEntities": "Change for entites",
+    "text.autoconfig.autotools.option.keepAxe": "Keep Axe",
+
+    "text.autoconfig.autotools.option.enabled": "Enabled",
+    "text.autoconfig.autotools.option.enabled.always": "Always",
+    "text.autoconfig.autotools.option.enabled.tool": "Tool in Hand",
+    "text.autoconfig.autotools.option.enabled.no_tool": "No Tool in Hand",
+
+    "text.autoconfig.autotools.option.ignoredSlots": "Ignored Slots",
+    "text.autoconfig.autotools.option.targetSlots": "Target Slots",
+
+    "text.autoconfig.autotools.option.minDurability": "Minimum Durability",
+    "text.autoconfig.autotools.option.durabilityCheck": "Durability Checker",
+
+    "text.autoconfig.autotools.option.customTools": "Custom Tools",
+
+    "text.autoconfig.autotools.option.experimentalBreakDelay": "[Experimental] Break Delay",
+
+    "autotools.configuration.customTools.tooltip": "Add custom tool-configurations in JSON format\ne.g. {\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nWhen adding multiple tools, the first one has the highest priority\nThere are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nUse \"autotools:disabled\" to disable AutoTools on a certain block\nAlso works for entities: \"minecraft:entity_id\":\"minecraft:tool_id"
 }
