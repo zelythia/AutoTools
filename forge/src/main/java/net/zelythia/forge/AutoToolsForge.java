@@ -1,11 +1,14 @@
 package net.zelythia.forge;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,12 +19,10 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
-import net.zelythia.AutoToolsConfigScreen;
 import net.zelythia.TooltipHelper;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -60,15 +61,20 @@ public class AutoToolsForge {
         MinecraftForge.EVENT_BUS.register(this);
 
         //Registering the config
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AutoToolsConfigImpl.SPEC, "autotools.toml");
         ModLoadingContext.get().registerExtensionPoint(
                 ExtensionPoint.CONFIGGUIFACTORY,
-                () -> (minecraft, screen) -> new AutoToolsConfigScreen(screen)
+                () -> (minecraft, screen) -> AutoConfig.getConfigScreen(AutoToolsConfigImpl.class, screen).get()
         );
     }
 
     //Called once when the client is set up
     public void clientSetup(final FMLCommonSetupEvent event) {
+        AutoConfig.register(AutoToolsConfigImpl.class, GsonConfigSerializer::new);  //TODO switch to Jankson after Lists are fixed
+        AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).registerSaveListener((configHolder, autoToolsConfig) -> {
+            AutoToolsConfig.load();
+            return InteractionResult.SUCCESS;
+        });
+
         ClientRegistry.registerKeyBinding(key_changeTool);
         AutoTools.init();
     }
@@ -116,7 +122,7 @@ public class AutoToolsForge {
     }
 
     @SubscribeEvent
-    public void onJoin(ClientPlayerNetworkEvent.LoggedInEvent event){
+    public void onJoin(ClientPlayerNetworkEvent.LoggedInEvent event) {
         AutoTools.swaps.clear();
         AutoTools.lastBlock = null;
     }

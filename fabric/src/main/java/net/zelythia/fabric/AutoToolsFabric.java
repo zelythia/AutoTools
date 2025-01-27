@@ -1,6 +1,8 @@
 package net.zelythia.fabric;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
 import net.zelythia.TooltipHelper;
@@ -25,6 +28,12 @@ public class AutoToolsFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        AutoConfig.register(AutoToolsConfigImpl.class, GsonConfigSerializer::new);  //TODO switch to Jankson after Lists are fixed
+        AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).registerSaveListener((configHolder, autoToolsConfig) -> {
+            AutoToolsConfig.load();
+            return InteractionResult.SUCCESS;
+        });
+
         AutoTools.SHEARS = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "shears"));
         AutoTools.SILK_TOUCH = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch"));
         AutoTools.SILK_TOUCH_SETTING_ALWAYS = TagRegistry.block(new ResourceLocation(AutoTools.MOD_ID, "silk_touch_setting_always"));
