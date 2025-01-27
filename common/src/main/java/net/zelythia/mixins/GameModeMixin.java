@@ -24,7 +24,7 @@ public class GameModeMixin {
     @Final
     private Minecraft minecraft;
 
-    @Inject(at = @At("HEAD"), method = "startDestroyBlock")
+    @Inject(at = @At("HEAD"), method = "startDestroyBlock", cancellable = true)
     private void startDestroyBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if(minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())){
             cir.setReturnValue(false);
@@ -42,7 +42,7 @@ public class GameModeMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "attack")
+    @Inject(at = @At("HEAD"), method = "attack", cancellable = true)
     private void attack(CallbackInfo ci) {
         if(minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())){
             ci.cancel();
