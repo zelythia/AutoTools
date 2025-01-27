@@ -1,8 +1,9 @@
-- Fixed #2: AutoTools now works with baritone
-- Fixed #4: Fixing multiple issues with switchBack and keepSelectedSlot
-- Fixed #5: AutoTools now prefers swords for breaking bamboo
-- Fixed #6: ClientTags now properly work on Forge
-- Fixed DPS-Tooltip position issues
+#### \[Warning] AutoTools 3.0 changed the config format, breaking all config files
 
+- New config options:
+    - durabilityCheck: Prevents mining when going under minDurability (#21 by [Solowej2008](https://github.com/Solowej2008))
+    - enabled. AutoTools will only work when you are holding: always, tool, no_tool (#23 by [gamelamp](https://github.com/gamelamp) & [Matnns](https://github.com/Matnns))
+    - experimentalBreakDelay: Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch. Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining (#20)
 
-- Added #3: Option to not switch when holding an axe in combat
+- Switch to Cloth Config Api on Fabric and Forge
+- Minimized amount of swaps for switchBack

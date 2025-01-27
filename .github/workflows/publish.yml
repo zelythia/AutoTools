@@ -4,8 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 1.20.1
-  VERSION: 2.1.1
-  FABRIC_API_VERSION: 0.92.0+1.20.1
+  VERSION: 3.0
   SUPPORTED_VERSIONS: |
     1.20
     1.20.1
@@ -50,10 +49,12 @@ jobs:
           name: AutoTools Forge ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
           version-type: release
-          game-versions: ${{env.SUPPORTED_VERSIONS}}
           changelog-file: CHANGELOG.md
           loaders: |
             forge
+
+          dependencies: |
+            cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
 
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
         uses: Kir-Antipov/mc-publish@v3.3
@@ -70,14 +71,14 @@ jobs:
           name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
           version-type: release
-          game-versions: ${{env.SUPPORTED_VERSIONS}}
           changelog-file: CHANGELOG.md
           loaders: |
             fabric
             quilt
 
           dependencies: |
-            fabric@${{env.FABRIC_API_VERSION}}(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
+            cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
+            fabric(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
 
       - name: Publish Mod on Github
         uses: Kir-Antipov/mc-publish@v3.3
@@ -90,9 +91,6 @@ jobs:
             
             forge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
             forge/build/libs/*-@(dev|shadow|sources|javadoc).jar
-            
-            neoforge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
-            neoforge/build/libs/*-@(dev|shadow|sources|javadoc).jar
 
           name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"

@@ -2,6 +2,10 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
+repositories {
+    maven { url "https://maven.shedaniel.me/" }
+}
+
 architectury {
     platformSetupLoomIde()
     forge()
@@ -13,7 +17,7 @@ loom {
     forge {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-        mixinConfig "autotools.mixins.json"
+        mixinConfig "autotools-common.mixins.json"
     }
 }
 
@@ -30,6 +34,8 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+
+    modApi("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}")
 }
 
 base {

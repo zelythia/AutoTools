@@ -1,42 +1,9 @@
 {
-    "key.autotools.get_tool" : "Werkzeug auswählen",
+    "key.autotools.get_tool" : "Werkzeug auswählen/Umschalten",
     "key.autotools.category" : "AutoTools",
 
     "chat.enabled_autotools": "AutoTools §4an§f!",
     "chat.disabled_autotools": "AutoTools! §4aus§f",
 
-    "ui.config.toggle" : "Umschalten",
-    "ui.config.showDPS" : "Dps Anzeigen",
-    "ui.config.keepSlot": "Ausgewählten Slot behalten",
-    "ui.config.disableCreative": "Nur Survival",
-    "ui.config.preferSilkTouch": "Behutsamkeit bevorzugen",
-    "ui.config.preferSilkTouch.always": "Immer",
-    "ui.config.preferSilkTouch.always_ores": "Erze",
-    "ui.config.preferSilkTouch.except_ores": "Außer Erze",
-    "ui.config.preferSilkTouch.never": "Nie",
-    "ui.config.alwaysPreferFortune": "Immer Glück bevorzugen",
-    "ui.config.onlySwitchIfNecessary": "Nur Tauschen wenn nötig",
-    "ui.config.preferHotbarTool": "Hotbar Slot bevorzugen",
-    "ui.config.preferLowDurability": "Geringe Haltbarkeit bevorzugen",
-    "ui.config.switchBack": "Zurücktauschen",
-    "ui.config.changeForEntities": "Wechsle für Entites",
-    "ui.config.keepAxe": "Axt behalten",
-
-    "ui.desc.toggle" : "AutoTools wird immer an sein und das beste Werkzeug auswählen. Kann mit der festgelegten Taste ein und aus geschalten werden. (Funktioniert sehr gut mit \"Zurücktauschen\")",
-    "ui.desc.showDPS" : "Zeigt den Dps der Waffe an wenn man mit der Maus darüber fährt",
-    "ui.desc.keepSlot" : "Behalte immer den ausgewählten slot anstatt die Vanilla-Mechaniken zu benutzen",
-    "ui.desc.disableCreative" : "Deaktiviert AutoTools im Kreativmodus wenn Umschalten an ist",
-
-    "ui.desc.preferSilkTouch.always": "AutoTools benutzt Behutsamkeit auch bei: Gras, Stein, Erzen, Blättern, Schnee",
-    "ui.desc.preferSilkTouch.always_ores": "AutoTools benutzt Behutsamkeit auch bei: Erzen",
-    "ui.desc.preferSilkTouch.except_ores": "AutoTools benutzt Behutsamkeit auch bei:Gras, Stein, Blättern, Schnee",
-    "ui.desc.preferSilkTouch.never": "AutoTools wird Behutsamkeit nur bevorzugen, wenn es zum Abbauen des Blockes benötigt wird",
-
-    "ui.desc.alwaysPreferFortune": "AutoTools benutzt Glück bei Kies und Blättern",
-    "ui.desc.onlySwitchIfNecessary": "AutoTools wird nur das Werkzeug nur ändern ,wenn es den Block nicht abbauen kann",
-    "ui.desc.preferHotbarTool": "AutoTools wird immer das Werkzeug in deiner Hotbar bevorzugen ohne Rücksicht auf die Haltbarkeit bei gleicher Abbaugeschwindigkeit",
-    "ui.desc.preferLowDurability": "AutoTools wird immer das Werkzeug mit der niedrigsten Haltbarkeit bevorzugen, wenn sie die gleiche Abbaugeschwindigkeit haben,",
-    "ui.desc.switchBack": "AutoTools wechselt nach dem Abbauen automatisch zum vorherigen Gegenstand zurück",
-    "ui.desc.changeForEntities": "AutoTools wird die Waffe mit dem meisten Schaden auswählen wenn mann auf ein Entity schaut",
-    "ui.desc.keepAxe": "AutoTools wird nicht zu einer besseren Waffe (z.B. ein Schwert wechseln), wenn man eine Axt in der Hand hat"
+    "ui.toast.autotools.durability_warning": "Haltbarkeit zu niedrig: %s"
 }
