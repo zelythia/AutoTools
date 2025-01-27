@@ -145,7 +145,7 @@ public class AutoTools {
         }
 
         if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
-            if (swaps.getLast() != inventory.selected) {
+            if (swaps.get(swaps.size() - 1) != inventory.selected) {
                 if (swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
             inventory.selected = sourceSlot;
@@ -157,7 +157,7 @@ public class AutoTools {
             sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
 
         int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
-        if (!AutoToolsConfig.TARGET_SLOTS.contains(destSlot)) destSlot = AutoToolsConfig.TARGET_SLOTS.getFirst();
+        if (!AutoToolsConfig.TARGET_SLOTS.contains(destSlot)) destSlot = AutoToolsConfig.TARGET_SLOTS.get(0);
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
@@ -363,6 +363,9 @@ public class AutoTools {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
 
+            if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.tool && !(getMiningSpeed(inventory.getSelected(), blockState, blockHitResult.getBlockPos()).miningSpeed > 1 || inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+            else if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.no_tool && (getMiningSpeed(inventory.getSelected(), blockState, blockHitResult.getBlockPos()).miningSpeed > 1 || inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+
             int toolSlot = -1;
             ItemMiningSpeed miningSpeed = new ItemMiningSpeed(1f, 0);
 
@@ -451,12 +454,15 @@ public class AutoTools {
         } else if (AutoToolsConfig.CHANGE_FOR_ENTITIES && hit.getType() == HitResult.Type.ENTITY) {
             Entity entity = ((EntityHitResult) hit).getEntity();
 
-            int toolSlot = -1;
-            float attackDamage = 0;
-
             if (AutoToolsConfig.KEEP_AXE && Arrays.asList(TOOL_LISTS.get("autotools:axe")).contains(BuiltInRegistries.ITEM.getKey(inventory.getSelected().getItem()))) {
                 return;
             }
+
+            if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.tool && !(inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+            else if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.no_tool && (inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+
+            int toolSlot = -1;
+            float attackDamage = 0;
 
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 Item item = inventory.getItem(i).getItem();
