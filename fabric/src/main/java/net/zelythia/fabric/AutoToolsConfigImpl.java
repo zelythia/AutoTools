@@ -108,7 +108,14 @@ public class AutoToolsConfigImpl implements ConfigData {
         AutoToolsConfig.CUSTOM_TOOLS = config.customTools;
 
         AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = config.experimentalBreakDelay;
+    }
 
+    public static void save() {
+        AutoToolsConfigImpl config = AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).getConfig();
+
+        config.preferSilkTouch = AutoToolsConfig.PREFER_SILK_TOUCH;
+
+        AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).save();
     }
 }
 

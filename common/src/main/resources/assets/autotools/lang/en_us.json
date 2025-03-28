@@ -1,9 +1,12 @@
 {
     "key.autotools.get_tool" : "Pick Tool/Toggle",
+    "key.autotools.silktouch" : "Cycle SilkTouch Setting",
     "key.autotools.category" : "AutoTools",
 
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",
     "chat.disabled_autotools": "§4Disabled§f AutoTools!",
+
+    "chat.cycle_silktouch": "SilkTouch: ",
 
     "ui.toast.autotools.durability_warning": "Durability too low: %s",
 
@@ -15,7 +18,7 @@
     "autotools.configuration.disableCreative": "Disable in Creative",
     "autotools.configuration.preferSilkTouch": "Prefer Silk Touch",
     "autotools.configuration.preferSilkTouch.always": "Always",
-    "autotools.configuration.preferSilkTouch.always_ores": "Ores",
+    "autotools.configuration.preferSilkTouch.ores": "Ores",
     "autotools.configuration.preferSilkTouch.except_ores": "Except ores",
     "autotools.configuration.preferSilkTouch.never": "Never",
     "autotools.configuration.alwaysPreferFortune": "Always prefer Fortune",
@@ -51,7 +54,7 @@
     "text.autoconfig.autotools.option.disableCreative": "Disable in Creative",
     "text.autoconfig.autotools.option.preferSilkTouch": "Prefer Silk Touch",
     "text.autoconfig.autotools.option.preferSilkTouch.always": "Always",
-    "text.autoconfig.autotools.option.preferSilkTouch.always_ores": "Ores",
+    "text.autoconfig.autotools.option.preferSilkTouch.ores": "Ores",
     "text.autoconfig.autotools.option.preferSilkTouch.except_ores": "Except ores",
     "text.autoconfig.autotools.option.preferSilkTouch.never": "Never",
     "text.autoconfig.autotools.option.alwaysPreferFortune": "Always prefer Fortune",

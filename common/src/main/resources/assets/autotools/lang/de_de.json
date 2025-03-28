@@ -1,5 +1,6 @@
 {
     "key.autotools.get_tool" : "Werkzeug auswählen/Umschalten",
+    "key.autotools.silktouch" : "SilkTouch-Einstellung ändern",
     "key.autotools.category" : "AutoTools",
 
     "chat.enabled_autotools": "AutoTools §4an§f!",

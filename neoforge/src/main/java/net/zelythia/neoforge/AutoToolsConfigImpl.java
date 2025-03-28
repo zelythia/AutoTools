@@ -147,4 +147,10 @@ public class AutoToolsConfigImpl {
 
         AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = EXPERIMENTAL_BREAK_DELAY.get();
     }
+
+    public static void save() {
+        PREFER_SILK_TOUCH.set(AutoToolsConfig.PREFER_SILK_TOUCH);
+
+        SPEC.save();
+    }
 }
