@@ -93,7 +93,7 @@ public class AutoToolsNeoForge {
                 AutoTools.startedMining = true;
             } else {
                 //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
-                if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                if (AutoToolsConfig.TOGGLE || AutoTools.startedMining) {
                     AutoTools.switchBack();
                 }
             }
@@ -117,6 +117,5 @@ public class AutoToolsNeoForge {
     @SubscribeEvent
     public void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         AutoTools.swaps.clear();
-        AutoTools.lastBlock = null;
     }
 }
