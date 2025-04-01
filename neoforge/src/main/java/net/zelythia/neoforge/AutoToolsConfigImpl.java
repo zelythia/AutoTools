@@ -42,36 +42,49 @@ public class AutoToolsConfigImpl {
         BUILDER.push("AutoTools");
 
         TOGGLE = BUILDER.comment("AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.")
+                .translation("text.autoconfig.autotools.option.toggle")
                 .define("toggle", false);
         DISABLECREATIVE = BUILDER.comment("Disables AutoTools in creative if toggle is enabled")
+                .translation("text.autoconfig.autotools.option.disableCreative")
                 .define("disableCreative", true);
         KEEPSLOT = BUILDER.comment("Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics")
+                .translation("text.autoconfig.autotools.option.keepSlot")
                 .define("keepSlot", false);
         PREFER_HOTBAR_TOOL = BUILDER.comment("AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability")
+                .translation("text.autoconfig.autotools.option.preferHotbarTool")
                 .define("preferHotbarTool", true);
         PREFER_LOW_DURABILITY = BUILDER.comment("AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed")
+                .translation("text.autoconfig.autotools.option.preferLowDurability")
                 .define("preferLowDurability", false);
         ALWAYS_PREFER_FORTUNE = BUILDER.comment("Autotools will try to always get a tool with Fortune for gravel and leaves")
+                .translation("text.autoconfig.autotools.option.alwaysPreferFortune")
                 .define("alwaysPreferFortune", false);
         BUILDER.comment(" ");
 
         ONLY_SWITCH_IF_NECESSARY = BUILDER.comment("AutoTools only tries to get a new tool if it is needed to break the block")
+                .translation("text.autoconfig.autotools.option.onlySwitchIfNecessary")
                 .define("onlySwitchIfNecessary", false);
         SWITCH_BACK = BUILDER.comment("AutoTools will switch back to you previous tool or item you had in your hand before breaking the block")
+                .translation("text.autoconfig.autotools.option.switchBack")
                 .define("switchBack", false);
         SHOWDPS = BUILDER.comment("Displays the weapons Dps when hovering over it.")
+                .translation("text.autoconfig.autotools.option.showDPS")
                 .define("showDPS", true);
         CHANGE_FOR_ENTITIES = BUILDER.comment("AutoTools will change to the tool with the most DPS when looking at an entity.")
+                .translation("text.autoconfig.autotools.option.changeForEntities")
                 .define("changeForEntities", true);
         KEEP_AXE = BUILDER.comment("AutoTools won't change to a better weapon(e.g. a sword) when holding an axe")
-                .define("changeForEntities", false);
+                .translation("text.autoconfig.autotools.option.keepAxe")
+                .define("keepAxe", false);
         BUILDER.comment(" ");
 
         PREFER_SILK_TOUCH = BUILDER.comment("Autotools additionally will prefer Silk Touch even if it isn't required to mine a block: never, always, ores, except_ores")
+                .translation("text.autoconfig.autotools.option.preferSilkTouch")
                 .defineEnum("preferSilkTouch", AutoToolsConfig.PreferSilkTouch.except_ores);
         BUILDER.comment(" ");
 
         IGNORED_SLOTS = BUILDER.comment("AutoTools won't do anything if the currently selected slot is in ignoredSlots")
+                .translation("text.autoconfig.autotools.option.ignoredSlots")
                 .defineListAllowEmpty("ignoredSlots", List.of(), () -> 1, o -> {
                     if (o instanceof Integer i) {
                         return i >= 1 && i <= 9;
@@ -80,6 +93,7 @@ public class AutoToolsConfigImpl {
                 });
 
         TARGET_SLOTS = BUILDER.comment("AutoTools only puts tools in these slots:")
+                .translation("text.autoconfig.autotools.option.targetSlots")
                 .defineListAllowEmpty("targetSlots", List.of(1,2,3,4,5,6,7,8,9), () -> 1, o -> {
                     if (o instanceof Integer i) {
                         return i >= 1 && i <= 9;
@@ -89,12 +103,15 @@ public class AutoToolsConfigImpl {
 
 
         MIN_DURABILITY = BUILDER.comment("If < 1: Seen as a percentage: Tools below minDurability won't be selected\\Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)")
+                .translation("text.autoconfig.autotools.option.minDurability")
                 .define("minDurability", 0d);
         DURABILITY_CHECK = BUILDER.comment("Prevents mining when going under minDurability")
+                .translation("text.autoconfig.autotools.option.durabilityCheck")
                 .define("durabilityCheck", true);
         BUILDER.comment(" ");
 
         ENABLED = BUILDER.comment("AutoTools will only work and swap to the best tool if you are already holding: always, tool, no_tool")
+                .translation("text.autoconfig.autotools.option.enabled")
                 .defineEnum("enabled", AutoToolsConfig.Enabled.always);
 
         CUSTOM_TOOLS = BUILDER.comment("Add custom block-tool-configurations in JSON format\n" +
@@ -103,6 +120,7 @@ public class AutoToolsConfigImpl {
                         "There are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\n" +
                         "Use \"autotools:disabled\" to disable AutoTools on a certain block\n" +
                         "Also works for entities: \"minecraft:entity_id\":\"minecraft:tool_id")
+                .translation("text.autoconfig.autotools.option.customTools")
                 .define("customTools", "{}", o -> {
                     if(o instanceof String s){
                         try {
@@ -116,6 +134,7 @@ public class AutoToolsConfigImpl {
                 });
 
         EXPERIMENTAL_BREAK_DELAY = BUILDER.comment("Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch.\nEnable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.")
+                .translation("text.autoconfig.autotools.option.experimentalBreakDelay")
                 .define("experimentalBreakDelay", false);
 
         BUILDER.pop();
