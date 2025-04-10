@@ -5,9 +5,9 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.20.6
   VERSION: 3.1
-  FORGE: ${{ false }}
-  NEOFORGE: ${{ true }}
-  FABRIC: ${{ true }}
+  FORGE: false
+  NEOFORGE: true
+  FABRIC: true
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Publish Forge-Mod on (Curseforge/Modrinth)
-        if: ${{ env.FORGE }}
+        if: env.FORGE == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -55,7 +55,7 @@ jobs:
             forge
 
       - name: Publish Neoforge-Mod on (Curseforge/Modrinth)
-        if: ${{ env.NEOFORGE }}
+        if: env.NEOFORGE == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -78,7 +78,7 @@ jobs:
             cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
 
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
-        if: ${{ env.FABRIC }}
+        if: env.FABRIC == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
