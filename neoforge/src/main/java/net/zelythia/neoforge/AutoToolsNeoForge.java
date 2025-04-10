@@ -49,7 +49,7 @@ public class AutoToolsNeoForge {
         AutoConfig.register(AutoToolsConfigImpl.class, GsonConfigSerializer::new);  //TODO switch to Jankson after Lists are fixed
 
         AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).registerSaveListener((configHolder, autoToolsConfig) -> {
-            AutoToolsConfig.load();
+            AutoTools.reloadConfig();
             return InteractionResult.SUCCESS;
         });
 
