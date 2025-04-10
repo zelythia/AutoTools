@@ -29,23 +29,20 @@ public class TooltipHelper {
                 float baseAttackDamage = 0;
                 float attackDamage = 0;
                 float attackSpeed = 0;
+                ItemAttributeModifiers modifiers = stack.get(DataComponents.ATTRIBUTE_MODIFIERS);
 
-                for (ItemAttributeModifiers.Entry modifier : stack.get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
-                    if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))){
+                if (modifiers == null) return;
+
+                for (ItemAttributeModifiers.Entry modifier : modifiers.modifiers()) {
+                    if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))) {
                         baseAttackDamage = (float) modifier.modifier().amount();
-                    }
-                    else if(modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))){
+                    } else if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))) {
                         attackSpeed = (float) modifier.modifier().amount();
                     }
                 }
 
-                if(baseAttackDamage > 0){
-                    if(attackSpeed > 0){
-                        attackDamage = (1 + baseAttackDamage) * (4F + attackSpeed);
-                    }
-                    else{
-                        attackDamage = baseAttackDamage + 1;
-                    }
+                if (baseAttackDamage > 0) {
+                    attackDamage = (1 + baseAttackDamage) * (4F + attackSpeed);
                 }
 
                 //Check for enchantments
@@ -61,20 +58,15 @@ public class TooltipHelper {
                         }
                     }
 
-                    if(attackSpeed > 0){
-                        optionalAttackDamage = (1 + optionalAttackDamage) * (4F + attackSpeed);
-                    }
-                    else{
-                        optionalAttackDamage = optionalAttackDamage + 1;
-                    }
+                    optionalAttackDamage = (1 + optionalAttackDamage) * (4F + attackSpeed);
                 }
 
 
                 if (attackDamage > 1) {
                     int index = 0;
                     for (int i = tooltip.size() - 1; i >= 0; i--) {
-                        if(tooltip.get(i).getStyle().getColor() != null){
-                            if(tooltip.get(i).getStyle().getColor().getValue() == 43520){
+                        if (tooltip.get(i).getStyle().getColor() != null) {
+                            if (tooltip.get(i).getStyle().getColor().getValue() == 43520) {
                                 index = i;
                                 break;
                             }

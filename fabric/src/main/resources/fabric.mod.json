@@ -28,15 +28,12 @@
   ],
   "depends": {
     "fabricloader": ">=0.15",
-    "minecraft": ">=1.21",
+    "minecraft": "~1.21.1",
     "java": ">=21",
     "fabric-key-binding-api-v1": "*",
     "fabric-lifecycle-events-v1": "*",
     "fabric-api-base": "*",
     "fabric-item-api-v1": "*",
     "fabric-networking-api-v1": "*"
-  },
-  "recommends": {
-    "minecraft": "1.21.1"
   }
 }

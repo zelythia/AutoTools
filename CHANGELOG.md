@@ -1,11 +1,9 @@
-- Fixed #7: Fixed Shears not working correctly
-- Fixed #12: Tools goes to crafting slot after breaking block
-- Fixed #13: Fixed wrong tools being selected on blocks that don't require any specific tool
-- Fixed #16: SwitchBack still active after disabling in config
+- Added localisation for the config screen tooltips
+- Russian translation thanks to @dardRuss(#31)
+- German translation for the config screen
 
 
-- Added #8: ignored and target Slots config option
-- Added #14: minDurability config option
+- Added a new Keybinding for cycling preferSilkTouch options (idea by ) (#28)
 
 
-- Changed naming of keybind for better clarity
+- Possible fix for issues when instant mining (#28). The experimental swap delay is probably not needed anymore
