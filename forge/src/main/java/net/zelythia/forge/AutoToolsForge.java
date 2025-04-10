@@ -87,8 +87,10 @@ public class AutoToolsForge {
                 }
             }
         } else if (event.phase == TickEvent.Phase.END) {
+            Minecraft client = Minecraft.getInstance();
+
             if (AutoToolsConfig.SWITCH_BACK) {
-                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                if (client.options.keyAttack.isDown()) {
                     AutoTools.startedMining = true;
                 } else {
                     //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
@@ -96,6 +98,15 @@ public class AutoToolsForge {
                         AutoTools.switchBack();
                     }
                 }
+            }
+
+            if(KEY_SILKTOUCH.consumeClick()) {
+                AutoToolsConfig.PreferSilkTouch[] values = AutoToolsConfig.PreferSilkTouch.values();
+                AutoToolsConfig.PREFER_SILK_TOUCH = values[(AutoToolsConfig.PREFER_SILK_TOUCH.ordinal() + 1) % values.length];
+
+                client.player.displayClientMessage(Component.translatable("chat.cycle_silktouch").append(Component.translatable("autotools.configuration.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH)), false);
+
+                AutoToolsConfig.save();
             }
         }
     }
