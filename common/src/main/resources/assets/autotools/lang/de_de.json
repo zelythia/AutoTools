@@ -1,9 +1,99 @@
 {
     "key.autotools.get_tool" : "Werkzeug auswählen/Umschalten",
+    "key.autotools.silktouch" : "SilkTouch-Einstellung ändern",
     "key.autotools.category" : "AutoTools",
 
     "chat.enabled_autotools": "AutoTools §4an§f!",
     "chat.disabled_autotools": "AutoTools! §4aus§f",
 
-    "ui.toast.autotools.durability_warning": "Haltbarkeit zu niedrig: %s"
+    "chat.cycle_silktouch": "SilkTouch: ",
+
+    "ui.toast.autotools.durability_warning": "Haltbarkeit zu niedrig: %s",
+
+    "autotools.configuration.AutoTools": "AutoTools Einstellungen",
+    "text.autoconfig.autotools.title": "AutoTools Einstellungen",
+
+
+    "text.autoconfig.autotools.option.toggle" : "Umschalten",
+    "text.autoconfig.autotools.option.toggle.@Tooltip": "AutoTools wird immer an sein und das beste Werkzeug auswählen. Kann mit der festgelegten Taste ein und aus geschaltet werden. (Funktioniert sehr gut mit \"Zurücktauschen\")",
+    "text.autoconfig.autotools.option.toggle.tooltip": "AutoTools wird immer an sein und das beste Werkzeug auswählen. Kann mit der festgelegten Taste ein und aus geschaltet werden. (Funktioniert sehr gut mit \"Zurücktauschen\")",
+
+    "text.autoconfig.autotools.option.disableCreative": "Nur in Überlebensmodus",
+    "text.autoconfig.autotools.option.disableCreative.@Tooltip": "\"Deaktiviert AutoTools im Kreativmodus wenn Umschalten an ist",
+    "text.autoconfig.autotools.option.disableCreative.tooltip": "\"Deaktiviert AutoTools im Kreativmodus wenn Umschalten an ist",
+
+    "text.autoconfig.autotools.option.keepSlot": "Ausgewählten Slot behalten",
+    "text.autoconfig.autotools.option.keepSlot.@Tooltip": "Behalte immer den ausgewählten Slot",
+    "text.autoconfig.autotools.option.keepSlot.tooltip": "Behalte immer den ausgewählten Slot",
+
+    "text.autoconfig.autotools.option.preferHotbarTool": "Hotbar Slot bevorzugen",
+    "text.autoconfig.autotools.option.preferHotbarTool.@Tooltip": "AutoTools wird immer das Werkzeug in deiner Hotbar bevorzugen ohne Rücksicht auf die Haltbarkeit bei gleicher Abbaugeschwindigkeit",
+    "text.autoconfig.autotools.option.preferHotbarTool.tooltip": "AutoTools wird immer das Werkzeug in deiner Hotbar bevorzugen ohne Rücksicht auf die Haltbarkeit bei gleicher Abbaugeschwindigkeit",
+
+    "text.autoconfig.autotools.option.preferLowDurability": "Geringe Haltbarkeit bevorzugen",
+    "text.autoconfig.autotools.option.preferLowDurability.@Tooltip": "AutoTools wird immer das Werkzeug mit der niedrigsten Haltbarkeit bevorzugen, wenn sie die gleiche Abbaugeschwindigkeit haben",
+    "text.autoconfig.autotools.option.preferLowDurability.tooltip": "AutoTools wird immer das Werkzeug mit der niedrigsten Haltbarkeit bevorzugen, wenn sie die gleiche Abbaugeschwindigkeit haben",
+
+    "text.autoconfig.autotools.option.alwaysPreferFortune": "Immer Glück bevorzugen",
+    "text.autoconfig.autotools.option.alwaysPreferFortune.@Tooltip": "AutoTools bevorzugt Glück bei Kies und Blättern",
+    "text.autoconfig.autotools.option.alwaysPreferFortune.tooltip": "AutoTools bevorzugt Glück bei Kies und Blättern",
+
+    "text.autoconfig.autotools.option.onlySwitchIfNecessary": "Nur Tauschen wenn nötig",
+    "text.autoconfig.autotools.option.onlySwitchIfNecessary.@Tooltip": "AutoTools wird nur das Werkzeug nur ändern, wenn man den Block nicht abbauen kann",
+    "text.autoconfig.autotools.option.onlySwitchIfNecessary.tooltip": "AutoTools wird nur das Werkzeug nur ändern, wenn man den Block nicht abbauen kann",
+
+    "text.autoconfig.autotools.option.switchBack": "Zurücktauschen",
+    "text.autoconfig.autotools.option.switchBack.@Tooltip": "AutoTools wechselt nach dem Abbauen automatisch zum vorherigen Gegenstand zurück",
+    "text.autoconfig.autotools.option.switchBack.tooltip": "AutoTools wechselt nach dem Abbauen automatisch zum vorherigen Gegenstand zurück",
+
+    "text.autoconfig.autotools.option.showDPS" : "DPS Anzeigen",
+    "text.autoconfig.autotools.option.showDPS.@Tooltip" : "Zeigt den Schaden pro Sekunde der Waffe an wenn man im Inventar mit der Maus darüber fährt",
+    "text.autoconfig.autotools.option.showDPS.tooltip" : "Zeigt den Schaden pro Sekunde der Waffe an wenn man im Inventar mit der Maus darüber fährt",
+
+    "text.autoconfig.autotools.option.changeForEntities": "Für Kreaturen Tauschen",
+    "text.autoconfig.autotools.option.changeForEntities.@Tooltip": "AutoTools wird die Waffe mit den größten Schaden pro Sekunde auswählen, wenn man eine Kreatur anschaut",
+    "text.autoconfig.autotools.option.changeForEntities.tooltip": "AutoTools wird die Waffe mit den größten Schaden pro Sekunde auswählen, wenn man eine Kreatur anschaut",
+
+    "text.autoconfig.autotools.option.keepAxe": "Axt behalten",
+    "text.autoconfig.autotools.option.keepAxe.@Tooltip": "AutoTools wird nicht zu einer besseren Waffe wechseln, wenn man eine Axt in der Hand hält",
+    "text.autoconfig.autotools.option.keepAxe.tooltip": "AutoTools wird nicht zu einer besseren Waffe wechseln, wenn man eine Axt in der Hand hält",
+
+    "text.autoconfig.autotools.option.preferSilkTouch": "Behutsamkeit bevorzugen",
+    "text.autoconfig.autotools.option.preferSilkTouch.@Tooltip": "Autotools wird zusätzlich Behutsamkeit bevorzugen, auch wenn es nicht zum Abbauen benötigt wird: ",
+    "text.autoconfig.autotools.option.preferSilkTouch.tooltip": "Autotools wird zusätzlich Behutsamkeit bevorzugen, auch wenn es nicht zum Abbauen benötigt wird: ",
+    "text.autoconfig.autotools.option.preferSilkTouch.always": "Immer",
+    "text.autoconfig.autotools.option.preferSilkTouch.ores": "Erze",
+    "text.autoconfig.autotools.option.preferSilkTouch.except_ores": "Alles außer Erze",
+    "text.autoconfig.autotools.option.preferSilkTouch.never": "Nie",
+
+    "text.autoconfig.autotools.option.enabled": "Aktiv",
+    "text.autoconfig.autotools.option.enabled.@Tooltip": "AutoTools ist nur aktiv und Wechselt das Werkzeug, wenn: ",
+    "text.autoconfig.autotools.option.enabled.tooltip": "AutoTools ist nur aktiv und Wechselt das Werkzeug, wenn: ",
+    "text.autoconfig.autotools.option.enabled.always": "Immer",
+    "text.autoconfig.autotools.option.enabled.tool": "Werkzeug ausgewählt",
+    "text.autoconfig.autotools.option.enabled.no_tool": "Kein Werkzeug ausgewählt",
+
+    "text.autoconfig.autotools.option.ignoredSlots": "Ignorierte Slots",
+    "text.autoconfig.autotools.option.ignoredSlots.@Tooltip": "AutoTools wird nicht machen, wenn einer dieser Slots ausgewählt ist:",
+    "text.autoconfig.autotools.option.ignoredSlots.tooltip": "AutoTools wird nicht machen, wenn einer dieser Slots ausgewählt ist:",
+
+    "text.autoconfig.autotools.option.targetSlots": "Ziel-Slots",
+    "text.autoconfig.autotools.option.targetSlots.@Tooltip": "AutoTools tut Werkzeuge nur in diese Slots:",
+    "text.autoconfig.autotools.option.targetSlots.tooltip": "AutoTools tut Werkzeuge nur in diese Slots:",
+
+    "text.autoconfig.autotools.option.minDurability": "Minimale Haltbarkeit",
+    "text.autoconfig.autotools.option.minDurability.@Tooltip": "Wenn < 1: Als Prozent der Haltbarkeit gesehen: Werkzeuge unter der Minimalen Haltbarkeit werden nicht ausgewählt\nSonst: Als explizite Haltbarkeit gesehen: Werkzeuge werden ausgewählt bis sie die Minimale Haltbarkeit erreichen (z.B. 1, damit eine Werkzeug nie kaputt gehen kann)",
+    "text.autoconfig.autotools.option.minDurability.tooltip": "Wenn < 1: Als Prozent der Haltbarkeit gesehen: Werkzeuge unter der Minimalen Haltbarkeit werden nicht ausgewählt\nSonst: Als explizite Haltbarkeit gesehen: Werkzeuge werden ausgewählt bis sie die Minimale Haltbarkeit erreichen (z.B. 1, damit eine Werkzeug nie kaputt gehen kann)",
+
+    "text.autoconfig.autotools.option.durabilityCheck": "Haltbarkeitswarnung",
+    "text.autoconfig.autotools.option.durabilityCheck.@Tooltip": "Verhindert die verwendung des Werkzeugs, fall seine Haltbarkeit unter der Minimalen Haltbarkeit ist",
+    "text.autoconfig.autotools.option.durabilityCheck.tooltip": "Verhindert die verwendung des Werkzeugs, fall seine Haltbarkeit unter der Minimalen Haltbarkeit ist",
+
+    "text.autoconfig.autotools.option.customTools": "Eigene Werkzeug-Regeln",
+    "text.autoconfig.autotools.option.customTools.@Tooltip": "Füge eigene Werkzeug-Regeln im JSON-Format hinzu\nz.B. {\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nBei mehreren Werkzeugen, hat das erste die höchste Priorität\nVordefinierte Liste für Arten von Werkzeugen: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nVerwende \"autotools:disabled\" um AutoTools für einen bestimmten Block zu deaktivieren\nFunktioniert auch für Kreaturen: \"minecraft:entity_id\":\"minecraft:tool_id",
+    "text.autoconfig.autotools.option.customTools.tooltip": "Füge eigene Werkzeug-Regeln im JSON-Format hinzu\nz.B. {\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nBei mehreren Werkzeugen, hat das erste die höchste Priorität\nVordefinierte Liste für Arten von Werkzeugen: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nVerwende \"autotools:disabled\" um AutoTools für einen bestimmten Block zu deaktivieren\nFunktioniert auch für Kreaturen: \"minecraft:entity_id\":\"minecraft:tool_id",
+
+    "text.autoconfig.autotools.option.experimentalBreakDelay": "[Experimentell] Abbau-Verzögerung",
+    "text.autoconfig.autotools.option.experimentalBreakDelay.@Tooltip": "[Experimental] Fügt eine 1 Tick = 50ms lange Abbau-Verzögerung hinzu, wenn Umschalten an ist, nachdem das Werkzeug gewechselt wurde.\nAchtung! Nur aktivieren wenn beim Instant-Mining Desynchronisationen mit dem Server wie z.B. Ghost-Blöcke auftreten.",
+    "text.autoconfig.autotools.option.experimentalBreakDelay.tooltip": "[Experimental] Fügt eine 1 Tick = 50ms lange Abbau-Verzögerung hinzu, wenn Umschalten an ist, nachdem das Werkzeug gewechselt wurde.\nAchtung! Nur aktivieren wenn beim Instant-Mining Desynchronisationen mit dem Server wie z.B. Ghost-Blöcke auftreten."
 }
