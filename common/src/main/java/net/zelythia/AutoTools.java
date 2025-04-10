@@ -61,7 +61,6 @@ public class AutoTools {
 
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
-    public static BlockState lastBlock = null;
 
     //Used for SWITCH_BACK when toggle is disable
     public static boolean startedMining = false;
@@ -452,6 +451,8 @@ public class AutoTools {
                 selectItem(client, inventory, toolSlot);
             }
         } else if (AutoToolsConfig.CHANGE_FOR_ENTITIES && hit.getType() == HitResult.Type.ENTITY) {
+            if (AutoToolsConfig.SWITCH_BACK) return;
+
             Entity entity = ((EntityHitResult) hit).getEntity();
 
             if (AutoToolsConfig.KEEP_AXE && Arrays.asList(TOOL_LISTS.get("autotools:axe")).contains(BuiltInRegistries.ITEM.getKey(inventory.getSelected().getItem()))) {
