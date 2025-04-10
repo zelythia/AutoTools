@@ -1,81 +1,99 @@
 {
     "key.autotools.get_tool" : "Pick Tool/Toggle",
+    "key.autotools.silktouch" : "Cycle SilkTouch Setting",
     "key.autotools.category" : "AutoTools",
 
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",
     "chat.disabled_autotools": "§4Disabled§f AutoTools!",
 
+    "chat.cycle_silktouch": "SilkTouch: ",
+
     "ui.toast.autotools.durability_warning": "Durability too low: %s",
 
 
     "autotools.configuration.AutoTools": "AutoTools Config",
-    "autotools.configuration.toggle" : "Toggle",
-    "autotools.configuration.showDPS" : "Show Dps",
-    "autotools.configuration.keepSlot": "Keep selected slot",
-    "autotools.configuration.disableCreative": "Disable in Creative",
-    "autotools.configuration.preferSilkTouch": "Prefer Silk Touch",
-    "autotools.configuration.preferSilkTouch.always": "Always",
-    "autotools.configuration.preferSilkTouch.always_ores": "Ores",
-    "autotools.configuration.preferSilkTouch.except_ores": "Except ores",
-    "autotools.configuration.preferSilkTouch.never": "Never",
-    "autotools.configuration.alwaysPreferFortune": "Always prefer Fortune",
-    "autotools.configuration.onlySwitchIfNecessary": "Only switch if necessary",
-    "autotools.configuration.preferHotbarTool": "Prefer Hotbar slot",
-    "autotools.configuration.preferLowDurability": "Prefer lower durability",
-    "autotools.configuration.switchBack": "Switch Back",
-    "autotools.configuration.changeForEntities": "Change for entites",
-    "autotools.configuration.keepAxe": "Keep Axe",
-
-    "autotools.configuration.enabled": "Enabled",
-    "autotools.configuration.enabled.always": "Always",
-    "autotools.configuration.enabled.tool": "Tool in Hand",
-    "autotools.configuration.enabled.no_tool": "No Tool in Hand",
-
-    "autotools.configuration.ignoredSlots": "Ignored Slots",
-    "autotools.configuration.targetSlots": "Target Slots",
-
-    "autotools.configuration.minDurability": "Minimum Durability",
-    "autotools.configuration.durabilityCheck": "Durability Checker",
-
-    "autotools.configuration.customTools": "Custom Tools",
-
-    "autotools.configuration.experimentalBreakDelay": "[Experimental] Break Delay",
-
-
-
     "text.autoconfig.autotools.title": "AutoTools Config",
 
     "text.autoconfig.autotools.option.toggle" : "Toggle",
-    "text.autoconfig.autotools.option.showDPS" : "Show Dps",
-    "text.autoconfig.autotools.option.keepSlot": "Keep selected slot",
+    "text.autoconfig.autotools.option.toggle.@Tooltip": "AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.",
+    "text.autoconfig.autotools.option.toggle.tooltip": "AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.",
+
     "text.autoconfig.autotools.option.disableCreative": "Disable in Creative",
+    "text.autoconfig.autotools.option.disableCreative.@Tooltip": "Disables AutoTools in creative-mode if toggle is disabled",
+    "text.autoconfig.autotools.option.disableCreative.tooltip": "Disables AutoTools in creative-mode if toggle is disabled",
+
+    "text.autoconfig.autotools.option.keepSlot": "Keep selected slot",
+    "text.autoconfig.autotools.option.keepSlot.@Tooltip": "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics",
+    "text.autoconfig.autotools.option.keepSlot.tooltip": "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics",
+
+    "text.autoconfig.autotools.option.preferHotbarTool": "Prefer Hotbar slot",
+    "text.autoconfig.autotools.option.preferHotbarTool.@Tooltip": "AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability",
+    "text.autoconfig.autotools.option.preferHotbarTool.tooltip": "AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability",
+
+    "text.autoconfig.autotools.option.preferLowDurability": "Prefer lower durability",
+    "text.autoconfig.autotools.option.preferLowDurability.@Tooltip": "AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed",
+    "text.autoconfig.autotools.option.preferLowDurability.tooltip": "AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed",
+
+    "text.autoconfig.autotools.option.alwaysPreferFortune": "Always prefer Fortune",
+    "text.autoconfig.autotools.option.alwaysPreferFortune.@Tooltip": "Autotools will use Fortune for Gravel and Leaves",
+    "text.autoconfig.autotools.option.alwaysPreferFortune.tooltip": "Autotools will use Fortune for Gravel and Leaves",
+
+    "text.autoconfig.autotools.option.onlySwitchIfNecessary": "Only switch if necessary",
+    "text.autoconfig.autotools.option.onlySwitchIfNecessary.@Tooltip": "AutoTools will only switch items if you can't mine a block with your current one",
+    "text.autoconfig.autotools.option.onlySwitchIfNecessary.tooltip": "AutoTools will only switch items if you can't mine a block with your current one",
+
+    "text.autoconfig.autotools.option.switchBack": "Switch Back",
+    "text.autoconfig.autotools.option.switchBack.@Tooltip": "AutoTools will switch back to the previous tool or item you had in your hand before breaking the block",
+    "text.autoconfig.autotools.option.switchBack.tooltip": "AutoTools will switch back to the previous tool or item you had in your hand before breaking the block",
+
+    "text.autoconfig.autotools.option.showDPS" : "Show Dps",
+    "text.autoconfig.autotools.option.showDPS.@Tooltip" : "Displays the weapons Dps when hovering over it",
+    "text.autoconfig.autotools.option.showDPS.tooltip" : "Displays the weapons Dps when hovering over it",
+
+    "text.autoconfig.autotools.option.changeForEntities": "Change for entities",
+    "text.autoconfig.autotools.option.changeForEntities.@Tooltip": "AutoTools will change to the tool with the most DPS when looking at an entity",
+    "text.autoconfig.autotools.option.changeForEntities.tooltip": "AutoTools will change to the tool with the most DPS when looking at an entity",
+
+    "text.autoconfig.autotools.option.keepAxe": "Keep Axe",
+    "text.autoconfig.autotools.option.keepAxe.@Tooltip": "AutoTools won't change to a better weapon(e.g. a sword) when holding an axe",
+    "text.autoconfig.autotools.option.keepAxe.tooltip": "AutoTools won't change to a better weapon(e.g. a sword) when holding an axe",
+
     "text.autoconfig.autotools.option.preferSilkTouch": "Prefer Silk Touch",
+    "text.autoconfig.autotools.option.preferSilkTouch.@Tooltip": "Autotools additionally will prefer Silk Touch even if it isn't required to mine a block: ",
+    "text.autoconfig.autotools.option.preferSilkTouch.tooltip": "Autotools additionally will prefer Silk Touch even if it isn't required to mine a block: ",
     "text.autoconfig.autotools.option.preferSilkTouch.always": "Always",
-    "text.autoconfig.autotools.option.preferSilkTouch.always_ores": "Ores",
+    "text.autoconfig.autotools.option.preferSilkTouch.ores": "Ores",
     "text.autoconfig.autotools.option.preferSilkTouch.except_ores": "Except ores",
     "text.autoconfig.autotools.option.preferSilkTouch.never": "Never",
-    "text.autoconfig.autotools.option.alwaysPreferFortune": "Always prefer Fortune",
-    "text.autoconfig.autotools.option.onlySwitchIfNecessary": "Only switch if necessary",
-    "text.autoconfig.autotools.option.preferHotbarTool": "Prefer Hotbar slot",
-    "text.autoconfig.autotools.option.preferLowDurability": "Prefer lower durability",
-    "text.autoconfig.autotools.option.switchBack": "Switch Back",
-    "text.autoconfig.autotools.option.changeForEntities": "Change for entites",
-    "text.autoconfig.autotools.option.keepAxe": "Keep Axe",
 
     "text.autoconfig.autotools.option.enabled": "Enabled",
+    "text.autoconfig.autotools.option.enabled.@Tooltip": "AutoTools will only work and swap to the best tool if you are already holding: ",
+    "text.autoconfig.autotools.option.enabled.tooltip": "AutoTools will only work and swap to the best tool if you are already holding: ",
     "text.autoconfig.autotools.option.enabled.always": "Always",
     "text.autoconfig.autotools.option.enabled.tool": "Tool in Hand",
     "text.autoconfig.autotools.option.enabled.no_tool": "No Tool in Hand",
 
     "text.autoconfig.autotools.option.ignoredSlots": "Ignored Slots",
+    "text.autoconfig.autotools.option.ignoredSlots.@Tooltip": "AutoTools won't do anything if the currently selected one of these:",
+    "text.autoconfig.autotools.option.ignoredSlots.tooltip": "AutoTools won't do anything if the currently selected one of these:",
+
     "text.autoconfig.autotools.option.targetSlots": "Target Slots",
+    "text.autoconfig.autotools.option.targetSlots.@Tooltip": "AutoTools only put tools in these slots:",
+    "text.autoconfig.autotools.option.targetSlots.tooltip": "AutoTools only put tools in these slots:",
 
     "text.autoconfig.autotools.option.minDurability": "Minimum Durability",
+    "text.autoconfig.autotools.option.minDurability.@Tooltip": "If < 1: Seen as a percentage: Tools below minDurability won't be selected\nElse: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)",
+    "text.autoconfig.autotools.option.minDurability.tooltip": "If < 1: Seen as a percentage: Tools below minDurability won't be selected\nElse: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)",
+
     "text.autoconfig.autotools.option.durabilityCheck": "Durability Checker",
+    "text.autoconfig.autotools.option.durabilityCheck.@Tooltip": "Prevents mining when going under minDurability",
+    "text.autoconfig.autotools.option.durabilityCheck.tooltip": "Prevents mining when going under minDurability",
 
     "text.autoconfig.autotools.option.customTools": "Custom Tools",
+    "text.autoconfig.autotools.option.customTools.@Tooltip": "Add custom tool-configurations in JSON format\ne.g. {\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nWhen adding multiple tools, the first one has the highest priority\nThere are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nUse \"autotools:disabled\" to disable AutoTools on a certain block\nAlso works for entities: \"minecraft:entity_id\":\"minecraft:tool_id",
+    "text.autoconfig.autotools.option.customTools.tooltip": "Add custom tool-configurations in JSON format\ne.g. {\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nWhen adding multiple tools, the first one has the highest priority\nThere are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nUse \"autotools:disabled\" to disable AutoTools on a certain block\nAlso works for entities: \"minecraft:entity_id\":\"minecraft:tool_id",
 
     "text.autoconfig.autotools.option.experimentalBreakDelay": "[Experimental] Break Delay",
-
-    "autotools.configuration.customTools.tooltip": "Add custom tool-configurations in JSON format\ne.g. {\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nWhen adding multiple tools, the first one has the highest priority\nThere are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nUse \"autotools:disabled\" to disable AutoTools on a certain block\nAlso works for entities: \"minecraft:entity_id\":\"minecraft:tool_id"
+    "text.autoconfig.autotools.option.experimentalBreakDelay.@Tooltip": "[Experimental] Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch.\nEnable this only if you are experiencing Desyncs like Ghost-Blocks when instant mining.",
+    "text.autoconfig.autotools.option.experimentalBreakDelay.tooltip": "[Experimental] Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch.\nEnable this only if you are experiencing Desyncs like Ghost-Blocks when instant mining."
 }

@@ -39,4 +39,9 @@ public class AutoToolsConfig {
     public static void load() {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static void save() {
+        throw new AssertionError();
+    }
 }

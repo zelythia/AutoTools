@@ -20,37 +20,38 @@ import org.lwjgl.glfw.GLFW;
 public class AutoToolsFabric implements ClientModInitializer {
     private boolean keyPressed = false;
 
+    private static final KeyMapping KEY_AUTOTOOLS = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.autotools.get_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category"));
+    private static final KeyMapping KEY_SILKTOUCH = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, "key.autotools.category"));
+
     @Override
     public void onInitializeClient() {
         AutoConfig.register(AutoToolsConfigImpl.class, GsonConfigSerializer::new);  //TODO switch to Jankson after Lists are fixed
         AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).registerSaveListener((configHolder, autoToolsConfig) -> {
-            AutoToolsConfig.load();
+            AutoTools.reloadConfig();
             return InteractionResult.SUCCESS;
         });
 
         AutoTools.init();
 
-        KeyMapping key_changeTool = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.autotools.get_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category"));
-
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (AutoToolsConfig.TOGGLE) {
                 //Changing the toggle setting:
                 //When toggling the keybinding should only be reacted to once per press
-                if (key_changeTool.consumeClick()) {
+                if (KEY_AUTOTOOLS.consumeClick()) {
                     if (!keyPressed) {
                         AutoTools.toggle = !AutoTools.toggle;
                         client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
                         keyPressed = true;
                     }
                     //resetting the keyPressed-count
-                    while (key_changeTool.consumeClick()) {
+                    while (KEY_AUTOTOOLS.consumeClick()) {
                         keyPressed = true;
                     }
                 } else {
                     keyPressed = false;
                 }
             } else {
-                if (key_changeTool.consumeClick()) {
+                if (KEY_AUTOTOOLS.consumeClick()) {
                     AutoTools.startedMining = false;
                     AutoTools.getCorrectTool(client.hitResult, client);
                 }
@@ -63,10 +64,19 @@ public class AutoToolsFabric implements ClientModInitializer {
                     AutoTools.startedMining = true;
                 } else {
                     //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
-                    if ((AutoToolsConfig.TOGGLE && AutoTools.lastBlock == null) || (!AutoToolsConfig.TOGGLE && AutoTools.startedMining)) {
+                    if (AutoToolsConfig.TOGGLE || AutoTools.startedMining) {
                         AutoTools.switchBack();
                     }
                 }
+            }
+
+            if(KEY_SILKTOUCH.consumeClick()) {
+                AutoToolsConfig.PreferSilkTouch[] values = AutoToolsConfig.PreferSilkTouch.values();
+                AutoToolsConfig.PREFER_SILK_TOUCH = values[(AutoToolsConfig.PREFER_SILK_TOUCH.ordinal() + 1) % values.length];
+
+                client.player.displayClientMessage(Component.translatable("chat.cycle_silktouch").append(Component.translatable("autotools.configuration.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH)), false);
+
+                AutoToolsConfig.save();
             }
         });
 
@@ -77,7 +87,6 @@ public class AutoToolsFabric implements ClientModInitializer {
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             AutoTools.swaps.clear();
-            AutoTools.lastBlock = null;
         });
     }
 
