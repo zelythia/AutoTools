@@ -3,7 +3,7 @@ name: Publish on GitHub, CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:
-  MINECRAFT_VERSION: 1.21.4
+  MINECRAFT_VERSION: 1.21.5
   VERSION: 3.1.0
   FORGE: false
   NEOFORGE: true

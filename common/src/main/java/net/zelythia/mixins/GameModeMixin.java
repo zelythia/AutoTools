@@ -45,7 +45,7 @@ public class GameModeMixin {
 
     @Inject(at = @At("HEAD"), method = "startDestroyBlock", cancellable = true)
     private void startDestroyBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        if (minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())) {
+        if (minecraft.player.getInventory().getSelectedItem().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelectedItem())) {
             cir.setReturnValue(false);
             SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1 ? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
         }
@@ -62,7 +62,7 @@ public class GameModeMixin {
 
     @Inject(at = @At("HEAD"), method = "attack", cancellable = true)
     private void attack(CallbackInfo ci) {
-        if (minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())) {
+        if (minecraft.player.getInventory().getSelectedItem().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelectedItem())) {
             ci.cancel();
             SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1 ? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
         }
