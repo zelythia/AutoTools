@@ -48,7 +48,7 @@ for [shears.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/m
     - **preferSilkTouch** \[except_ores]:
         - [always](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always.json):
           Autotools additionally will use SilkTouch for: grass, stone, ores, leaves, snow
-        - [always_ores](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always_ores.json):
+        - [ores](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always_ores.json):
           AutoTools additionally will use SilkTouch for ores
         - [except_ores](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch_setting_always_exc_ores.json):
           Autotools additionally will SilkTouch for: grass, stone, leaves, snow

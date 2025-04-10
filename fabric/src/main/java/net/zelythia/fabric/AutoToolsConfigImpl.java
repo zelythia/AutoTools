@@ -3,6 +3,7 @@ package net.zelythia.fabric;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
@@ -14,49 +15,59 @@ import java.util.stream.Collectors;
 
 @Config(name = "autotools")
 public class AutoToolsConfigImpl implements ConfigData {
-    @Comment("AutoTools will always be active and try to get you the best tool. Can be toggled with the set key.")
+    @ConfigEntry.Gui.Tooltip
     boolean toggle = false;
-    @Comment("Disables AutoTools in creative-mode if toggle is disabled")
+
+    @ConfigEntry.Gui.Tooltip
     boolean disableCreative = true;
-    @Comment("Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics")
+
+    @ConfigEntry.Gui.Tooltip
     boolean keepSlot = false;
-    @Comment("AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability")
+
+    @ConfigEntry.Gui.Tooltip
     boolean preferHotbarTool = true;
-    @Comment("AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed")
+
+    @ConfigEntry.Gui.Tooltip
     boolean preferLowDurability = false;
-    @Comment("Autotools will use Fortune for Gravel and Leaves")
+
+    @ConfigEntry.Gui.Tooltip
     boolean alwaysPreferFortune = false;
-    @Comment("AutoTools will only switch items if you can't mine a block with your current one")
+
+    @ConfigEntry.Gui.Tooltip
     boolean onlySwitchIfNecessary = false;
-    @Comment("AutoTools will switch back to the previous tool or item you had in your hand before breaking the block")
+
+    @ConfigEntry.Gui.Tooltip
     boolean switchBack = false;
-    @Comment("Displays the weapons Dps when hovering over it")
+
+    @ConfigEntry.Gui.Tooltip
     boolean showDPS = false;
-    @Comment("AutoTools will change to the tool with the most DPS when looking at an entity")
+
+    @ConfigEntry.Gui.Tooltip
     boolean changeForEntities = true;
-    @Comment("AutoTools won't change to a better weapon(e.g. a sword) when holding an axe")
+
+    @ConfigEntry.Gui.Tooltip
     boolean keepAxe = false;
 
-    @Comment("Autotools additionally will prefer Silk Touch even if it isn't required to mine a block: ")
+    @ConfigEntry.Gui.Tooltip
     AutoToolsConfig.PreferSilkTouch preferSilkTouch = AutoToolsConfig.PreferSilkTouch.except_ores;
-    @Comment("AutoTools will only work and swap to the best tool if you are already holding: ")
+
+    @ConfigEntry.Gui.Tooltip
     AutoToolsConfig.Enabled enabled = AutoToolsConfig.Enabled.always;
 
-    @Comment("AutoTools won't do anything if the currently selected one of these:")
+    @ConfigEntry.Gui.Tooltip
     List<Integer> ignoredSlots = new ArrayList<>();
-    @Comment("AutoTools only puts tools in these slots:")
+    @ConfigEntry.Gui.Tooltip
     List<Integer> targetSlots = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
 
-    @Comment("If < 1: Seen as a percentage: Tools below minDurability won't be selected\nElse: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)")
+    @ConfigEntry.Gui.Tooltip
     double minDurability = 0d;
-    @Comment("Prevents mining when going under minDurability")
+    @ConfigEntry.Gui.Tooltip
     boolean durabilityCheck = true;
 
-
-    @Comment("Add custom block-tool-configurations in JSON format\ne.g. {\"minecraft:block_id\":\"minecraft:tool_id\"} or customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\n When adding multiple tools, the first one has the highest priority.\nThere are also pre-define lists for tool groups: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nUse \"autotools:disabled\" to disable AutoTools on a certain block.\nAlso works for entities: \"minecraft:entity_id\":\"minecraft:tool_id\"")
+    @ConfigEntry.Gui.Tooltip
     String customTools = "{}";
 
-    @Comment("Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking a block after a tool switch. Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.")
+    @ConfigEntry.Gui.Tooltip
     boolean experimentalBreakDelay = false;
 
 
@@ -106,7 +117,14 @@ public class AutoToolsConfigImpl implements ConfigData {
         AutoToolsConfig.CUSTOM_TOOLS = config.customTools;
 
         AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = config.experimentalBreakDelay;
+    }
 
+    public static void save() {
+        AutoToolsConfigImpl config = AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).getConfig();
+
+        config.preferSilkTouch = AutoToolsConfig.PREFER_SILK_TOUCH;
+
+        AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).save();
     }
 }
 
