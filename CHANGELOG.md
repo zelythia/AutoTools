@@ -1,1 +1,2 @@
-- Fix SilkTouch Keybinding not working
+- Added Controllable Support
+- Fixed Minecraft version requirements
