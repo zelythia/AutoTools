@@ -1,1 +1,2 @@
-- Fixed SilkTouch settings not working
+- Added Controllable Support
+- Fixed Minecraft version requirements

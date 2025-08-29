@@ -6,6 +6,16 @@ repositories {
     maven {
         url = "https://maven.neoforged.net/releases"
     }
+    if(getGprKey()) {
+        maven {
+            name = "MrCrayfish (GitHub)"
+            url = "https://maven.pkg.github.com/MrCrayfish/Maven"
+            credentials {
+                username = "zelythia"
+                password = getGprKey()
+            }
+        }
+    }
 }
 
 architectury {
@@ -30,6 +40,8 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
+
+    modApi("com.mrcrayfish:controllable-common:1.21.1-0.25.3")
 }
 
 base {

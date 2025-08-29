@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
+import net.zelythia.ControllableCompat;
 import net.zelythia.TooltipHelper;
 import org.lwjgl.glfw.GLFW;
 
@@ -62,7 +63,7 @@ public class AutoToolsFabric implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (AutoToolsConfig.SWITCH_BACK) {
-                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                if (Minecraft.getInstance().options.keyAttack.isDown() || ControllableCompat.attackDown()) {
                     AutoTools.startedMining = true;
                 } else {
                     //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released

@@ -22,6 +22,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
+import net.zelythia.ControllableCompat;
 import net.zelythia.TooltipHelper;
 import org.lwjgl.glfw.GLFW;
 
@@ -89,7 +90,7 @@ public class AutoToolsNeoForge {
         Minecraft client = Minecraft.getInstance();
 
         if (AutoToolsConfig.SWITCH_BACK) {
-            if (client.options.keyAttack.isDown()) {
+            if (client.options.keyAttack.isDown() || ControllableCompat.attackDown()) {
                 AutoTools.startedMining = true;
             } else {
                 //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
