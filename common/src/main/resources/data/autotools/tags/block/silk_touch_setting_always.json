@@ -32,6 +32,11 @@
 
     "#minecraft:leaves",
     "minecraft:snow_block",
-    "minecraft:snow"
+    "minecraft:snow",
+
+    "minecraft:pale_hanging_moss",
+    "minecraft:bush",
+    "minecraft:short_dry_grass",
+    "minecraft:tall_dry_grass"
   ]
 }

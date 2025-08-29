@@ -15,6 +15,16 @@ repositories {
     maven { url "https://maven.terraformersmc.com/" } //ModMenu
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
+    if(getGprKey()) {
+        maven {
+            name = "MrCrayfish (GitHub)"
+            url = "https://maven.pkg.github.com/MrCrayfish/Maven"
+            credentials {
+                username = "zelythia"
+                password = getGprKey()
+            }
+        }
+    }
 }
 
 configurations {
@@ -40,6 +50,10 @@ dependencies {
     }
 
     modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    modApi("com.mrcrayfish:controllable-common:1.21.5-0.24.0"){
         exclude(group: "net.fabricmc.fabric-api")
     }
 

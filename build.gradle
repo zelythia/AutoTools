@@ -21,6 +21,10 @@ subprojects {
     }
 }
 
+def getGprKey() {
+    return project.findProperty("gprKey")
+}
+
 allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"

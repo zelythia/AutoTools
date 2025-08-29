@@ -72,6 +72,8 @@
     "minecraft:sculk_vein",
 
     "minecraft:chiseled_bookshelf",
-    "minecraft:decorated_pot"
+    "minecraft:decorated_pot",
+
+    "minecraft:creaking_heart"
   ]
 }
