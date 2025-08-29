@@ -70,11 +70,13 @@ There is a version available for the Forge, NeoForge and Fabric mod loader (ModM
 version)  
 AutoTools is entirely client-side and works on servers and with many third-party mods.
 
+AutoTools also works with [Controllable](https://github.com/MrCrayfish/Controllable)
+
 ---
 
 ### For Developers:
 
 Tools: Should implement Item.isCorrectToolForDrops(BlockState) and Item.getDestroySpeed(Item, BlockState). Additionally,
-Blocks should correctly implement requiresCorrectToolForDrops
+Blocks should correctly implement requiresCorrectToolForDrops  (Mojmap Mappings)
 
 Weapons: Items need their attack damage (and attack speed) stored as AttributeModifiers
