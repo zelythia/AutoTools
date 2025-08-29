@@ -53,7 +53,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modApi("com.mrcrayfish:controllable-common:1.21.5-0.24.0"){
+    modApi("com.mrcrayfish:controllable-common:${rootProject.controllable_version}"){
         exclude(group: "net.fabricmc.fabric-api")
     }
 

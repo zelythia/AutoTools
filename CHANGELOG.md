@@ -1,2 +1,1 @@
-- Added Controllable Support
-- Fixed Creaking Heart and greenery SilkTouch settings
+1.21.6 Update

@@ -41,7 +41,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
-    modApi("com.mrcrayfish:controllable-common:1.21.5-0.24.0")
+    modApi("com.mrcrayfish:controllable-common:${rootProject.controllable_version}")
 }
 
 base {
