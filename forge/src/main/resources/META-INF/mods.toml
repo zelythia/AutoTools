@@ -27,3 +27,10 @@ mandatory = true
 versionRange = "[1.19.4]"
 ordering = "NONE"
 side = "CLIENT"
+
+[[dependencies.autotools]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[4.9,)"
+ordering = "NONE"
+side = "CLIENT"

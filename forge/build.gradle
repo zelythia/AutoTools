@@ -4,6 +4,12 @@ plugins {
 
 repositories {
     maven { url "https://maven.shedaniel.me/" }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 architectury {
@@ -40,6 +46,8 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
     modApi("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}")
+
+    modCompileOnlyApi("curse.maven:controllable-317269:4511169")
 }
 
 processResources {
