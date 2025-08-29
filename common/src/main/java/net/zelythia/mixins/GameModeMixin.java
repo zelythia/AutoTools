@@ -11,6 +11,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.phys.HitResult;
 import net.zelythia.AutoTools;
 import net.zelythia.AutoToolsConfig;
+import net.zelythia.ControllableCompat;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +36,7 @@ public class GameModeMixin {
     private void ensureHasSentCarriedItem(CallbackInfo ci) {
         if (minecraft.hitResult.equals(this.autoTools$lastHit)) return;
 
-        if (minecraft.options.keyAttack.isDown()) {
+        if (minecraft.options.keyAttack.isDown() || ControllableCompat.attackDown()) {
             AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
             autoTools$lastHit = minecraft.hitResult;
         }
