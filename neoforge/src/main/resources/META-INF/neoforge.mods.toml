@@ -28,5 +28,12 @@ versionRange = "[1.20.5,1.21)"
 ordering = "NONE"
 side = "CLIENT"
 
+[[dependencies.autotools]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[4.9,)"
+ordering = "NONE"
+side = "CLIENT"
+
 [[mixins]]
 config = "autotools-common.mixins.json"

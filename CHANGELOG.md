@@ -1,1 +1,1 @@
-- Fixed small config bug
+- Fixed ClothConfig version requirements
