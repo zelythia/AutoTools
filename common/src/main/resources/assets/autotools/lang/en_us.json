@@ -93,7 +93,7 @@
     "text.autoconfig.autotools.option.blockLists.fortune.@Tooltip": "AutoTools will always prefer tools with Fortune (after Silk Touch) for blocks inside this list. Intended for blocks whose drops are affected by Fortune",
 
     "text.autoconfig.autotools.option.blockLists.fortune_setting": "Always Prefer Fortune",
-    "text.autoconfig.autotools.option.blockLists.fortune_setting.@Tooltip": "If Always Prefer Fortune, AutoTools will always prefer tools with Fortune (before Silk Touch) for blocks inside this list.",
+    "text.autoconfig.autotools.option.blockLists.fortune_setting.@Tooltip": "If Always Prefer Fortune, AutoTools will always prefer tools with Fortune (before Silk Touch) for blocks inside this list",
 
     "text.autoconfig.autotools.option.blockLists.shears": "Shears",
     "text.autoconfig.autotools.option.blockLists.shears.@Tooltip": "AutoTools will always prefer Shears for blocks inside this list",
@@ -102,7 +102,7 @@
     "text.autoconfig.autotools.option.blockLists.do_not_swap_unless_ench.@Tooltip": "AutoTools will only swap for blocks inside this list if it finds an enchanted tool. Intended for instant-mineable blocks that benefit from enchantments",
 
     "text.autoconfig.autotools.option.blockLists.enable_datapacks": "Enable Datapacks",
-    "text.autoconfig.autotools.option.blockLists.enable_datapacks.@Tooltip": "AutoTools will also include blocks inside the lists added by third party mods and datapacks.",
+    "text.autoconfig.autotools.option.blockLists.enable_datapacks.@Tooltip": "AutoTools will also include blocks inside the lists added by third party mods and datapacks",
 
     "text.autoconfig.autotools.option.blockLists.customTools": "Custom Tools",
     "text.autoconfig.autotools.option.blockLists.customTools.@Tooltip": "Add custom tool-configurations in JSON format\ne.g. \"minecraft:block_id\":\"minecraft:tool_id\" or \"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]\nWhen adding multiple tools, the first one has the highest priority.\nAlso supports block and item tags.\nUse \"autotools:disabled\" to disable AutoTools on a certain block.\nAlso works for entities: \"minecraft:entity_id\":\"minecraft:tool_id",
