@@ -1,18 +1,19 @@
-package net.zelythia.fabric;
+package net.zelythia.config;
 
-import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.zelythia.AutoTools;
-import net.zelythia.AutoToolsConfig;
 
-import java.util.ArrayList;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.List;
 
 @Config(name = "autotools")
-public class AutoToolsConfigImpl extends PartitioningSerializer.GlobalData {
+public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
 
     @ConfigEntry.Category("general")
     @ConfigEntry.Gui.TransitiveObject
@@ -27,9 +28,16 @@ public class AutoToolsConfigImpl extends PartitioningSerializer.GlobalData {
     FortuneConfig fortune = new FortuneConfig();
 
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.FIELD})
+    public @interface BlockList {
+    }
+
+
+
     @Config(name = "silktouch")
     public static class SilkTouchConfig implements ConfigData {
-        @AutoToolsFabric.BlockList
+        @BlockList
         List<String> silktouch = List.of(
                 "minecraft:ender_chest", "minecraft:glowstone", "minecraft:sea_lantern", "minecraft:campfire", "minecraft:soul_campfire", "minecraft:blue_ice", "minecraft:ice", "minecraft:packed_ice", "minecraft:bookshelf", "minecraft:bee_nest", "minecraft:beehive", "minecraft:turtle_egg", "minecraft:melon",
                 "minecraft:brown_mushroom_block", "minecraft:red_mushroom_block", "minecraft:mushroom_stem",
@@ -41,14 +49,14 @@ public class AutoToolsConfigImpl extends PartitioningSerializer.GlobalData {
                 "minecraft:chiseled_bookshelf", "minecraft:decorated_pot",
                 "minecraft:creaking_heart");
 
-        @AutoToolsFabric.BlockList
+        @BlockList
         List<String> silktouch_setting_always = List.of(
                 "minecraft:grass_block", "minecraft:mycelium", "minecraft:podzol", "minecraft:warped_nylium", "minecraft:crimson_nylium", "minecraft:stone", "minecraft:deepslate", "minecraft:gravel",
                 "minecraft:gold_ore", "minecraft:iron_ore", "minecraft:coal_ore", "minecraft:copper_ore", "minecraft:diamond_ore", "minecraft:emerald_ore", "minecraft:redstone_ore", "minecraft:nether_gold_ore", "minecraft:lapis_ore", "minecraft:nether_quartz_ore", "minecraft:gilded_blackstone", "minecraft:deepslate_coal_ore", "minecraft:deepslate_gold_ore", "minecraft:deepslate_iron_ore", "minecraft:deepslate_copper_ore", "minecraft:deepslate_diamond_ore", "minecraft:deepslate_emerald_ore", "minecraft:deepslate_redstone_ore", "minecraft:deepslate_lapis_ore",
                 "#minecraft:leaves", "minecraft:snow_block", "minecraft:snow",
                 "minecraft:pale_hanging_moss", "minecraft:bush", "minecraft:short_dry_grass", "minecraft:tall_dry_grass");
 
-        @AutoToolsFabric.BlockList
+        @BlockList
         List<String> silktouch_setting_exc_ores = List.of(
                 "minecraft:grass_block", "minecraft:podzol", "minecraft:mycelium", "minecraft:gravel",
                 "minecraft:stone", "minecraft:deepslate",
@@ -56,7 +64,7 @@ public class AutoToolsConfigImpl extends PartitioningSerializer.GlobalData {
                 "#minecraft:leaves", "minecraft:snow_block", "minecraft:snow",
                 "minecraft:pale_hanging_moss", "minecraft:bush", "minecraft:short_dry_grass", "minecraft:tall_dry_grass");
 
-        @AutoToolsFabric.BlockList
+        @BlockList
         List<String> silktouch_settings_always_ores = List.of(
                 "minecraft:gravel",
                 "minecraft:gold_ore", "minecraft:iron_ore", "minecraft:coal_ore", "minecraft:copper_ore", "minecraft:diamond_ore", "minecraft:emerald_ore", "minecraft:redstone_ore", "minecraft:nether_gold_ore", "minecraft:lapis_ore", "minecraft:nether_quartz_ore", "minecraft:gilded_blackstone", "minecraft:deepslate_coal_ore", "minecraft:deepslate_gold_ore", "minecraft:deepslate_iron_ore", "minecraft:deepslate_copper_ore", "minecraft:deepslate_diamond_ore", "minecraft:deepslate_emerald_ore", "minecraft:deepslate_redstone_ore", "minecraft:deepslate_lapis_ore");
@@ -64,14 +72,14 @@ public class AutoToolsConfigImpl extends PartitioningSerializer.GlobalData {
 
     @Config(name = "fortune")
     public static class FortuneConfig implements ConfigData {
-        @AutoToolsFabric.BlockList
+        @BlockList
         List<String> fortune = List.of(
                 "minecraft:gold_ore", "minecraft:iron_ore", "minecraft:coal_ore", "minecraft:copper_ore", "minecraft:diamond_ore", "minecraft:emerald_ore", "minecraft:redstone_ore", "minecraft:nether_gold_ore", "minecraft:lapis_ore", "minecraft:nether_quartz_ore", "minecraft:deepslate_coal_ore", "minecraft:deepslate_gold_ore", "minecraft:deepslate_iron_ore", "minecraft:deepslate_copper_ore", "minecraft:deepslate_diamond_ore", "minecraft:deepslate_emerald_ore", "minecraft:deepslate_redstone_ore", "minecraft:deepslate_lapis_ore",
                 "minecraft:amethyst_cluster", "minecraft:gilded_blackstone",
                 "minecraft:nether_wart", "minecraft:sweet_berry_bush", "minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots",
                 "minecraft:glowstone", "minecraft:melon", "minecraft:sea_lantern", "minecraft:twisting_vines", "minecraft:twisting_vines_plant", "minecraft:weeping_vines", "minecraft:weeping_vines_plant");
 
-        @AutoToolsFabric.BlockList
+        @BlockList
         List<String> fortune_settings = List.of("minecraft:gravel", "#minecraft:leaves");
     }
 
@@ -111,10 +119,10 @@ public class AutoToolsConfigImpl extends PartitioningSerializer.GlobalData {
         boolean keepAxe = false;
 
         @ConfigEntry.Gui.Tooltip
-        AutoToolsConfig.PreferSilkTouch preferSilkTouch = AutoToolsConfig.PreferSilkTouch.except_ores;
+        net.zelythia.AutoToolsConfig.PreferSilkTouch preferSilkTouch = net.zelythia.AutoToolsConfig.PreferSilkTouch.except_ores;
 
         @ConfigEntry.Gui.Tooltip
-        AutoToolsConfig.Enabled enabled = AutoToolsConfig.Enabled.always;
+        net.zelythia.AutoToolsConfig.Enabled enabled = net.zelythia.AutoToolsConfig.Enabled.always;
 
         @ConfigEntry.Gui.Tooltip
         List<Integer> ignoredSlots = List.<Integer>of();
@@ -149,45 +157,4 @@ public class AutoToolsConfigImpl extends PartitioningSerializer.GlobalData {
             }).toList();
         }
     }
-
-
-    public static void load() {
-        AutoTools.swaps.clear();
-
-        GeneralConfig config = AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).getConfig().general;
-
-        AutoToolsConfig.TOGGLE = config.toggle;
-        AutoToolsConfig.DISABLECREATIVE = config.disableCreative;
-        AutoToolsConfig.KEEPSLOT = config.keepSlot;
-        AutoToolsConfig.PREFER_HOTBAR_TOOL = config.preferHotbarTool;
-        AutoToolsConfig.PREFER_LOW_DURABILITY = config.preferLowDurability;
-        AutoToolsConfig.ALWAYS_PREFER_FORTUNE = config.alwaysPreferFortune;
-        AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY = config.onlySwitchIfNecessary;
-        AutoToolsConfig.SWITCH_BACK = config.switchBack;
-        AutoToolsConfig.SHOWDPS = config.showDPS;
-        AutoToolsConfig.CHANGE_FOR_ENTITIES = config.changeForEntities;
-        AutoToolsConfig.KEEP_AXE = config.keepAxe;
-
-        AutoToolsConfig.PREFER_SILK_TOUCH = config.preferSilkTouch;
-        AutoToolsConfig.ENABLED = config.enabled;
-
-        AutoToolsConfig.IGNORED_SLOTS = config.ignoredSlots;
-        AutoToolsConfig.TARGET_SLOTS = config.targetSlots;
-
-        AutoToolsConfig.MIN_DURABILITY = config.minDurability;
-        AutoToolsConfig.DURABILITY_CHECK = config.durabilityCheck;
-
-        AutoToolsConfig.CUSTOM_TOOLS = new ArrayList<>(config.customTools);
-
-        AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY = config.experimentalBreakDelay;
-    }
-
-    public static void save() {
-        GeneralConfig config = AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).getConfig().general;
-
-        config.preferSilkTouch = AutoToolsConfig.PREFER_SILK_TOUCH;
-
-        AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).save();
-    }
 }
-

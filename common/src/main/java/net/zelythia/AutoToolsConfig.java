@@ -27,7 +27,7 @@ public class AutoToolsConfig {
     public static boolean KEEP_AXE;
     public static boolean DURABILITY_CHECK;
 
-    public static String CUSTOM_TOOLS;
+    public static List<String> CUSTOM_TOOLS;
     public static List<? extends Integer> IGNORED_SLOTS;
     public static List<? extends Integer> TARGET_SLOTS;
     public static double MIN_DURABILITY;

@@ -1,1 +1,1 @@
-1.21.6 Update
+- Better compatability with mods that change enchantments like [Enchancement](https://modrinth.com/mod/enchancement)
