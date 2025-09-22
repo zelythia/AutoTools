@@ -4,7 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 1.21.6
-  VERSION: 3.2.0
+  VERSION: 3.3.0
   FORGE: false
   NEOFORGE: true
   FABRIC: true
@@ -86,6 +86,9 @@ jobs:
           changelog-file: CHANGELOG.md
           loaders: |
             neoforge
+
+          dependencies: |
+            cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
 
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
         if: env.FABRIC == 'true'
