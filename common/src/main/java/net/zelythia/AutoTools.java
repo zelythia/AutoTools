@@ -110,7 +110,7 @@ public class AutoTools {
         for (String identifier : input) {
             //Tags
             if(identifier.startsWith("#")){
-                ResourceLocation resourceLocation = ResourceLocation.tryParse(identifier);
+                ResourceLocation resourceLocation = ResourceLocation.tryParse(identifier.substring(1));
                 if(resourceLocation != null){
                     output.addAll(ClientTags.getOrCreateLocalTag(TagKey.create(Registries.BLOCK, resourceLocation)));
                 }
