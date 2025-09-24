@@ -43,7 +43,7 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
     modApi("com.mrcrayfish:controllable-common:${rootProject.controllable_version}")
-    modApi "me.shedaniel.cloth:cloth-config-neoforge:19.0.147"
+    modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}"
 }
 
 base {

@@ -48,7 +48,7 @@ public class AutoToolsNeoForge {
 
         //Registering the config
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, (modContainer1, parent) -> {
-            return AutoConfig.getConfigScreen(net.zelythia.config.AutoToolsConfig.class, parent).get();
+            return AutoConfig.getConfigScreen(AutoToolsConfig.class, parent).get();
         });
     }
 

@@ -556,7 +556,7 @@ public class AutoTools {
             int toolSlot = -1;
             float attackDamage = 0;
 
-            if (AutoToolsConfig.get().keepAxe && ClientTags.isInWithLocalFallback(ItemTags.AXES, inventory.getItem(toolSlot).getItem())) {
+            if (AutoToolsConfig.get().keepAxe && ClientTags.isInWithLocalFallback(ItemTags.AXES, inventory.getSelectedItem().getItem())) {
                 return;
             }
 
