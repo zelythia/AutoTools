@@ -10,13 +10,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.zelythia.config.AutoToolsConfig;
 
 import java.util.List;
 
 public class TooltipHelper {
 
     public static void applyTooltip(ItemStack stack, List<Component> tooltip) {
-        if (AutoToolsConfig.SHOWDPS) {
+        if (AutoToolsConfig.get().showDPS) {
             Item item = stack.getItem();
 
             if (item != Items.AIR) {
