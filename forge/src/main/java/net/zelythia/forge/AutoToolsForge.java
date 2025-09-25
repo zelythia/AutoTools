@@ -2,7 +2,9 @@ package net.zelythia.forge;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -22,9 +24,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.zelythia.AutoTools;
-import net.zelythia.AutoToolsConfig;
+import net.zelythia.config.AutoToolsConfig;
 import net.zelythia.ControllableCompat;
 import net.zelythia.TooltipHelper;
+import net.zelythia.config.autoconfig.BlockList;
+import net.zelythia.config.autoconfig.BlockListAnnotationProvider;
+import net.zelythia.config.autoconfig.CustomToolsTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -45,17 +50,23 @@ public class AutoToolsForge {
         //Registering the config
         ModLoadingContext.get().registerExtensionPoint(
                 ConfigGuiHandler.ConfigGuiFactory.class,
-                () -> new ConfigGuiHandler.ConfigGuiFactory(((minecraft, screen) -> AutoConfig.getConfigScreen(AutoToolsConfigImpl.class, screen).get()))
+                () -> new ConfigGuiHandler.ConfigGuiFactory(((minecraft, screen) -> AutoConfig.getConfigScreen(AutoToolsConfig.class, screen).get()))
         );
     }
 
     //Called once when the client is set up
     public void clientSetup(final FMLCommonSetupEvent event) {
-        AutoConfig.register(AutoToolsConfigImpl.class, GsonConfigSerializer::new);  //TODO switch to Jankson after Lists are fixed
-        AutoConfig.getConfigHolder(AutoToolsConfigImpl.class).registerSaveListener((configHolder, autoToolsConfig) -> {
+        AutoConfig.register(AutoToolsConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new));
+
+        AutoConfig.getConfigHolder(AutoToolsConfig.class).registerSaveListener((configHolder, autoToolsConfig) -> {
             AutoTools.reloadConfig();
             return InteractionResult.SUCCESS;
         });
+
+        GuiRegistry registry = AutoConfig.getGuiRegistry(AutoToolsConfig.class);
+        registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
+        registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
+
 
         ClientRegistry.registerKeyBinding(KEY_CHANGE_TOOL);
         ClientRegistry.registerKeyBinding(KEY_SILKTOUCH);
@@ -68,7 +79,7 @@ public class AutoToolsForge {
         if (event.phase == TickEvent.Phase.START) {
             Minecraft client = Minecraft.getInstance();
 
-            if (AutoToolsConfig.TOGGLE) {
+            if (AutoToolsConfig.get().toggle) {
                 //Handling key presses
                 if (KEY_CHANGE_TOOL.consumeClick()) {
                     if (!keyPressed) {
@@ -88,12 +99,12 @@ public class AutoToolsForge {
         } else if (event.phase == TickEvent.Phase.END) {
             Minecraft client = Minecraft.getInstance();
 
-            if (AutoToolsConfig.SWITCH_BACK) {
+            if (AutoToolsConfig.get().switchBack) {
                 if (client.options.keyAttack.isDown() || ControllableCompat.attackDown()) {
                     AutoTools.startedMining = true;
                 } else {
                     //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
-                    if (AutoToolsConfig.TOGGLE || AutoTools.startedMining) {
+                    if (AutoToolsConfig.get().toggle || AutoTools.startedMining) {
                         AutoTools.switchBack();
                     }
                 }
@@ -101,9 +112,9 @@ public class AutoToolsForge {
 
             if(KEY_SILKTOUCH.consumeClick()) {
                 AutoToolsConfig.PreferSilkTouch[] values = AutoToolsConfig.PreferSilkTouch.values();
-                AutoToolsConfig.PREFER_SILK_TOUCH = values[(AutoToolsConfig.PREFER_SILK_TOUCH.ordinal() + 1) % values.length];
+                AutoToolsConfig.get().preferSilkTouch = values[(AutoToolsConfig.get().preferSilkTouch.ordinal() + 1) % values.length];
 
-                client.player.displayClientMessage(new TranslatableComponent("chat.cycle_silktouch").append(new TranslatableComponent("autotools.configuration.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH)), false);
+                client.player.displayClientMessage(new TranslatableComponent("chat.cycle_silktouch").append(new TranslatableComponent("text.autoconfig.autotools.option.general.preferSilkTouch." + AutoToolsConfig.get().preferSilkTouch)), false);
 
                 AutoToolsConfig.save();
             }
