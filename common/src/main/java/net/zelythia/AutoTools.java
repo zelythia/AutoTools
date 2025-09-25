@@ -57,7 +57,7 @@ public class AutoTools {
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
     public static final Set<ResourceLocation> SILK_TOUCH = new HashSet<>();
-    public static final Set<ResourceLocation> SILK_TOUCH_SETTINGS_ALWAYS = new HashSet<>();
+    public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS = new HashSet<>();
     public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS_ORES = new HashSet<>();
     public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = new HashSet<>();
     public static final Set<ResourceLocation> FORTUNE = new HashSet<>();
@@ -88,7 +88,7 @@ public class AutoTools {
         AutoToolsConfig.BlockLists lists = AutoToolsConfig.blockLists();
 
         createLists(lists.silktouch, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "shears")), SILK_TOUCH);
-        createLists(lists.silktouch_setting_always, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always")), SILK_TOUCH_SETTINGS_ALWAYS);
+        createLists(lists.silktouch_setting_always, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always")), SILK_TOUCH_SETTING_ALWAYS);
         createLists(lists.silktouch_setting_always_ores, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_ores")), SILK_TOUCH_SETTING_ALWAYS_ORES);
         createLists(lists.silktouch_setting_exc_ores, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_exc_ores")), SILK_TOUCH_SETTING_ALWAYS_EXC_ORES);
 
@@ -371,7 +371,7 @@ public class AutoTools {
                 if (Enchantment_SilkTouch.isPresent() && EnchantmentHelper.getItemEnchantmentLevel(Enchantment_SilkTouch.get(), stack) == 1) {
 
                     if (SILK_TOUCH.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))
-                            || AutoToolsConfig.get().preferSilkTouch == AutoToolsConfig.PreferSilkTouch.always && SILK_TOUCH_SETTINGS_ALWAYS.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))
+                            || AutoToolsConfig.get().preferSilkTouch == AutoToolsConfig.PreferSilkTouch.always && SILK_TOUCH_SETTING_ALWAYS.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))
                             || AutoToolsConfig.get().preferSilkTouch == AutoToolsConfig.PreferSilkTouch.except_ores && SILK_TOUCH_SETTING_ALWAYS_EXC_ORES.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))
                             || AutoToolsConfig.get().preferSilkTouch == AutoToolsConfig.PreferSilkTouch.ores && SILK_TOUCH_SETTING_ALWAYS_ORES.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
                         priority = 6;
@@ -399,7 +399,7 @@ public class AutoTools {
                 if (Enchantment_SilkTouch.isPresent() && EnchantmentHelper.getItemEnchantmentLevel(Enchantment_SilkTouch.get(), stack) == 0 && !SILK_TOUCH.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
                     if ((SILK_TOUCH_SETTING_ALWAYS_EXC_ORES.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock())) && AutoToolsConfig.get().preferSilkTouch != AutoToolsConfig.PreferSilkTouch.except_ores)
                             || (SILK_TOUCH_SETTING_ALWAYS_ORES.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock())) && AutoToolsConfig.get().preferSilkTouch != AutoToolsConfig.PreferSilkTouch.ores)
-                            || (SILK_TOUCH_SETTINGS_ALWAYS.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock())) && AutoToolsConfig.get().preferSilkTouch != AutoToolsConfig.PreferSilkTouch.always)) {
+                            || (SILK_TOUCH_SETTING_ALWAYS.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock())) && AutoToolsConfig.get().preferSilkTouch != AutoToolsConfig.PreferSilkTouch.always)) {
                         priority += 1;
                     }
                 }

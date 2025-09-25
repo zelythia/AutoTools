@@ -1,1 +1,1 @@
-- Fixed keepAxe not working
+- Fixed wrong localisation for SilkTouch Setting keybind
