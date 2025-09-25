@@ -32,24 +32,24 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.zelythia.clientTags.ClientTags;
+import net.zelythia.config.AutoToolsConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AutoTools {
     public static final String MOD_ID = "autotools";
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
-    public static Tag<Block> SHEARS;
-    public static Tag<Block> SILK_TOUCH;
-    public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS;
-    public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS_ORES;
-    public static Tag<Block> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES;
-    public static Tag<Block> FORTUNE;
-    public static Tag<Block> FORTUNE_SETTING;
-    public static Tag<Block> DO_NOT_SWAP_UNLESS_ENCH;
+    public static final Set<ResourceLocation> SILK_TOUCH = new HashSet<>();
+    public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS = new HashSet<>();
+    public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS_ORES = new HashSet<>();
+    public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = new HashSet<>();
+    public static final Set<ResourceLocation> FORTUNE = new HashSet<>();
+    public static final Set<ResourceLocation> FORTUNE_SETTING = new HashSet<>();
+    public static final Set<ResourceLocation> SHEARS = new HashSet<>();
+    public static final Set<ResourceLocation> DO_NOT_SWAP_UNLESS_ENCH = new HashSet<>();
 
     public static final HashMap<ResourceLocation, List<ResourceLocation>> CUSTOM_TOOLS = new HashMap<>();
     private static final HashMap<String, ResourceLocation[]> TOOL_LISTS = new HashMap<String, ResourceLocation[]>() {{
@@ -78,22 +78,54 @@ public class AutoTools {
     }
 
     public static void reloadConfig() {
-        AutoToolsConfig.load();
+        AutoToolsConfig.BlockLists lists = AutoToolsConfig.blockLists();
 
-        //Not the best way of adding custom tools. Fine as long as it won't get any more
-        CUSTOM_TOOLS.put(new ResourceLocation("minecraft", "bamboo"), new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
+        createLists(lists.silktouch, TagHelper.createBlockTag(new ResourceLocation(MOD_ID, "shears")), SILK_TOUCH);
+        createLists(lists.silktouch_setting_always, TagHelper.createBlockTag(new ResourceLocation(MOD_ID, "silk_touch_setting_always")), SILK_TOUCH_SETTING_ALWAYS);
+        createLists(lists.silktouch_setting_always_ores, TagHelper.createBlockTag(new ResourceLocation(MOD_ID, "silk_touch_setting_always_ores")), SILK_TOUCH_SETTING_ALWAYS_ORES);
+        createLists(lists.silktouch_setting_exc_ores, TagHelper.createBlockTag(new ResourceLocation(MOD_ID, "silk_touch_setting_always_exc_ores")), SILK_TOUCH_SETTING_ALWAYS_EXC_ORES);
+
+        createLists(lists.fortune, TagHelper.createBlockTag(new ResourceLocation(MOD_ID, "fortune")), FORTUNE);
+        createLists(lists.fortune_setting, TagHelper.createBlockTag(new ResourceLocation(MOD_ID, "fortune_setting")), FORTUNE_SETTING);
+
+        createLists(lists.shears, TagHelper.createBlockTag(new ResourceLocation(MOD_ID, "shears")), SHEARS);
+        createLists(lists.do_not_swap_unless_ench, TagHelper.createBlockTag( new ResourceLocation(MOD_ID, "do_not_swap_unless_ench")), DO_NOT_SWAP_UNLESS_ENCH);
+
+
         loadCustomItems();
+        //Not the best way of adding custom tools. Fine as long as it won't get any more
+        CUSTOM_TOOLS.computeIfAbsent(new ResourceLocation("minecraft", "bamboo"), k -> new ArrayList<>()).addAll(new ArrayList<>(Arrays.asList(TOOL_LISTS.get("autotools:sword"))));
+    }
 
-        AutoToolsConfig.IGNORED_SLOTS = AutoToolsConfig.IGNORED_SLOTS.stream().map(i -> i - 1).collect(Collectors.toList());
-        AutoToolsConfig.TARGET_SLOTS = AutoToolsConfig.TARGET_SLOTS.stream().map(i -> i - 1).collect(Collectors.toList());
+    private static void createLists(List<String> input, Tag.Named<Block> tag, Set<ResourceLocation> output) {
+        output.clear();
+
+        for (String identifier : input) {
+            //Tags
+            if(identifier.startsWith("#")){
+                ResourceLocation resourceLocation = ResourceLocation.tryParse(identifier.substring(1));
+                if(resourceLocation != null){
+                    output.addAll(ClientTags.getOrCreateLocalTag(TagHelper.createBlockTag(resourceLocation), Registry.BLOCK));
+                }
+                continue;
+            }
+
+            ResourceLocation resourceLocation = ResourceLocation.tryParse(identifier);
+            if(resourceLocation != null){
+                output.add(resourceLocation);
+            }
+        }
+
+        if(AutoToolsConfig.blockLists().enable_datapacks){
+            output.addAll(ClientTags.getOrCreateLocalTag(tag, Registry.BLOCK));
+        }
     }
 
     private static void loadCustomItems() {
-
-        JsonParser jsonParser = new JsonParser();
+        CUSTOM_TOOLS.clear();
 
         try {
-            JsonElement jsonElement = jsonParser.parse(AutoToolsConfig.CUSTOM_TOOLS);
+            JsonElement jsonElement = new JsonParser().parse("{" + AutoToolsConfig.blockLists().customTools.stream().reduce((s, s2) -> s + ", " + s2).orElse("") + "}");
             if (!jsonElement.isJsonObject()) return;
             JsonObject jsonObject = (JsonObject) jsonElement;
 
@@ -107,33 +139,51 @@ public class AutoTools {
                     JsonArray toolsArray = entry.getValue().getAsJsonArray();
 
                     for (int i = 0; i < toolsArray.size(); i++) {
-                        if (TOOL_LISTS.containsKey(toolsArray.get(i).getAsString())) {
-                            tools.addAll(Arrays.asList(TOOL_LISTS.get(toolsArray.get(i).getAsString())));
+                        String tool = toolsArray.get(i).getAsString();
+
+                        //Tag
+                        if(tool.startsWith("#")){
+                            Tag.Named<Item> itemTag = TagHelper.createItemTag(new ResourceLocation(tool.substring(1)));
+                            Set<ResourceLocation> tag = ClientTags.getOrCreateLocalTag(itemTag, Registry.ITEM);
+
+                            tools.addAll(tag);
                             continue;
                         }
 
-                        tools.add(new ResourceLocation(toolsArray.get(i).getAsString()));
+                        tools.add(new ResourceLocation(tool));
                     }
                 } else {
-                    if (TOOL_LISTS.containsKey(entry.getValue().getAsString())) {
-                        tools.addAll(Arrays.asList(TOOL_LISTS.get(entry.getValue().getAsString())));
-                    } else tools.add(new ResourceLocation(entry.getValue().getAsString()));
+                    String tool = entry.getValue().getAsString();
+
+                    //Tag
+                    if(tool.startsWith("#")){
+                        Tag.Named<Item> itemTag = TagHelper.createItemTag(new ResourceLocation(tool.substring(1)));
+                        Set<ResourceLocation> tag = ClientTags.getOrCreateLocalTag(itemTag, Registry.ITEM);
+
+                        tools.addAll(tag);
+                    }
+                    else tools.add(new ResourceLocation(tool));
                 }
 
-                CUSTOM_TOOLS.computeIfAbsent(new ResourceLocation(entry.getKey()), key -> new ArrayList<>()).addAll(tools);
+                if(entry.getKey().startsWith("#")){
+                    Tag.Named<Block> blockTagKey = TagHelper.createBlockTag( new ResourceLocation(entry.getKey().substring(1)));
+                    Set<ResourceLocation> tag = ClientTags.getOrCreateLocalTag(blockTagKey,  Registry.BLOCK);
+                    tag.forEach(resourceLocation -> CUSTOM_TOOLS.computeIfAbsent(resourceLocation, k -> new ArrayList<>()).addAll(tools));
+                }
+                else CUSTOM_TOOLS.computeIfAbsent(new ResourceLocation(entry.getKey()), k -> new ArrayList<>()).addAll(tools);
             }
 
             LOGGER.info("Loaded custom block configs: " + CUSTOM_TOOLS.keySet());
         } catch (Exception e) {
-            LOGGER.error("Error while parsing custom blocks");
+            LOGGER.error("Error while parsing custom blocks", e);
         }
     }
 
 
     public static void onBlockBreaking(Minecraft client, HitResult hitResult) {
-        if (AutoToolsConfig.TOGGLE && AutoTools.toggle) {
+        if (AutoToolsConfig.get().toggle && AutoTools.toggle) {
             if (client.player.isCreative()) {
-                if (!AutoToolsConfig.DISABLECREATIVE) {
+                if (!AutoToolsConfig.get().disableCreative) {
                     AutoTools.getCorrectTool(hitResult, client);
                 }
             } else {
@@ -155,7 +205,7 @@ public class AutoTools {
             swaps.push(inventory.selected);
         }
 
-        if (sourceSlot <= 8 && !AutoToolsConfig.KEEPSLOT) {
+        if (sourceSlot <= 8 && !AutoToolsConfig.get().keepSlot) {
             if (swaps.get(swaps.size() - 1) != inventory.selected) {
                 if (swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
@@ -164,8 +214,8 @@ public class AutoTools {
             return;
         }
 
-        int destSlot = AutoToolsConfig.KEEPSLOT ? inventory.selected : getSuitableHotbarSlot(inventory);
-        if (!AutoToolsConfig.TARGET_SLOTS.contains(destSlot)) destSlot = AutoToolsConfig.TARGET_SLOTS.get(0);
+        int destSlot = AutoToolsConfig.get().keepSlot ? inventory.selected : getSuitableHotbarSlot(inventory);
+        if (!AutoToolsConfig.get().targetSlots.contains(destSlot + 1)) destSlot = AutoToolsConfig.get().targetSlots.get(0) - 1;
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
         if (swaps.peek() != destSlot) swaps.push(destSlot);
@@ -182,7 +232,7 @@ public class AutoTools {
         inventory.selected = destSlot;
         inventory.setChanged();
 
-        if(!AutoToolsConfig.SWITCH_BACK) swaps.clear(); //Easy way to safe some memory because swaps are only needed for switchBack
+        if(!AutoToolsConfig.get().switchBack) swaps.clear(); //Easy way to safe some memory because swaps are only needed for switchBack
     }
 
     /**
@@ -193,14 +243,14 @@ public class AutoTools {
         int j;
         for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
-            if (AutoToolsConfig.TARGET_SLOTS.contains(j) && inventory.items.get(j).isEmpty()) {
+            if (AutoToolsConfig.get().targetSlots.contains(j + 1) && inventory.items.get(j).isEmpty()) {
                 return j;
             }
         }
 
         for (i = 0; i < 9; ++i) {
             j = (inventory.selected + i) % 9;
-            if (AutoToolsConfig.TARGET_SLOTS.contains(j) && !inventory.items.get(j).isEnchanted()) {
+            if (AutoToolsConfig.get().targetSlots.contains(j + 1) && !inventory.items.get(j).isEnchanted()) {
                 return j;
             }
         }
@@ -209,9 +259,11 @@ public class AutoTools {
     }
 
     /**
-     * Used for AutoToolsConfig.SWITCH_BACK to switch to the last tool the player was holding before using AutoTools
+     * Used for AutoToolsConfig.get().SWITCH_BACK to switch to the last tool the player was holding before using AutoTools
      */
     public static void switchBack() {
+        if (!AutoToolsConfig.get().switchBack) return;    //Shouldn't be necessary, but just in case
+
         //Don't switch if the player wants to mine another block || swaps.empty()
         if (Minecraft.getInstance().options.keyAttack.isDown() || swaps.empty()) return;
         Minecraft client = Minecraft.getInstance();
@@ -254,7 +306,7 @@ public class AutoTools {
             int i = swaps.pop();
 
             if (i <= 8) {
-                if (AutoToolsConfig.KEEPSLOT && i != inventory.selected) {
+                if (AutoToolsConfig.get().keepSlot && i != inventory.selected) {
                     client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, inventory.selected + 36, i, ClickType.SWAP, client.player);
                     return;
                 }
@@ -285,43 +337,46 @@ public class AutoTools {
 
             //SilkTouch
             if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 1) {
-                if (ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.always && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.except_ores && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock())
-                        || AutoToolsConfig.PREFER_SILK_TOUCH == AutoToolsConfig.PreferSilkTouch.ores && ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock())) {
+                if (SILK_TOUCH.contains(Registry.BLOCK.getKey(blockState.getBlock()))
+                        || AutoToolsConfig.get().preferSilkTouch == AutoToolsConfig.PreferSilkTouch.always && SILK_TOUCH_SETTING_ALWAYS.contains(Registry.BLOCK.getKey(blockState.getBlock()))
+                        || AutoToolsConfig.get().preferSilkTouch == AutoToolsConfig.PreferSilkTouch.except_ores && SILK_TOUCH_SETTING_ALWAYS_EXC_ORES.contains(Registry.BLOCK.getKey(blockState.getBlock()))
+                        || AutoToolsConfig.get().preferSilkTouch == AutoToolsConfig.PreferSilkTouch.ores && SILK_TOUCH_SETTING_ALWAYS_ORES.contains(Registry.BLOCK.getKey(blockState.getBlock()))) {
                     priority = 6;
                 }
             }
             //Fortune
             else if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack) >= 1) {
-                if (ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
-                        || AutoToolsConfig.ALWAYS_PREFER_FORTUNE && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock())) {
+                if (FORTUNE.contains(Registry.BLOCK.getKey(blockState.getBlock()))
+                        || AutoToolsConfig.get().alwaysPreferFortune && FORTUNE_SETTING.contains(Registry.BLOCK.getKey(blockState.getBlock()))) {
                     priority += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack);
+                }
+                if(AutoToolsConfig.get().alwaysPreferFortune && FORTUNE_SETTING.contains(Registry.BLOCK.getKey(blockState.getBlock()))){
+                    priority += 6;
                 }
             }
 
             //Hoe check to make sure we prefer fortune hoes over other fortune tools when farming
-            if (ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock()) && ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock()) && stack.getItem() instanceof HoeItem) {
+            if (FORTUNE.contains(Registry.BLOCK.getKey(blockState.getBlock())) && DO_NOT_SWAP_UNLESS_ENCH.contains(Registry.BLOCK.getKey(blockState.getBlock())) && stack.getItem() instanceof HoeItem) {
                 priority += 1;
             }
         }
 
         if (blockState.getDestroySpeed(null, pos) != 0 && miningSpeed > 1) {
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0 && !ClientTags.isInWithLocalFallback(SILK_TOUCH, blockState.getBlock())) {
-                if ((ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_EXC_ORES, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.except_ores)
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS_ORES, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.ores)
-                        || (ClientTags.isInWithLocalFallback(SILK_TOUCH_SETTING_ALWAYS, blockState.getBlock()) && AutoToolsConfig.PREFER_SILK_TOUCH != AutoToolsConfig.PreferSilkTouch.always)) {
+            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0 && !SILK_TOUCH.contains(Registry.BLOCK.getKey(blockState.getBlock()))) {
+                if ((SILK_TOUCH_SETTING_ALWAYS_EXC_ORES.contains(Registry.BLOCK.getKey(blockState.getBlock())) && AutoToolsConfig.get().preferSilkTouch != AutoToolsConfig.PreferSilkTouch.except_ores)
+                        || (SILK_TOUCH_SETTING_ALWAYS_ORES.contains(Registry.BLOCK.getKey(blockState.getBlock())) && AutoToolsConfig.get().preferSilkTouch != AutoToolsConfig.PreferSilkTouch.ores)
+                        || (SILK_TOUCH_SETTING_ALWAYS.contains(Registry.BLOCK.getKey(blockState.getBlock())) && AutoToolsConfig.get().preferSilkTouch != AutoToolsConfig.PreferSilkTouch.always)) {
                     priority += 1;
                 }
             }
 
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack) == 0 && !ClientTags.isInWithLocalFallback(FORTUNE, blockState.getBlock())
-                    && ClientTags.isInWithLocalFallback(FORTUNE_SETTING, blockState.getBlock()) && !AutoToolsConfig.ALWAYS_PREFER_FORTUNE) {
+            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack) == 0 && !FORTUNE.contains(Registry.BLOCK.getKey(blockState.getBlock()))
+                    && FORTUNE_SETTING.contains(Registry.BLOCK.getKey(blockState.getBlock())) && !AutoToolsConfig.get().alwaysPreferFortune) {
                 priority += 1;
             }
         }
 
-        if (stack.sameItem(new ItemStack(Items.SHEARS)) && ClientTags.isInWithLocalFallback(SHEARS, blockState.getBlock())) {
+        if (stack.sameItem(new ItemStack(Items.SHEARS)) && SHEARS.contains(Registry.BLOCK.getKey(blockState.getBlock()))) {
             priority += 6;
         }
 
@@ -342,14 +397,14 @@ public class AutoTools {
     }
 
     /**
-     * @return If the ItemStack should be considered a valid tool based on the MIN_DURABILITY config option
+     * @return If the ItemStack should be considered a valid tool based on the minDurability config option
      */
     public static boolean checkDurability(ItemStack stack){
-        if (AutoToolsConfig.MIN_DURABILITY < 1) {
+        if (AutoToolsConfig.get().minDurability < 1) {
             double durability = (double) (stack.getMaxDamage() - stack.getDamageValue()) / stack.getMaxDamage();
-            if (durability < AutoToolsConfig.MIN_DURABILITY)
+            if (durability < AutoToolsConfig.get().minDurability)
                 return false;
-        } else if (stack.getMaxDamage() - stack.getDamageValue() <= AutoToolsConfig.MIN_DURABILITY)
+        } else if (stack.getMaxDamage() - stack.getDamageValue() <= AutoToolsConfig.get().minDurability)
             return false;
         return true;
     }
@@ -357,14 +412,14 @@ public class AutoTools {
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.inventory;
 
-        if (AutoToolsConfig.IGNORED_SLOTS.contains(inventory.selected)) return;
+        if (AutoToolsConfig.get().ignoredSlots.contains(inventory.selected + 1)) return;
 
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
 
-            if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.tool && !(getMiningSpeed(inventory.getSelected(), blockState, blockHitResult.getBlockPos()).miningSpeed > 1 || inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
-            else if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.no_tool && (getMiningSpeed(inventory.getSelected(), blockState, blockHitResult.getBlockPos()).miningSpeed > 1 || inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+            if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.tool && !(getMiningSpeed(inventory.getSelected(), blockState, blockHitResult.getBlockPos()).miningSpeed > 1 || inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+            else if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.no_tool && (getMiningSpeed(inventory.getSelected(), blockState, blockHitResult.getBlockPos()).miningSpeed > 1 || inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
 
             int toolSlot = -1;
             ItemMiningSpeed miningSpeed = new ItemMiningSpeed(1f, 0);
@@ -388,7 +443,7 @@ public class AutoTools {
             }
 
             //End portal-Frame detection
-            if (!AutoToolsConfig.TOGGLE && blockState.getBlock() == Blocks.END_PORTAL_FRAME) {
+            if (!AutoToolsConfig.get().toggle && blockState.getBlock() == Blocks.END_PORTAL_FRAME) {
                 toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Items.ENDER_EYE));
 
                 if (toolSlot == -1) {
@@ -403,11 +458,11 @@ public class AutoTools {
 
             //Disabling tool switching on instant mine-able blocks unless it drops more with fortune
             //Calling with blockGetter == null because none of the parameters are being (Might clash with mixins)
-            if (blockState.getDestroySpeed(null, blockHitResult.getBlockPos()) == 0 && !ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock())) {
+            if (blockState.getDestroySpeed(null, blockHitResult.getBlockPos()) == 0 && !DO_NOT_SWAP_UNLESS_ENCH.contains(Registry.BLOCK.getKey(blockState.getBlock()))) {
                 return;
             }
 
-            if (AutoToolsConfig.ONLY_SWITCH_IF_NECESSARY) {
+            if (AutoToolsConfig.get().onlySwitchIfNecessary) {
                 if (inventory.getItem(inventory.selected).getItem().isCorrectToolForDrops(blockState)
                         || !blockState.requiresCorrectToolForDrops()) return;
             }
@@ -427,16 +482,16 @@ public class AutoTools {
 
                     if (newMiningSpeed.equals(miningSpeed)) {
                         if (toolSlot != -1) {
-                            if (AutoToolsConfig.PREFER_HOTBAR_TOOL) {
+                            if (AutoToolsConfig.get().preferHotbarTool) {
                                 if (i <= 8 && (toolSlot > 8 || i == inventory.selected ||
-                                        ((AutoToolsConfig.PREFER_LOW_DURABILITY && inventory.getItem(i).getDamageValue() > inventory.getItem(toolSlot).getDamageValue())
-                                                || (!AutoToolsConfig.PREFER_LOW_DURABILITY && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())))
+                                        ((AutoToolsConfig.get().preferLowDurability && inventory.getItem(i).getDamageValue() > inventory.getItem(toolSlot).getDamageValue())
+                                                || (!AutoToolsConfig.get().preferLowDurability && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())))
                                 ) {
                                     toolSlot = i;
                                     miningSpeed = newMiningSpeed;
                                 }
-                            } else if ((AutoToolsConfig.PREFER_LOW_DURABILITY && inventory.getItem(i).getDamageValue() > inventory.getItem(toolSlot).getDamageValue())
-                                    || (!AutoToolsConfig.PREFER_LOW_DURABILITY && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())) {
+                            } else if ((AutoToolsConfig.get().preferLowDurability && inventory.getItem(i).getDamageValue() > inventory.getItem(toolSlot).getDamageValue())
+                                    || (!AutoToolsConfig.get().preferLowDurability && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())) {
                                 toolSlot = i;
                                 miningSpeed = newMiningSpeed;
                             }
@@ -448,19 +503,19 @@ public class AutoTools {
                 }
             }
 
-            if (toolSlot == -1 || ClientTags.isInWithLocalFallback(DO_NOT_SWAP_UNLESS_ENCH, blockState.getBlock()) && miningSpeed.priority == 0) {
+            if (toolSlot == -1 || DO_NOT_SWAP_UNLESS_ENCH.contains(Registry.BLOCK.getKey(blockState.getBlock())) && miningSpeed.priority == 0) {
             } else {
                 selectItem(client, inventory, toolSlot);
             }
-        } else if (AutoToolsConfig.CHANGE_FOR_ENTITIES && hit.getType() == HitResult.Type.ENTITY) {
-            if (AutoToolsConfig.SWITCH_BACK) return;
+        } else if (AutoToolsConfig.get().changeForEntities && hit.getType() == HitResult.Type.ENTITY) {
+            if (AutoToolsConfig.get().switchBack) return;
 
             Entity entity = ((EntityHitResult) hit).getEntity();
 
-            if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.tool && !(inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
-            else if(AutoToolsConfig.ENABLED == AutoToolsConfig.Enabled.no_tool && (inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+            if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.tool && !(inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
+            else if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.no_tool && (inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
 
-            if (AutoToolsConfig.KEEP_AXE && Arrays.asList(TOOL_LISTS.get("autotools:axe")).contains(Registry.ITEM.getKey(inventory.getSelected().getItem()))) {
+            if (AutoToolsConfig.get().keepAxe && Arrays.asList(TOOL_LISTS.get("autotools:axe")).contains(Registry.ITEM.getKey(inventory.getSelected().getItem()))) {
                 return;
             }
 
@@ -538,7 +593,7 @@ public class AutoTools {
             }
 
             if (toolSlot == -1) {
-                if (!AutoToolsConfig.TOGGLE && client.player.isCreative()) {
+                if (!AutoToolsConfig.get().toggle && client.player.isCreative()) {
                     inventory.setItem(inventory.getSuitableHotbarSlot(), new ItemStack(Items.NETHERITE_SWORD));
                 }
             } else {

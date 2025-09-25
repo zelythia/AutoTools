@@ -10,57 +10,43 @@
 
     "ui.toast.autotools.durability_warning": "Слишком низкая прочность: %s",
 
-
-    "autotools.configuration.AutoTools": "Конфигурация AutoTools",
     "text.autoconfig.autotools.title": "Конфигурация AutoTools",
 
     "text.autoconfig.autotools.option.toggle" : "Переключение",
     "text.autoconfig.autotools.option.toggle.@Tooltip": "AutoTools всегда будет активны и постараются подобрать для вас наилучший инструмент. Можно переключать с помощью выбранной клавиши.",
-    "text.autoconfig.autotools.option.toggle.tooltip": "AutoTools всегда будет активны и постараются подобрать для вас наилучший инструмент. Можно переключать с помощью выбранной клавиши.",
 
     "text.autoconfig.autotools.option.disableCreative": "Отключить в креативе",
     "text.autoconfig.autotools.option.disableCreative.@Tooltip": "Отключает AutoTools в творческом режиме, если переключатель отключен",
-    "text.autoconfig.autotools.option.disableCreative.tooltip": "Отключает AutoTools в творческом режиме, если переключатель отключен",
 
     "text.autoconfig.autotools.option.keepSlot": "Сохранять выбранный слот",
     "text.autoconfig.autotools.option.keepSlot.@Tooltip": "Сохраняет выбранный слот при переключении на новый инструмент вместо использования ванильной механики",
-    "text.autoconfig.autotools.option.keepSlot.tooltip": "Сохраняет выбранный слот при переключении на новый инструмент вместо использования ванильной механики",
 
     "text.autoconfig.autotools.option.preferHotbarTool": "Предпочитать слот в Hotbar",
     "text.autoconfig.autotools.option.preferHotbarTool.@Tooltip": "AutoTools предпочтет инструмент, который уже есть в вашей панели Hotbar, если несколько инструментов имеют одинаковую скорость добычи, независимо от их прочности",
-    "text.autoconfig.autotools.option.preferHotbarTool.tooltip": "AutoTools предпочтет инструмент, который уже есть в вашей панели Hotbar, если несколько инструментов имеют одинаковую скорость добычи, независимо от их прочности",
 
     "text.autoconfig.autotools.option.preferLowDurability": "Предпочитать меньшую прочность",
     "text.autoconfig.autotools.option.preferLowDurability.@Tooltip": "AutoTools предпочтет инструмент с меньшей прочностью, а не с более высокой, если у них одинаковая скорость добычи",
-    "text.autoconfig.autotools.option.preferLowDurability.tooltip": "AutoTools предпочтет инструмент с меньшей прочностью, а не с более высокой, если у них одинаковая скорость добычи",
 
     "text.autoconfig.autotools.option.alwaysPreferFortune": "Всегда предпочитать Удачу",
     "text.autoconfig.autotools.option.alwaysPreferFortune.@Tooltip": "Autotools будет использовать Удачу для добычи гравия и листвы",
-    "text.autoconfig.autotools.option.alwaysPreferFortune.tooltip": "Autotools будет использовать Удачу для добычи гравия и листвы",
 
     "text.autoconfig.autotools.option.onlySwitchIfNecessary": "Переключение только при необходимости",
     "text.autoconfig.autotools.option.onlySwitchIfNecessary.@Tooltip": "AutoTools будет переключать инструмент только в том случае, если вы не можете использовать ваш текущий инструмент",
-    "text.autoconfig.autotools.option.onlySwitchIfNecessary.tooltip": "AutoTools будет переключать инструмент только в том случае, если вы не можете использовать ваш текущий инструмент",
 
     "text.autoconfig.autotools.option.switchBack": "Переключение назад",
     "text.autoconfig.autotools.option.switchBack.@Tooltip": "AutoTools переключится обратно на предыдущий инструмент или предмет, который был у вас в руках перед тем, как сломать блок",
-    "text.autoconfig.autotools.option.switchBack.tooltip": "AutoTools переключится обратно на предыдущий инструмент или предмет, который был у вас в руках перед тем, как сломать блок",
 
     "text.autoconfig.autotools.option.showDPS" : "Показывать Dps",
     "text.autoconfig.autotools.option.showDPS.@Tooltip" : "Отображает Dps оружия при наведении на него курсора мыши",
-    "text.autoconfig.autotools.option.showDPS.tooltip" : "Отображает Dps оружия при наведении на него курсора мыши",
 
     "text.autoconfig.autotools.option.changeForEntities": "Менять для сущностей",
     "text.autoconfig.autotools.option.changeForEntities.@Tooltip": "При наведении на сущность, AutoTools переключится на инструмент с наибольшим количеством DPS",
-    "text.autoconfig.autotools.option.changeForEntities.tooltip": "При наведении на сущность, AutoTools переключится на инструмент с наибольшим количеством DPS",
 
     "text.autoconfig.autotools.option.keepAxe": "Приоретет Топора",
     "text.autoconfig.autotools.option.keepAxe.@Tooltip": "AutoTools не заменяет на более лучшие оружие (например, меч) при использовании топора",
-    "text.autoconfig.autotools.option.keepAxe.tooltip": "AutoTools не заменяет на более лучшие оружие (например, меч) при использовании топора",
 
     "text.autoconfig.autotools.option.preferSilkTouch": "Предпочитать Шёлковое касание",
     "text.autoconfig.autotools.option.preferSilkTouch.@Tooltip": "Autotools также предпочтет Шёлковое касание, даже если для добычи блока не требуется: ",
-    "text.autoconfig.autotools.option.preferSilkTouch.tooltip": "Autotools также предпочтет Шёлковое касание, даже если для добычи блока не требуется: ",
     "text.autoconfig.autotools.option.preferSilkTouch.always": "Всегда",
     "text.autoconfig.autotools.option.preferSilkTouch.ores": "Руды",
     "text.autoconfig.autotools.option.preferSilkTouch.except_ores": "Кроме руд",
@@ -68,32 +54,25 @@
 
     "text.autoconfig.autotools.option.enabled": "Включенный",
     "text.autoconfig.autotools.option.enabled.@Tooltip": "AutoTools будет работать и переключаться на лучший инструмент только в том случае, если у вас уже есть в руках: ",
-    "text.autoconfig.autotools.option.enabled.tooltip": "AutoTools будет работать и переключаться на лучший инструмент только в том случае, если у вас уже есть в руках: ",
     "text.autoconfig.autotools.option.enabled.always": "Всегда",
     "text.autoconfig.autotools.option.enabled.tool": "Инструмент в руке",
     "text.autoconfig.autotools.option.enabled.no_tool": "Без инструмента в руках",
 
     "text.autoconfig.autotools.option.ignoredSlots": "Игнорируемые слоты",
     "text.autoconfig.autotools.option.ignoredSlots.@Tooltip": "AutoTools ничего не будут делать, если в данный момент выбран один из этих слотов:",
-    "text.autoconfig.autotools.option.ignoredSlots.tooltip": "AutoTools ничего не будут делать, если в данный момент выбран один из этих слотов:",
 
     "text.autoconfig.autotools.option.targetSlots": "Выбранные слоты",
     "text.autoconfig.autotools.option.targetSlots.@Tooltip": "AutoTools помещают инструменты только в эти слоты: ",
-    "text.autoconfig.autotools.option.targetSlots.tooltip": "AutoTools помещают инструменты только в эти слоты: ",
 
     "text.autoconfig.autotools.option.minDurability": "Минимальная прочность",
     "text.autoconfig.autotools.option.minDurability.@Tooltip": "Если < 1: Отображается процент: Инструменты, прочность которых ниже минимального, выбраны не будут\nИначе: Отображается прочность: инструменты будут использованы до тех пор, пока не будет минимальная прочность (например, установите значение 1, чтобы инструмент никогда не ломался)",
-    "text.autoconfig.autotools.option.minDurability.tooltip": "Если < 1: Отображается процент: Инструменты, прочность которых ниже минимального, выбраны не будут\nИначе: Отображается прочность: инструменты будут использованы до тех пор, пока не будет минимальная прочность (например, установите значение 1, чтобы инструмент никогда не ломался)",
 
     "text.autoconfig.autotools.option.durabilityCheck": "Проверка прочности",
     "text.autoconfig.autotools.option.durabilityCheck.@Tooltip": "Предотвращает добычу блоков при минимальной прочности",
-    "text.autoconfig.autotools.option.durabilityCheck.tooltip": "Предотвращает добычу блоков при минимальной прочности",
 
     "text.autoconfig.autotools.option.customTools": "Пользовательские инструменты",
     "text.autoconfig.autotools.option.customTools.@Tooltip": "Добавление пользовательских конфигураций инструментов в формате JSON\nнапр. {\"minecraft:block_id\":\"minecraft:tool_id\"} или customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nПри добавлении нескольких инструментов первый из них имеет наивысший приоритет\nСуществуют также предопределенные списки для групп инструментов: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nИспользуйте \"autotools:disabled\" чтобы отключить AutoTools на определенных блоках\nТакже работает для сущностей: \"minecraft:entity_id\":\"minecraft:tool_id",
-    "text.autoconfig.autotools.option.customTools.tooltip": "Добавление пользовательских конфигураций инструментов в формате JSON\nнапр. {\"minecraft:block_id\":\"minecraft:tool_id\"} или customTools={\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]}\nПри добавлении нескольких инструментов первый из них имеет наивысший приоритет\nСуществуют также предопределенные списки для групп инструментов: autotools:pickaxe, autotools:axe, autotools:shovel, autotools.hoe, autotools:sword\nИспользуйте \"autotools:disabled\" чтобы отключить AutoTools на определенных блоках\nТакже работает для сущностей: \"minecraft:entity_id\":\"minecraft:tool_id",
 
     "text.autoconfig.autotools.option.experimentalBreakDelay": "[Экспериментальная] Задержка ломания",
-    "text.autoconfig.autotools.option.experimentalBreakDelay.@Tooltip": "[Экспериментальная] Добавляет экспериментальную задержку в 1 тик = 50 мс, если переключатель включен перед добычей блока, после переключения инструмента.\nВключайте это только в том случае, если при мгновенной добыче вы сталкиваетесь с рассинхронизациями, такими как призрачные блоки.",
-    "text.autoconfig.autotools.option.experimentalBreakDelay.tooltip": "[Экспериментальная] Добавляет экспериментальную задержку в 1 тик = 50 мс, если переключатель включен перед добычей блока, после переключения инструмента.\nВключайте это только в том случае, если при мгновенной добыче вы сталкиваетесь с рассинхронизациями, такими как призрачные блоки."
+    "text.autoconfig.autotools.option.experimentalBreakDelay.@Tooltip": "[Экспериментальная] Добавляет экспериментальную задержку в 1 тик = 50 мс, если переключатель включен перед добычей блока, после переключения инструмента.\nВключайте это только в том случае, если при мгновенной добыче вы сталкиваетесь с рассинхронизациями, такими как призрачные блоки."
 }
