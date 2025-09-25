@@ -16,6 +16,7 @@ repositories {
             }
         }
     }
+    maven { url "https://maven.shedaniel.me/" }
 }
 
 architectury {
@@ -42,6 +43,8 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
     modApi("com.mrcrayfish:controllable-common:1.21.1-0.25.3")
+
+    modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}"
 }
 
 base {

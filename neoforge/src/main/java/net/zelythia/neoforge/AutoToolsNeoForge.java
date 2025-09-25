@@ -1,29 +1,34 @@
 package net.zelythia.neoforge;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.jarjar.nio.util.Lazy;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.zelythia.AutoTools;
-import net.zelythia.AutoToolsConfig;
 import net.zelythia.ControllableCompat;
 import net.zelythia.TooltipHelper;
+import net.zelythia.config.AutoToolsConfig;
+import net.zelythia.config.autoconfig.BlockList;
+import net.zelythia.config.autoconfig.BlockListAnnotationProvider;
+import net.zelythia.config.autoconfig.CustomToolsTransformer;
 import org.lwjgl.glfw.GLFW;
 
 @Mod(AutoTools.MOD_ID)
@@ -41,15 +46,25 @@ public class AutoToolsNeoForge {
         // Registering mod for game events
         NeoForge.EVENT_BUS.register(this);
 
-        modEventBus.addListener(this::ConfigLoaded);
-
         //Registering the config
-        modContainer.registerConfig(ModConfig.Type.CLIENT, AutoToolsConfigImpl.SPEC, "autotools.toml");
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (modContainer1, parent) -> {
+            return AutoConfig.getConfigScreen(AutoToolsConfig.class, parent).get();
+        });
     }
 
     //Called once when the client is set up
     public void clientSetup(final FMLCommonSetupEvent event) {
+        AutoConfig.register(AutoToolsConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new));
+
+        AutoConfig.getConfigHolder(AutoToolsConfig.class).registerSaveListener((configHolder, autoToolsConfig) -> {
+            AutoTools.reloadConfig();
+            return InteractionResult.SUCCESS;
+        });
+
+        GuiRegistry registry = AutoConfig.getGuiRegistry(AutoToolsConfig.class);
+        registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
+        registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
+
         AutoTools.init();
     }
 
@@ -58,15 +73,11 @@ public class AutoToolsNeoForge {
         event.register(KEY_SILKTOUCH.get());
     }
 
-    public void ConfigLoaded(ModConfigEvent.Reloading event) {
-        AutoToolsConfig.load();
-    }
-
     @SubscribeEvent
     public void ClientTickStart(ClientTickEvent.Pre event) {
         Minecraft client = Minecraft.getInstance();
 
-        if (AutoToolsConfig.TOGGLE) {
+        if (AutoToolsConfig.get().toggle) {
             //Handling key presses
             if (KEY_CHANGE_TOOL.get().consumeClick()) {
                 if (!keyPressed) {
@@ -89,12 +100,12 @@ public class AutoToolsNeoForge {
     public void ClientTickEnd(ClientTickEvent.Post event) {
         Minecraft client = Minecraft.getInstance();
 
-        if (AutoToolsConfig.SWITCH_BACK) {
+        if (AutoToolsConfig.get().switchBack) {
             if (client.options.keyAttack.isDown() || ControllableCompat.attackDown()) {
                 AutoTools.startedMining = true;
             } else {
                 //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released
-                if (AutoToolsConfig.TOGGLE || AutoTools.startedMining) {
+                if (AutoToolsConfig.get().toggle || AutoTools.startedMining) {
                     AutoTools.switchBack();
                 }
             }
@@ -102,9 +113,9 @@ public class AutoToolsNeoForge {
 
         if(KEY_SILKTOUCH.get().consumeClick()) {
             AutoToolsConfig.PreferSilkTouch[] values = AutoToolsConfig.PreferSilkTouch.values();
-            AutoToolsConfig.PREFER_SILK_TOUCH = values[(AutoToolsConfig.PREFER_SILK_TOUCH.ordinal() + 1) % values.length];
+            AutoToolsConfig.get().preferSilkTouch = values[(AutoToolsConfig.get().preferSilkTouch.ordinal() + 1) % values.length];
 
-            client.player.displayClientMessage(Component.translatable("chat.cycle_silktouch").append(Component.translatable("autotools.configuration.preferSilkTouch." + AutoToolsConfig.PREFER_SILK_TOUCH)), false);
+            client.player.displayClientMessage(Component.translatable("chat.cycle_silktouch").append(Component.translatable("text.autoconfig.autotools.option.general.preferSilkTouch." + AutoToolsConfig.get().preferSilkTouch)), false);
 
             AutoToolsConfig.save();
         }

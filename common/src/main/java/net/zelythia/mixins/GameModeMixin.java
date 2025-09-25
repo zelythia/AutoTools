@@ -8,8 +8,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.HitResult;
 import net.zelythia.AutoTools;
-import net.zelythia.AutoToolsConfig;
 import net.zelythia.ControllableCompat;
+import net.zelythia.config.AutoToolsConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,14 +46,14 @@ public class GameModeMixin {
 
     @Inject(at = @At("HEAD"), method = "startDestroyBlock", cancellable = true)
     private void startDestroyBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        if (minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())) {
+        if (minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.get().durabilityCheck && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())) {
             cir.setReturnValue(false);
-            SystemToast.addOrUpdate(minecraft.getToasts(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1 ? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
+            SystemToast.addOrUpdate(minecraft.getToasts(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.get().minDurability < 1 ? AutoToolsConfig.get().minDurability * 100 + "%" : AutoToolsConfig.get().minDurability));
         }
 
         //FIXME Probably not needed anymore
         //Adds a 1 Tick = 50ms delay when breaking blocks to prevent desyncs like Ghost-Blocks
-        if(AutoToolsConfig.TOGGLE && AutoToolsConfig.EXPERIMENTAL_BREAK_DELAY){
+        if(AutoToolsConfig.get().toggle && AutoToolsConfig.get().experimentalBreakDelay){
             if(AutoTools.swapped){
                 cir.setReturnValue(false);
                 AutoTools.swapped = false;
@@ -63,9 +63,9 @@ public class GameModeMixin {
 
     @Inject(at = @At("HEAD"), method = "attack", cancellable = true)
     private void attack(CallbackInfo ci) {
-        if (minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.DURABILITY_CHECK && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())) {
+        if (minecraft.player.getInventory().getSelected().getMaxDamage() > 0 && AutoToolsConfig.get().durabilityCheck && !AutoTools.checkDurability(minecraft.player.getInventory().getSelected())) {
             ci.cancel();
-            SystemToast.addOrUpdate(minecraft.getToasts(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.MIN_DURABILITY < 1 ? AutoToolsConfig.MIN_DURABILITY * 100 + "%" : AutoToolsConfig.MIN_DURABILITY));
+            SystemToast.addOrUpdate(minecraft.getToasts(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.get().minDurability < 1 ? AutoToolsConfig.get().minDurability * 100 + "%" : AutoToolsConfig.get().minDurability));
         }
     }
 }
