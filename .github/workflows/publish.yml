@@ -6,8 +6,8 @@ env:
   MINECRAFT_VERSION: 1.20.6
   VERSION: 3.3.0
   FORGE: false
-  NEOFORGE: true
-  FABRIC: false
+  NEOFORGE: false
+  FABRIC: true
 
 jobs:
   build:
