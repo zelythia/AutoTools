@@ -17,10 +17,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "net.zelythia.fabric.AutoToolsFabric"
+      "net.zelythia.autotools.fabric.AutoToolsFabric"
     ],
     "modmenu": [
-      "net.zelythia.fabric.compat.modmenu.ModMenuIntegration"
+      "net.zelythia.autotools.fabric.compat.ModMenuIntegration"
     ]
   },
   "mixins": [

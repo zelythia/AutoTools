@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.zelythia.mixins",
+  "package": "net.zelythia.autotools.mixins",
   "minVersion": "0.8",
   "client": [
     "GameModeMixin"
