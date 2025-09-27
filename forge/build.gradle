@@ -33,10 +33,16 @@ dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
 
     modApi("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}")
 }
+
+configurations.configureEach {
+    resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
+}
+
+
 
 base {
     archivesName = rootProject.archives_base_name + "-" + rootProject.minecraft_version + "-forge"
