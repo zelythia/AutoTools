@@ -5,13 +5,17 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.20.6
   VERSION: 3.3.0
-  FORGE: true
+  FORGE: false
   NEOFORGE: false
   FABRIC: false
+  MAVEN: true
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Check Environment Variables
         run: env
@@ -124,3 +128,9 @@ jobs:
           changelog-file: CHANGELOG.md
 
           github-tag: ${{env.MINECRAFT_VERSION}}-${{env.VERSION}}
+
+      - name: Publish on MavenCentral)
+        if: env.MAVEN == 'true'
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
