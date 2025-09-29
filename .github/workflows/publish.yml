@@ -8,10 +8,17 @@ env:
   SUPPORTED_VERSIONS: |
     1.20
     1.20.1
+  FORGE: false
+  FABRIC: false
+  GITHUB: false
+  MAVEN: true
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Check Environment Variables
         run: env
@@ -35,6 +42,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Publish Forge-Mod on (Curseforge/Modrinth)
+        if: env.FORGE == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -57,6 +65,7 @@ jobs:
             cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
 
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
+        if: env.FABRIC == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -81,6 +90,7 @@ jobs:
             fabric(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
 
       - name: Publish Mod on Github
+        if: env.GITHUB == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           github-token: ${{ secrets.GITH_TOKEN }}
@@ -97,3 +107,6 @@ jobs:
           changelog-file: CHANGELOG.md
 
           github-tag: ${{env.MINECRAFT_VERSION}}-${{env.VERSION}}
+      - name: Publish Maven
+        if: env.MAVEN == 'true'
+        run: ./gradlew publish

@@ -1,4 +1,4 @@
-package net.zelythia.forge;
+package net.zelythia.autotools.forge;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -20,13 +20,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.zelythia.AutoTools;
-import net.zelythia.ControllableCompat;
-import net.zelythia.TooltipHelper;
-import net.zelythia.config.AutoToolsConfig;
-import net.zelythia.config.autoconfig.BlockList;
-import net.zelythia.config.autoconfig.BlockListAnnotationProvider;
-import net.zelythia.config.autoconfig.CustomToolsTransformer;
+import net.zelythia.autotools.AutoTools;
+import net.zelythia.autotools.PlatformHelper;
+import net.zelythia.autotools.TooltipHelper;
+import net.zelythia.autotools.config.AutoToolsConfig;
+import net.zelythia.autotools.config.autoconfig.BlockList;
+import net.zelythia.autotools.config.autoconfig.BlockListAnnotationProvider;
+import net.zelythia.autotools.config.autoconfig.CustomToolsTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -100,7 +100,7 @@ public class AutoToolsForge {
             Minecraft client = Minecraft.getInstance();
 
             if (AutoToolsConfig.get().switchBack) {
-                if (client.options.keyAttack.isDown() || ControllableCompat.attackDown()) {
+                if (client.options.keyAttack.isDown() || PlatformHelper.controllableAttackDown()) {
                     AutoTools.startedMining = true;
                 } else {
                     //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released

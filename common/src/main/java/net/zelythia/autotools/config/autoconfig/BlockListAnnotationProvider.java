@@ -1,4 +1,4 @@
-package net.zelythia.config.autoconfig;
+package net.zelythia.autotools.config.autoconfig;
 
 import me.shedaniel.autoconfig.gui.registry.api.GuiProvider;
 import me.shedaniel.autoconfig.gui.registry.api.GuiRegistryAccess;

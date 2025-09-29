@@ -1,4 +1,4 @@
-package net.zelythia.config.autoconfig;
+package net.zelythia.autotools.config.autoconfig;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;

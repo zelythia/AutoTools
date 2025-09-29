@@ -1,4 +1,4 @@
-package net.zelythia;
+package net.zelythia.autotools;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.zelythia.config.AutoToolsConfig;
+import net.zelythia.autotools.config.AutoToolsConfig;
 
 import java.util.List;
 

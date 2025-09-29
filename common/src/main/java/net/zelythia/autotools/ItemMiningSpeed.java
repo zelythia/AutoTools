@@ -1,4 +1,4 @@
-package net.zelythia;
+package net.zelythia.autotools;
 
 import java.util.Objects;
 

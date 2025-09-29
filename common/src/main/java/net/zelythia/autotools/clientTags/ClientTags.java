@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.zelythia.clientTags;
+package net.zelythia.autotools.clientTags;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;

@@ -1,12 +1,12 @@
-package net.zelythia.config;
+package net.zelythia.autotools.config;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
-import net.zelythia.AutoTools;
-import net.zelythia.config.autoconfig.BlockList;
+import net.zelythia.autotools.AutoTools;
+import net.zelythia.autotools.config.autoconfig.BlockList;
 
 import java.util.List;
 

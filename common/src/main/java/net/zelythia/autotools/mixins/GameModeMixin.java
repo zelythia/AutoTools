@@ -1,4 +1,4 @@
-package net.zelythia.mixins;
+package net.zelythia.autotools.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -7,9 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.HitResult;
-import net.zelythia.AutoTools;
-import net.zelythia.config.AutoToolsConfig;
-import net.zelythia.ControllableCompat;
+import net.zelythia.autotools.AutoTools;
+import net.zelythia.autotools.PlatformHelper;
+import net.zelythia.autotools.config.AutoToolsConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,7 +34,7 @@ public class GameModeMixin {
     private void ensureHasSentCarriedItem(CallbackInfo ci) {
         if (minecraft.hitResult.equals(this.autoTools$lastHit)) return;
 
-        if (minecraft.options.keyAttack.isDown() || ControllableCompat.attackDown()) {
+        if (minecraft.options.keyAttack.isDown() || PlatformHelper.controllableAttackDown()) {
             AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
             autoTools$lastHit = minecraft.hitResult;
         }

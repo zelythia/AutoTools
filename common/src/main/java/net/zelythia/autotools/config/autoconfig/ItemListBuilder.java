@@ -1,4 +1,4 @@
-package net.zelythia.config.autoconfig;
+package net.zelythia.autotools.config.autoconfig;
 
 import me.shedaniel.clothconfig2.impl.builders.AbstractListBuilder;
 import net.minecraft.network.chat.Component;

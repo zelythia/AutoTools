@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package net.zelythia.clientTags;
+package net.zelythia.autotools.clientTags;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +27,7 @@ import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
+import net.zelythia.autotools.PlatformHelper;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,8 +122,7 @@ public class ClientTagsLoader {
 	/**
 	 * @return all paths from the available mods that match the given internal path
 	 */
-	@ExpectPlatform
 	private static HashSet<Path> getResourcePaths(String path) {
-		throw new AssertionError();
+		return PlatformHelper.getResourcePaths(path);
 	}
 }

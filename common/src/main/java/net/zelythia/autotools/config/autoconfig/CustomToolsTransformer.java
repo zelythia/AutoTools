@@ -1,4 +1,4 @@
-package net.zelythia.config.autoconfig;
+package net.zelythia.autotools.config.autoconfig;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;

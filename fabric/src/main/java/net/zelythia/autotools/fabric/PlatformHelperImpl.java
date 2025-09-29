@@ -1,4 +1,4 @@
-package net.zelythia.clientTags.fabric;
+package net.zelythia.autotools.fabric;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -6,7 +6,7 @@ import net.fabricmc.loader.api.ModContainer;
 import java.nio.file.Path;
 import java.util.HashSet;
 
-public class ClientTagsLoaderImpl {
+public class PlatformHelperImpl {
     public static HashSet<Path> getResourcePaths(String path) {
         HashSet<Path> out = new HashSet<>();
 
@@ -15,5 +15,9 @@ public class ClientTagsLoaderImpl {
         }
 
         return out;
+    }
+
+    public static boolean controllableAttackDown() {
+        return false;
     }
 }

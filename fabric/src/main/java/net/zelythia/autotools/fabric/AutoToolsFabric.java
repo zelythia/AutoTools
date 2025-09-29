@@ -1,4 +1,4 @@
-package net.zelythia.fabric;
+package net.zelythia.autotools.fabric;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -14,12 +14,13 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import net.zelythia.AutoTools;
-import net.zelythia.config.AutoToolsConfig;
-import net.zelythia.TooltipHelper;
-import net.zelythia.config.autoconfig.BlockList;
-import net.zelythia.config.autoconfig.BlockListAnnotationProvider;
-import net.zelythia.config.autoconfig.CustomToolsTransformer;
+import net.zelythia.autotools.AutoTools;
+import net.zelythia.autotools.PlatformHelper;
+import net.zelythia.autotools.TooltipHelper;
+import net.zelythia.autotools.config.AutoToolsConfig;
+import net.zelythia.autotools.config.autoconfig.BlockList;
+import net.zelythia.autotools.config.autoconfig.BlockListAnnotationProvider;
+import net.zelythia.autotools.config.autoconfig.CustomToolsTransformer;
 import org.lwjgl.glfw.GLFW;
 
 public class AutoToolsFabric implements ClientModInitializer {
@@ -70,7 +71,7 @@ public class AutoToolsFabric implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (AutoToolsConfig.get().switchBack) {
-                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                if (Minecraft.getInstance().options.keyAttack.isDown() || PlatformHelper.controllableAttackDown()) {
                     AutoTools.startedMining = true;
                 } else {
                     //Detecting switchBack for entities when using toggle, switching back otherwise if the key is released

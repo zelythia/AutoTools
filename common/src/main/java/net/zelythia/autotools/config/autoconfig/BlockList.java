@@ -1,4 +1,4 @@
-package net.zelythia.config.autoconfig;
+package net.zelythia.autotools.config.autoconfig;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

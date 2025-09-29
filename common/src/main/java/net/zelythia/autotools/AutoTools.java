@@ -1,4 +1,4 @@
-package net.zelythia;
+package net.zelythia.autotools;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.zelythia.clientTags.ClientTags;
-import net.zelythia.config.AutoToolsConfig;
+import net.zelythia.autotools.clientTags.ClientTags;
+import net.zelythia.autotools.config.AutoToolsConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
