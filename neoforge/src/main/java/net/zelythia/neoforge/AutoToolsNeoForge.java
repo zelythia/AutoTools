@@ -8,18 +8,17 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.jarjar.nio.util.Lazy;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.zelythia.AutoTools;
@@ -35,8 +34,9 @@ import org.lwjgl.glfw.GLFW;
 public class AutoToolsNeoForge {
     private boolean keyPressed = false;
 
-    public static final Lazy<KeyMapping> KEY_CHANGE_TOOL = Lazy.of(() -> new KeyMapping("key.autotools.get_tool", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.autotools.category"));
-    public static final Lazy<KeyMapping> KEY_SILKTOUCH = Lazy.of(() -> new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, "key.autotools.category"));
+    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath(AutoTools.MOD_ID, "keys"));
+    private static final KeyMapping KEY_AUTOTOOLS = new KeyMapping("key.autotools.get_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, CATEGORY);
+    private static final KeyMapping KEY_SILKTOUCH = new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, CATEGORY);
 
     public AutoToolsNeoForge(IEventBus modEventBus, ModContainer modContainer) {
         //Registering the clientSetup method
@@ -70,8 +70,8 @@ public class AutoToolsNeoForge {
     }
 
     public void registerKeyBinding(RegisterKeyMappingsEvent event) {
-        event.register(KEY_CHANGE_TOOL.get());
-        event.register(KEY_SILKTOUCH.get());
+        event.register(KEY_AUTOTOOLS);
+        event.register(KEY_SILKTOUCH);
     }
 
     @SubscribeEvent
@@ -80,7 +80,7 @@ public class AutoToolsNeoForge {
 
         if (AutoToolsConfig.get().toggle) {
             //Handling key presses
-            if (KEY_CHANGE_TOOL.get().consumeClick()) {
+            if (KEY_AUTOTOOLS.consumeClick()) {
                 if (!keyPressed) {
                     AutoTools.toggle = !AutoTools.toggle;
                     client.player.displayClientMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"), false);
@@ -90,7 +90,7 @@ public class AutoToolsNeoForge {
                 keyPressed = false;
             }
         } else {
-            if (KEY_CHANGE_TOOL.get().consumeClick()) {
+            if (KEY_AUTOTOOLS.consumeClick()) {
                 AutoTools.startedMining = false;
                 AutoTools.getCorrectTool(client.hitResult, client);
             }
@@ -112,7 +112,7 @@ public class AutoToolsNeoForge {
             }
         }
 
-        if(KEY_SILKTOUCH.get().consumeClick()) {
+        if(KEY_SILKTOUCH.consumeClick()) {
             AutoToolsConfig.PreferSilkTouch[] values = AutoToolsConfig.PreferSilkTouch.values();
             AutoToolsConfig.get().preferSilkTouch = values[(AutoToolsConfig.get().preferSilkTouch.ordinal() + 1) % values.length];
 

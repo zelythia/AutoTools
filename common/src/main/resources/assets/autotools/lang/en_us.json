@@ -1,7 +1,7 @@
 {
     "key.autotools.get_tool" : "Pick Tool/Toggle",
     "key.autotools.silktouch" : "Cycle SilkTouch Setting",
-    "key.autotools.category" : "AutoTools",
+    "key.category.autotools.keys" : "AutoTools",
 
     "chat.enabled_autotools": "§2Enabled§f AutoTools!",
     "chat.disabled_autotools": "§4Disabled§f AutoTools!",

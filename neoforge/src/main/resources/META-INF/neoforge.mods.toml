@@ -5,7 +5,7 @@ license = "MIT"
 
 [[mods]]
 modId="autotools"
-version="3.3.2"
+version="${version}"
 displayName="AutoTools"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/autotools"
 logoFile="icon.png"
@@ -24,12 +24,12 @@ side = "CLIENT"
 [[dependencies.autotools]]
 modId = "minecraft"
 type="required"
-versionRange = "[1.21.6,)"
+versionRange = "[1.21.9,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.autotools]]
-modId = "cloth-config"
+modId = "cloth_config"
 mandatory = true
 versionRange = "[4.9,)"
 ordering = "NONE"

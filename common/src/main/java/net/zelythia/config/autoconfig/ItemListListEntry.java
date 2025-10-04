@@ -9,6 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -172,18 +175,18 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            return dropdownBoxEntry.mouseClicked(mouseX, mouseY, button);
+        public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+            return dropdownBoxEntry.mouseClicked(mouseButtonEvent, bl);
         }
 
         @Override
-        public boolean mouseReleased(double mouseX, double mouseY, int button) {
-            return dropdownBoxEntry.mouseReleased(mouseX, mouseY, button);
+        public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
+            return dropdownBoxEntry.mouseReleased(mouseButtonEvent);
         }
 
         @Override
-        public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-            return dropdownBoxEntry.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        public boolean mouseDragged(MouseButtonEvent mouseButtonEvent, double d, double e) {
+            return dropdownBoxEntry.mouseDragged(mouseButtonEvent, d, e);
         }
 
         @Override
@@ -192,18 +195,18 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
         }
 
         @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            return dropdownBoxEntry.keyPressed(keyCode, scanCode, modifiers);
+        public boolean keyPressed(KeyEvent keyEvent) {
+            return dropdownBoxEntry.keyPressed(keyEvent);
         }
 
         @Override
-        public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-            return dropdownBoxEntry.keyReleased(keyCode, scanCode, modifiers);
+        public boolean keyReleased(KeyEvent keyEvent) {
+            return dropdownBoxEntry.keyReleased(keyEvent);
         }
 
         @Override
-        public boolean charTyped(char codePoint, int modifiers) {
-            return dropdownBoxEntry.charTyped(codePoint, modifiers);
+        public boolean charTyped(CharacterEvent characterEvent) {
+            return dropdownBoxEntry.charTyped(characterEvent);
         }
 
         @Override

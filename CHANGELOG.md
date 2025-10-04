@@ -1,1 +1,0 @@
-- Fixed wrong localisation for SilkTouch Setting keybind

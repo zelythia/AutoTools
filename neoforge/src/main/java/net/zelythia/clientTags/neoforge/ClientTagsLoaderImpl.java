@@ -13,7 +13,7 @@ public class ClientTagsLoaderImpl {
         HashSet<Path> out = new HashSet<>();
 
         for (IModFileInfo modFile : ModList.get().getModFiles()) {
-            Path modPath = modFile.getFile().findResource(path);
+            Path modPath = modFile.getFile().getFilePath().resolve(path);
             if (Files.exists(modPath)) {
                 out.add(modPath);
             }
