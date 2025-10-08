@@ -4,13 +4,13 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 1.20.1
-  VERSION: 3.3.0
+  VERSION: 3.3.1
   SUPPORTED_VERSIONS: |
     1.20
     1.20.1
-  FORGE: false
-  FABRIC: false
-  GITHUB: false
+  FORGE: true
+  FABRIC: true
+  GITHUB: true
   MAVEN: true
 
 jobs:
