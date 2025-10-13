@@ -1,5 +1,4 @@
-package net.zelythia.autotools.clientTags.neoforge;
-
+package net.zelythia.autotools.neoforge;
 
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.IModFileInfo;
@@ -8,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 
-public class ClientTagsLoaderImpl {
+public class PlatformHelperImpl {
     public static HashSet<Path> getResourcePaths(String path) {
         HashSet<Path> out = new HashSet<>();
 

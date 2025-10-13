@@ -1,17 +1,9 @@
-plugins {
-    id 'maven-publish'
+architectury {
+    common rootProject.enabled_platforms.split(',')
 }
 
 repositories {
     maven { url "https://maven.shedaniel.me/" }
-}
-
-architectury {
-    common(rootProject.enabled_platforms.split(","))
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/autotools.accesswidener")
 }
 
 dependencies {
@@ -19,48 +11,5 @@ dependencies {
     // Do NOT use other classes from fabric loader
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
-    modCompileOnlyApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
-}
-
-publishing {
-    publications {
-        mavenFabric(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-            pom {
-                name = 'AutoTools'
-                description = 'A Minecraft mod for automatically switching to the correct tool to use on a block/mob.'
-                url = 'https://github.com/zelythia/AutoTools'
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'https://opensource.org/license/mit'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'zelythia'
-                        name = 'Lukas Z'
-                        email = 'dev@zelythia.net'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/zelytiha/aequitas.git'
-                    developerConnection = 'scm:git:ssh://github.com/zelythia/aequitas.git'
-                    url = 'http://github.com/zelythia/aequitas'
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/zelythia/AutoTools"
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
+    modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
 }
