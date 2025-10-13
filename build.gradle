@@ -94,43 +94,43 @@ subprojects {
                 url = rootProject.layout.buildDirectory.dir('staging-deploy')
             }
 
-//            if (project.version.toString().contains("-SNAPSHOT")) {
-//                maven {
-//                    name = "zelythiaMavenSnapshots"
-//                    url = uri("https://maven.zelythia.net/snapshots")
-//                    credentials{
-//                        username = System.getenv('MAVEN_USERNAME')?: project.findProperty('mavenUser')
-//                        password = System.getenv('MAVEN_PASSWORD')?: project.findProperty('mavenPassword')
-//                    }
-//                    authentication {
-//                        basic(BasicAuthentication)
-//                    }
-//                }
-//            }
-//            else{
-//                maven {
-//                    name = "zelythiaMavenRepositoryReleases"
-//                    url = uri("https://maven.zelythia.net/releases")
-//                    credentials{
-//                        username = System.getenv('MAVEN_USERNAME')?: project.findProperty('mavenUser')
-//                        password = System.getenv('MAVEN_PASSWORD')?: project.findProperty('mavenPassword')
-//                    }
-//                    authentication {
-//                        basic(BasicAuthentication)
-//                    }
-//                }
-//
-//                if (System.getenv("GITHUB_ACTOR") && System.getenv("GITHUB_TOKEN")) {
-//                    maven {
-//                        name = "GitHubPackages"
-//                        url = "https://maven.pkg.github.com/zelythia/AutoTools"
-//                        credentials {
-//                            username = System.getenv("GITHUB_ACTOR")
-//                            password = System.getenv("GITHUB_TOKEN")
-//                        }
-//                    }
-//                }
-//            }
+            if (project.version.toString().contains("-SNAPSHOT")) {
+                maven {
+                    name = "zelythiaMavenSnapshots"
+                    url = uri("https://maven.zelythia.net/snapshots")
+                    credentials{
+                        username = System.getenv('MAVEN_USERNAME')?: project.findProperty('mavenUser')
+                        password = System.getenv('MAVEN_PASSWORD')?: project.findProperty('mavenPassword')
+                    }
+                    authentication {
+                        basic(BasicAuthentication)
+                    }
+                }
+            }
+            else{
+                maven {
+                    name = "zelythiaMavenRepositoryReleases"
+                    url = uri("https://maven.zelythia.net/releases")
+                    credentials{
+                        username = System.getenv('MAVEN_USERNAME')?: project.findProperty('mavenUser')
+                        password = System.getenv('MAVEN_PASSWORD')?: project.findProperty('mavenPassword')
+                    }
+                    authentication {
+                        basic(BasicAuthentication)
+                    }
+                }
+
+                if (System.getenv("GITHUB_ACTOR") && System.getenv("GITHUB_TOKEN")) {
+                    maven {
+                        name = "GitHubPackages"
+                        url = "https://maven.pkg.github.com/zelythia/AutoTools"
+                        credentials {
+                            username = System.getenv("GITHUB_ACTOR")
+                            password = System.getenv("GITHUB_TOKEN")
+                        }
+                    }
+                }
+            }
         }
     }
 }
