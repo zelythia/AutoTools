@@ -5,11 +5,11 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.20.6
   VERSION: 3.3.2
-  FORGE: false
-  NEOFORGE: false
-  FABRIC: false
-  GITHUB: false
-  MAVEN: true
+  FORGE: true
+  NEOFORGE: true
+  FABRIC: true
+  GITHUB: true
+  MAVEN: false
 
 jobs:
   publish:
