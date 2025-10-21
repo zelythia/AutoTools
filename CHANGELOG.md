@@ -1,1 +1,1 @@
-- Fixed wrong localisation for SilkTouch Setting keybind
+- Fix wrong cloth_config version requirement
