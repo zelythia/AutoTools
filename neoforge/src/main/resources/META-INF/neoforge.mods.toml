@@ -28,5 +28,15 @@ versionRange = "[1.21,1.21.1]"
 ordering = "NONE"
 side = "CLIENT"
 
+[[dependencies.autotools]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[4.9,)"
+ordering = "NONE"
+side = "CLIENT"
+
 [[mixins]]
 config = "autotools-common.mixins.json"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"

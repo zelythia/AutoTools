@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.zelythia.mixins",
+  "package": "net.zelythia.autotools.mixins",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
