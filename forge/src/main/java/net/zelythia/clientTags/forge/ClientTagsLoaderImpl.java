@@ -1,4 +1,4 @@
-package net.zelythia.clientTags.forge;
+package net.zelythia.autotools.clientTags.forge;
 
 
 import net.minecraftforge.fml.ModList;

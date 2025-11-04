@@ -5,7 +5,7 @@ license = "MIT"
 
 [[mods]]
 modId="autotools"
-version="3.3.3"
+version="${version}"
 displayName="AutoTools"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/autotools"
 logoFile="icon.png"

@@ -17,15 +17,16 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "net.zelythia.fabric.AutoToolsFabric"
+      "net.zelythia.autotools.fabric.AutoToolsFabric"
     ],
     "modmenu": [
-      "net.zelythia.fabric.compat.modmenu.ModMenuIntegration"
+      "net.zelythia.autotools.fabric.compat.modmenu.ModMenuIntegration"
     ]
   },
   "mixins": [
     "autotools-common.mixins.json"
   ],
+  "accessWidener" : "autotools.accesswidener",
   "depends": {
     "fabricloader": ">=0.15",
     "minecraft": ">=1.21.6",
