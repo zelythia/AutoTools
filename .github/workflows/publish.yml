@@ -4,15 +4,19 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 1.21.9
-  VERSION: 3.3.0
+  VERSION: 3.3.1
   FORGE: false
   NEOFORGE: true
   FABRIC: true
+  GITHUB: true
+  MAVEN: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write
     env:
       ORG_GRADLE_PROJECT_gprKey: ${{ secrets.GPR_KEY }}
 
@@ -116,6 +120,7 @@ jobs:
             fabric(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
 
       - name: Publish Mod on Github
+        if: env.GITHUB == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           github-token: ${{ secrets.GITH_TOKEN }}
@@ -135,3 +140,11 @@ jobs:
           changelog-file: CHANGELOG.md
 
           github-tag: ${{env.MINECRAFT_VERSION}}-${{env.VERSION}}
+
+      - name: Publish Maven
+        if: env.MAVEN == 'true'
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{secrets.MAVEN_USERNAME}}
+          MAVEN_PASSWORD: ${{secrets.MAVEN_PASSWORD}}

@@ -37,3 +37,6 @@ side = "CLIENT"
 
 [[mixins]]
 config = "autotools-common.mixins.json"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
