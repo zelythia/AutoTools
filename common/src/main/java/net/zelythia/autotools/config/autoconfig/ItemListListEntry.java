@@ -15,7 +15,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +66,7 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
                 }
 
                 try {
-                    ResourceLocation identifier = ResourceLocation.parse(s);
+                    Identifier identifier = Identifier.parse(s);
                     if (BuiltInRegistries.BLOCK.getOptional(identifier).isPresent()) {
                         return s;
                     }
@@ -79,11 +79,11 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
             DropdownBoxEntry.DefaultSelectionCellCreator<String> cellCreator = new DropdownBoxEntry.DefaultSelectionCellCreator<>() {
                 public DropdownBoxEntry.SelectionCellElement<String> create(String selection) {
 
-                    ResourceLocation resourceLocation;
-                    if (selection.startsWith("#")) resourceLocation = ResourceLocation.parse("minecraft:air");
-                    else resourceLocation = ResourceLocation.parse(selection);
+                    Identifier id;
+                    if (selection.startsWith("#")) id = Identifier.parse("minecraft:air");
+                    else id = Identifier.parse(selection);
 
-                    final ItemStack s = new ItemStack(BuiltInRegistries.BLOCK.getValue(resourceLocation));
+                    final ItemStack s = new ItemStack(BuiltInRegistries.BLOCK.getValue(id));
 
 
                     return new DropdownBoxEntry.DefaultSelectionCellElement<String>(selection, this.toTextFunction) {

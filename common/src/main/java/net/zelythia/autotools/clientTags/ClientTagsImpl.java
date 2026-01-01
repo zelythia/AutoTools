@@ -59,7 +59,7 @@ public class ClientTagsImpl {
 		// Recursively search the entries contained with the tag
 		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
 
-		if (wt.immediateChildIds().contains(registryEntry.unwrapKey().get().location())) {
+		if (wt.immediateChildIds().contains(registryEntry.unwrapKey().get().registry())) {
 			return true;
 		}
 
@@ -89,7 +89,7 @@ public class ClientTagsImpl {
 			}
 		}
 
-		return (Optional<? extends Registry<T>>) BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().location());
+		return (Optional<? extends Registry<T>>) BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().registry());
 	}
 
 	@SuppressWarnings("unchecked")

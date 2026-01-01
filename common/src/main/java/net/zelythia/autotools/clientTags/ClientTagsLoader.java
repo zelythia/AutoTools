@@ -20,11 +20,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagKey;
@@ -70,22 +69,22 @@ public class ClientTagsLoader {
 			}
 		}
 
-		HashSet<ResourceLocation> completeIds = new HashSet<>();
-		HashSet<ResourceLocation> immediateChildIds = new HashSet<>();
+		HashSet<Identifier> completeIds = new HashSet<>();
+		HashSet<Identifier> immediateChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
 		for (TagEntry tagEntry : tags) {
 			tagEntry.build(new TagEntry.Lookup<>() {
 
 				@Override
-				public @Nullable ResourceLocation element(ResourceLocation resourceLocation, boolean bl) {
-					immediateChildIds.add(resourceLocation);
-					return resourceLocation;
+				public @Nullable Identifier element(Identifier Identifier, boolean bl) {
+					immediateChildIds.add(Identifier);
+					return Identifier;
 				}
 
 				@Nullable
 				@Override
-				public Collection<ResourceLocation> tag(ResourceLocation id) {
+				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
@@ -100,7 +99,7 @@ public class ClientTagsLoader {
 				Collections.unmodifiableSet(immediateChildIds));
 	}
 
-	public record LoadedTag(Set<ResourceLocation> completeIds, Set<TagKey<?>> immediateChildTags, Set<ResourceLocation> immediateChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
 	}
 
 	/**
@@ -108,14 +107,14 @@ public class ClientTagsLoader {
 	 * @param identifier  the Identifier of the tag
 	 * @return the paths to all tag json files within the available mods
 	 */
-	private static HashSet<Path> getTagFiles(ResourceKey<? extends Registry<?>> registryKey, ResourceLocation identifier) {
+	private static HashSet<Path> getTagFiles(ResourceKey<? extends Registry<?>> registryKey, Identifier identifier) {
 		return getTagFiles(Registries.tagsDirPath(registryKey), identifier);
 	}
 
 	/**
 	 * @return the paths to all tag json files within the available mods
 	 */
-	private static HashSet<Path> getTagFiles(String tagType, ResourceLocation identifier) {
+	private static HashSet<Path> getTagFiles(String tagType, Identifier identifier) {
 		String tagFile = "data/%s/%s/%s.json".formatted(identifier.getNamespace(), tagType, identifier.getPath());
 		return getResourcePaths(tagFile);
 	}

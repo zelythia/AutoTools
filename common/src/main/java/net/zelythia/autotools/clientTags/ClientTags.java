@@ -17,8 +17,8 @@
 package net.zelythia.autotools.clientTags;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
 import java.util.Objects;
@@ -46,7 +46,7 @@ public final class ClientTags {
 	 * @param tagKey the {@code TagKey} to load
 	 * @return a set of {@code Identifier}s this tag contains
 	 */
-	public static Set<ResourceLocation> getOrCreateLocalTag(TagKey<?> tagKey) {
+	public static Set<Identifier> getOrCreateLocalTag(TagKey<?> tagKey) {
 		return ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey).completeIds();
 	}
 
@@ -97,10 +97,10 @@ public final class ClientTags {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryKey);
 
-		if (tagKey.registry().location().equals(registryKey.registry())) {
+		if (tagKey.registry().registry().equals(registryKey.registry())) {
 			// Check local tags
-			Set<ResourceLocation> ids = getOrCreateLocalTag(tagKey);
-			return ids.contains(registryKey.location());
+			Set<Identifier> ids = getOrCreateLocalTag(tagKey);
+			return ids.contains(registryKey.registry());
 		}
 
 		return false;

@@ -12,7 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -25,8 +25,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.Boat;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,16 +56,16 @@ public class AutoTools {
     public static final String MOD_ID = "autotools";
     public static final Logger LOGGER = LogManager.getLogger("AutoTools");
 
-    public static final Set<ResourceLocation> SILK_TOUCH = new HashSet<>();
-    public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS = new HashSet<>();
-    public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS_ORES = new HashSet<>();
-    public static final Set<ResourceLocation> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = new HashSet<>();
-    public static final Set<ResourceLocation> FORTUNE = new HashSet<>();
-    public static final Set<ResourceLocation> FORTUNE_SETTING = new HashSet<>();
-    public static final Set<ResourceLocation> SHEARS = new HashSet<>();
-    public static final Set<ResourceLocation> DO_NOT_SWAP_UNLESS_ENCH = new HashSet<>();
+    public static final Set<Identifier> SILK_TOUCH = new HashSet<>();
+    public static final Set<Identifier> SILK_TOUCH_SETTING_ALWAYS = new HashSet<>();
+    public static final Set<Identifier> SILK_TOUCH_SETTING_ALWAYS_ORES = new HashSet<>();
+    public static final Set<Identifier> SILK_TOUCH_SETTING_ALWAYS_EXC_ORES = new HashSet<>();
+    public static final Set<Identifier> FORTUNE = new HashSet<>();
+    public static final Set<Identifier> FORTUNE_SETTING = new HashSet<>();
+    public static final Set<Identifier> SHEARS = new HashSet<>();
+    public static final Set<Identifier> DO_NOT_SWAP_UNLESS_ENCH = new HashSet<>();
 
-    public static final HashMap<ResourceLocation, List<ResourceLocation>> CUSTOM_TOOLS = new HashMap<>();
+    public static final HashMap<Identifier, List<Identifier>> CUSTOM_TOOLS = new HashMap<>();
 
     public static final Stack<Integer> swaps = new Stack<>();
     public static boolean toggle = true;
@@ -87,39 +87,39 @@ public class AutoTools {
     public static void reloadConfig() {
         AutoToolsConfig.BlockLists lists = AutoToolsConfig.blockLists();
 
-        createLists(lists.silktouch, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "shears")), SILK_TOUCH);
-        createLists(lists.silktouch_setting_always, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always")), SILK_TOUCH_SETTING_ALWAYS);
-        createLists(lists.silktouch_setting_always_ores, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_ores")), SILK_TOUCH_SETTING_ALWAYS_ORES);
-        createLists(lists.silktouch_setting_exc_ores, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_exc_ores")), SILK_TOUCH_SETTING_ALWAYS_EXC_ORES);
+        createLists(lists.silktouch, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "shears")), SILK_TOUCH);
+        createLists(lists.silktouch_setting_always, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always")), SILK_TOUCH_SETTING_ALWAYS);
+        createLists(lists.silktouch_setting_always_ores, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_ores")), SILK_TOUCH_SETTING_ALWAYS_ORES);
+        createLists(lists.silktouch_setting_exc_ores, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "silk_touch_setting_always_exc_ores")), SILK_TOUCH_SETTING_ALWAYS_EXC_ORES);
 
-        createLists(lists.fortune, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "fortune")), FORTUNE);
-        createLists(lists.fortune_setting, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "fortune_setting")), FORTUNE_SETTING);
+        createLists(lists.fortune, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "fortune")), FORTUNE);
+        createLists(lists.fortune_setting, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "fortune_setting")), FORTUNE_SETTING);
 
-        createLists(lists.shears, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "shears")), SHEARS);
-        createLists(lists.do_not_swap_unless_ench, TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MOD_ID, "do_not_swap_unless_ench")), DO_NOT_SWAP_UNLESS_ENCH);
+        createLists(lists.shears, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "shears")), SHEARS);
+        createLists(lists.do_not_swap_unless_ench, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "do_not_swap_unless_ench")), DO_NOT_SWAP_UNLESS_ENCH);
 
 
         loadCustomItems();
         //Not the best way of adding custom tools. Fine as long as it won't get any more
-        CUSTOM_TOOLS.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("minecraft", "bamboo"), k -> new ArrayList<>()).addAll(ClientTags.getOrCreateLocalTag(ItemTags.SWORDS));
+        CUSTOM_TOOLS.computeIfAbsent(Identifier.fromNamespaceAndPath("minecraft", "bamboo"), k -> new ArrayList<>()).addAll(ClientTags.getOrCreateLocalTag(ItemTags.SWORDS));
     }
 
-    private static void createLists(List<String> input, TagKey<Block> tag, Set<ResourceLocation> output) {
+    private static void createLists(List<String> input, TagKey<Block> tag, Set<Identifier> output) {
         output.clear();
 
         for (String identifier : input) {
             //Tags
             if(identifier.startsWith("#")){
-                ResourceLocation resourceLocation = ResourceLocation.tryParse(identifier.substring(1));
-                if(resourceLocation != null){
-                    output.addAll(ClientTags.getOrCreateLocalTag(TagKey.create(Registries.BLOCK, resourceLocation)));
+                Identifier id = Identifier.tryParse(identifier.substring(1));
+                if(id != null){
+                    output.addAll(ClientTags.getOrCreateLocalTag(TagKey.create(Registries.BLOCK, id)));
                 }
                 continue;
             }
 
-            ResourceLocation resourceLocation = ResourceLocation.tryParse(identifier);
-            if(resourceLocation != null){
-                output.add(resourceLocation);
+            Identifier id = Identifier.tryParse(identifier);
+            if(id != null){
+                output.add(id);
             }
         }
 
@@ -138,7 +138,7 @@ public class AutoTools {
 
             for (String key : jsonObject.keySet()) {
 
-                ArrayList<ResourceLocation> tools = new ArrayList<>();
+                ArrayList<Identifier> tools = new ArrayList<>();
                 if (jsonObject.get(key).isJsonArray()) {
                     JsonArray toolsArray = jsonObject.getAsJsonArray(key);
 
@@ -147,34 +147,34 @@ public class AutoTools {
 
                         //Tag
                         if(tool.startsWith("#")){
-                            TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(tool.substring(1)));
-                            Set<ResourceLocation> tag = ClientTags.getOrCreateLocalTag(tagKey);
+                            TagKey<Item> tagKey = TagKey.create(Registries.ITEM, Identifier.parse(tool.substring(1)));
+                            Set<Identifier> tag = ClientTags.getOrCreateLocalTag(tagKey);
 
                             tools.addAll(tag);
                             continue;
                         }
 
-                        tools.add(ResourceLocation.parse(tool));
+                        tools.add(Identifier.parse(tool));
                     }
                 } else {
                     String tool = jsonObject.get(key).getAsString();
 
                     //Tag
                     if(tool.startsWith("#")){
-                        TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(tool.substring(1)));
-                        Set<ResourceLocation> tag = ClientTags.getOrCreateLocalTag(tagKey);
+                        TagKey<Item> tagKey = TagKey.create(Registries.ITEM, Identifier.parse(tool.substring(1)));
+                        Set<Identifier> tag = ClientTags.getOrCreateLocalTag(tagKey);
 
                         tools.addAll(tag);
                     }
-                    else tools.add(ResourceLocation.parse(tool));
+                    else tools.add(Identifier.parse(tool));
                 }
 
                 if(key.startsWith("#")){
-                    TagKey<Block> blockTagKey = TagKey.create(Registries.BLOCK, ResourceLocation.parse(key.substring(1)));
-                    Set<ResourceLocation> tag = ClientTags.getOrCreateLocalTag(blockTagKey);
-                    tag.forEach(resourceLocation -> CUSTOM_TOOLS.computeIfAbsent(resourceLocation, k -> new ArrayList<>()).addAll(tools));
+                    TagKey<Block> blockTagKey = TagKey.create(Registries.BLOCK, Identifier.parse(key.substring(1)));
+                    Set<Identifier> tag = ClientTags.getOrCreateLocalTag(blockTagKey);
+                    tag.forEach(Identifier -> CUSTOM_TOOLS.computeIfAbsent(Identifier, k -> new ArrayList<>()).addAll(tools));
                 }
-                else CUSTOM_TOOLS.computeIfAbsent(ResourceLocation.parse(key), k -> new ArrayList<>()).addAll(tools);
+                else CUSTOM_TOOLS.computeIfAbsent(Identifier.parse(key), k -> new ArrayList<>()).addAll(tools);
             }
 
             LOGGER.info("Loaded custom block configs: " + CUSTOM_TOOLS.keySet());
@@ -464,13 +464,13 @@ public class AutoTools {
 
             //Detection for custom tools
             if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
-                List<ResourceLocation> tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
+                List<Identifier> tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
 
-                for (ResourceLocation resourceLocation : tools) {
-                    if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled")))
+                for (Identifier Identifier : tools) {
+                    if (Objects.equals(Identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
                         return;
 
-                    Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(resourceLocation);
+                    Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(Identifier);
                     if(itemReference.isPresent()) {
                         toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
                         if (toolSlot != -1) break;
@@ -570,13 +570,13 @@ public class AutoTools {
 
                         //Custom tool detection
                         if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
-                            List<ResourceLocation> tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+                            List<Identifier> tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
 
-                            for (ResourceLocation resourceLocation : tools) {
-                                if (Objects.equals(resourceLocation, ResourceLocation.fromNamespaceAndPath("autotools", "disabled")))
+                            for (Identifier Identifier : tools) {
+                                if (Objects.equals(Identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
                                     return;
 
-                                Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(resourceLocation);
+                                Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(Identifier);
                                 if(itemReference.isPresent()) {
                                     toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
                                     if (toolSlot != -1) break;
@@ -596,11 +596,11 @@ public class AutoTools {
                         float baseAttackSpeed = 0;
                         if (inventory.getItem(i).has(DataComponents.ATTRIBUTE_MODIFIERS)) {
                             for (ItemAttributeModifiers.Entry modifier : inventory.getItem(i).get(DataComponents.ATTRIBUTE_MODIFIERS).modifiers()) {
-                                if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))) {
+                                if (modifier.modifier().id().equals(Identifier.parse("minecraft:base_attack_damage"))) {
                                     baseAttackDamage = (float) modifier.modifier().amount();
                                     continue;
                                 }
-                                if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))) {
+                                if (modifier.modifier().id().equals(Identifier.parse("minecraft:base_attack_speed"))) {
                                     baseAttackSpeed = (float) modifier.modifier().amount();
                                 }
                             }

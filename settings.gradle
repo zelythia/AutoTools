@@ -13,4 +13,4 @@ include("fabric")
 //include("forge")
 include("neoforge")
 
-rootProject.name = "AutoTools-1.21.9"
+rootProject.name = "AutoTools-1.21.11"

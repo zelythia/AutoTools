@@ -5,7 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,9 +35,9 @@ public class TooltipHelper {
                 if (modifiers == null) return;
 
                 for (ItemAttributeModifiers.Entry modifier : modifiers.modifiers()) {
-                    if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_damage"))) {
+                    if (modifier.modifier().id().equals(Identifier.parse("minecraft:base_attack_damage"))) {
                         baseAttackDamage = (float) modifier.modifier().amount();
-                    } else if (modifier.modifier().id().equals(ResourceLocation.parse("minecraft:base_attack_speed"))) {
+                    } else if (modifier.modifier().id().equals(Identifier.parse("minecraft:base_attack_speed"))) {
                         attackSpeed = (float) modifier.modifier().amount();
                     }
                 }

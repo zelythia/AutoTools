@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,7 +34,7 @@ import org.lwjgl.glfw.GLFW;
 public class AutoToolsNeoForge {
     private boolean keyPressed = false;
 
-    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath(AutoTools.MOD_ID, "keys"));
+    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(AutoTools.MOD_ID, "keys"));
     private static final KeyMapping KEY_AUTOTOOLS = new KeyMapping("key.autotools.get_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, CATEGORY);
     private static final KeyMapping KEY_SILKTOUCH = new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, CATEGORY);
 
