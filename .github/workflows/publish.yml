@@ -70,6 +70,8 @@ jobs:
           changelog-file: CHANGELOG.md
           loaders: |
             forge
+          dependencies: |
+            cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
 
       - name: Publish Neoforge-Mod on (Curseforge/Modrinth)
         if: env.NEOFORGE == 'true'
@@ -90,6 +92,8 @@ jobs:
           changelog-file: CHANGELOG.md
           loaders: |
             neoforge
+          dependencies: |
+            cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
 
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
         if: env.FABRIC == 'true'
