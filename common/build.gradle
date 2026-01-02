@@ -7,7 +7,7 @@ repositories {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/autotools.accesswidener")
+    accessWidenerPath = file("src/main/resources/autotools-common.accesswidener")
 }
 
 dependencies {

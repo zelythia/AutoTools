@@ -8,7 +8,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+    accessWidenerPath = file("src/main/resources/autotools.accesswidener")
 }
 
 repositories {
@@ -61,7 +61,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modApi("com.mrcrayfish:controllable-common:1.21.1-0.25.3"){
+    modCompileOnly("com.mrcrayfish:controllable-common:1.21.1-0.25.3"){
         exclude(group: "net.fabricmc.fabric-api")
     }
 

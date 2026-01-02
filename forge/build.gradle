@@ -16,7 +16,7 @@ repositories {
 loom {
     forge {
         mixinConfig "autotools-common.mixins.json"
-        accessWidenerPath = project(":common").loom.accessWidenerPath
+        accessWidenerPath = file("src/main/resources/autotools.accesswidener")
     }
 }
 

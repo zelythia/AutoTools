@@ -8,7 +8,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+    accessWidenerPath = file("src/main/resources/autotools.accesswidener")
 }
 
 configurations {
@@ -56,7 +56,7 @@ dependencies {
 
     modApi("me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}")
 
-    modApi("com.mrcrayfish:controllable-common:1.21.1-0.25.3")
+    modCompileOnly("com.mrcrayfish:controllable-common:1.21.1-0.25.3")
 }
 
 processResources {
