@@ -1,5 +1,2 @@
-- Add zh_tw.json (@yangyx30678)
-- Add support for third party mods
-
-
-- Fix bug where game would crash when using AutoTools on an entity while having an enchanted tool (#46)
+- Add Hotbar Only option (#50) (idea by @OeschMe)
+- Add Preserve Durability option (default = true), where AutoTools switches to an item without durability if no suitable tool has been found (idea by @BigEmster)

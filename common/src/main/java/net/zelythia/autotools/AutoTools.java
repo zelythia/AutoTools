@@ -213,6 +213,7 @@ public class AutoTools {
             }
             inventory.setSelectedSlot(sourceSlot);
 
+            if(!AutoToolsConfig.get().switchBack) swaps.clear();
             return;
         }
 
@@ -509,7 +510,8 @@ public class AutoTools {
                         || !blockState.requiresCorrectToolForDrops()) return;
             }
 
-            for (int i = 0; i < inventory.getContainerSize(); i++) {
+            int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
+            for (int i = 0; i < containerLimit; i++) {
                 Item item = inventory.getItem(i).getItem();
 
                 if (item != Items.AIR) {
@@ -544,7 +546,40 @@ public class AutoTools {
                 }
             }
 
-            if (toolSlot == -1 || DO_NOT_SWAP_UNLESS_ENCH.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock())) && miningSpeed.priority == 0) {
+            if(DO_NOT_SWAP_UNLESS_ENCH.contains(BuiltInRegistries.BLOCK.getKey(blockState.getBlock())) && miningSpeed.priority == 0){
+                return;
+            }
+            else if(toolSlot == -1) {
+                // If we haven't found a valid tool, select an item with no durability
+                if(AutoToolsConfig.get().preserveDurability) {
+                    if(inventory.getSelectedItem().getMaxDamage() == 0) return;
+
+
+                    if(AutoToolsConfig.get().switchBack && !swaps.empty()){
+                        int firstItem = swaps.get(0);
+                        if(inventory.getItem(firstItem).getMaxDamage() == 0){
+                            selectItem(client, inventory, firstItem);
+                            return;
+                        }
+                    }
+
+                    // Prefer empty hand over other items in hotbar
+                    for (int i = 0; i < 9; i++) {
+                        if(inventory.getItem(i).isEmpty()){
+                            selectItem(client, inventory, i);
+                            return;
+                        }
+                    }
+
+                    int containerLimit1 = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
+                    for (int i = 0; i < containerLimit1; i++) {
+                        if(inventory.getItem(i).getMaxDamage() == 0){
+                            selectItem(client, inventory, i);
+                            return;
+                        }
+                    }
+
+                }
             } else {
                 selectItem(client, inventory, toolSlot);
             }
@@ -560,7 +595,8 @@ public class AutoTools {
                 return;
             }
 
-            for (int i = 0; i < inventory.getContainerSize(); i++) {
+            int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
+            for (int i = 0; i < containerLimit; i++) {
                 Item item = inventory.getItem(i).getItem();
 
                 if (item != Items.AIR) {
