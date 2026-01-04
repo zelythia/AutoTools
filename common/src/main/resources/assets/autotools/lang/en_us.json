@@ -24,6 +24,12 @@
     "text.autoconfig.autotools.option.general.keepSlot": "Keep selected slot",
     "text.autoconfig.autotools.option.general.keepSlot.@Tooltip": "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics",
 
+    "text.autoconfig.autotools.option.general.hotbarOnly": "[NEW] Hotbar only",
+    "text.autoconfig.autotools.option.general.hotbarOnly.@Tooltip": "AutoTools will only select tool from you hotbar",
+
+    "text.autoconfig.autotools.option.general.preserveDurability": "[NEW] Preserve durability",
+    "text.autoconfig.autotools.option.general.preserveDurability.@Tooltip": "AutoTools will switch to an item with no durability if no suitable tool has been found",
+
     "text.autoconfig.autotools.option.general.preferHotbarTool": "Prefer Hotbar slot",
     "text.autoconfig.autotools.option.general.preferHotbarTool.@Tooltip": "AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability",
 
