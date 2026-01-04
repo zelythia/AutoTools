@@ -136,10 +136,16 @@ public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
         public boolean keepSlot = false;
 
         @ConfigEntry.Gui.Tooltip
+        public boolean hotbarOnly = false;
+
+        @ConfigEntry.Gui.Tooltip
         public boolean preferHotbarTool = true;
 
         @ConfigEntry.Gui.Tooltip
         public boolean preferLowDurability = false;
+
+        @ConfigEntry.Gui.Tooltip
+        public boolean preserveDurability = true;
 
         @ConfigEntry.Gui.Tooltip
         public boolean alwaysPreferFortune = false;
