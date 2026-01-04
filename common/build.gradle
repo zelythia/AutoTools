@@ -1,3 +1,7 @@
+architectury {
+    common rootProject.enabled_platforms.split(',')
+}
+
 repositories {
     maven { url "https://maven.shedaniel.me/" }
 }
@@ -8,26 +12,4 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
     modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
-}
-
-architectury {
-    common(rootProject.enabled_platforms.split(","))
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/autotools.accesswidener")
-}
-
-publishing {
-    publications {
-        mavenCommon(MavenPublication) {
-            artifactId = rootProject.archives_base_name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-    }
 }
