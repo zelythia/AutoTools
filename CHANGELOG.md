@@ -1,1 +1,2 @@
- - Fix Crash caused by wrong access transformers
+- Add Hotbar Only option (#50) (idea by @OeschMe)
+- Add Preserve Durability option (default = true), where AutoTools switches to an item without durability if no suitable tool has been found (idea by @BigEmster)
