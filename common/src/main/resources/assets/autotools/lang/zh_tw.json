@@ -1,0 +1,110 @@
+{
+    "key.autotools.get_tool" : "選取工具/切換開關",
+    "key.autotools.silktouch" : "切換絲綢之觸設定",
+    "key.autotools.category" : "AutoTools",
+
+    "chat.enabled_autotools": "§2啟用§f AutoTools！",
+    "chat.disabled_autotools": "§4停用§f AutoTools！",
+
+    "chat.cycle_silktouch": "絲綢之觸: ",
+
+    "ui.toast.autotools.durability_warning": "耐久度過低：%s",
+
+    "text.autoconfig.autotools.title": "AutoTools 設定",
+
+    "text.autoconfig.autotools.category.general": "一般",
+    "text.autoconfig.autotools.category.block_lists": "方塊設定清單",
+
+    "text.autoconfig.autotools.option.general.toggle" : "切換開關",
+    "text.autoconfig.autotools.option.general.toggle.@Tooltip": "AutoTools 將保持啟用並嘗試為您選出最佳工具。可使用設定的按鍵進行切換。",
+
+    "text.autoconfig.autotools.option.general.disableCreative": "在創造模式中停用",
+    "text.autoconfig.autotools.option.general.disableCreative.@Tooltip": "如果切換開關已停用，則在創造模式中停用 AutoTools",
+
+    "text.autoconfig.autotools.option.general.keepSlot": "保持選定欄位",
+    "text.autoconfig.autotools.option.general.keepSlot.@Tooltip": "切換至新工具時，保持選定的物品欄位，而非使用原版機制",
+
+    "text.autoconfig.autotools.option.general.preferHotbarTool": "偏好快捷列工具",
+    "text.autoconfig.autotools.option.general.preferHotbarTool.@Tooltip": "如果多個工具的挖掘速度相同，AutoTools 將偏好選擇已經在您快捷列中的工具，不論其耐久度如何",
+
+    "text.autoconfig.autotools.option.general.preferLowDurability": "偏好低耐久度",
+    "text.autoconfig.autotools.option.general.preferLowDurability.@Tooltip": "如果工具具有相同的挖掘速度，AutoTools 將偏好選擇耐久度較低的工具，而非較高的",
+
+    "text.autoconfig.autotools.option.general.alwaysPreferFortune": "總是偏好幸運",
+    "text.autoconfig.autotools.option.general.alwaysPreferFortune.@Tooltip": "AutoTools 會對沙礫和樹葉使用幸運附魔",
+
+    "text.autoconfig.autotools.option.general.onlySwitchIfNecessary": "僅在必要時切換",
+    "text.autoconfig.autotools.option.general.onlySwitchIfNecessary.@Tooltip": "AutoTools 只有在您當前的物品無法挖掘方塊時才會切換物品",
+
+    "text.autoconfig.autotools.option.general.switchBack": "切換回上一個",
+    "text.autoconfig.autotools.option.general.switchBack.@Tooltip": "AutoTools 將在破壞方塊後，切換回您手中前一個使用的工具或物品",
+
+    "text.autoconfig.autotools.option.general.showDPS" : "顯示 DPS",
+    "text.autoconfig.autotools.option.general.showDPS.@Tooltip" : "當滑鼠懸停在武器上時，顯示該武器的每秒傷害 (DPS)",
+
+    "text.autoconfig.autotools.option.general.changeForEntities": "為實體切換",
+    "text.autoconfig.autotools.option.general.changeForEntities.@Tooltip": "當看向一個實體時，AutoTools 將會切換到具有最高 DPS 的工具",
+
+    "text.autoconfig.autotools.option.general.keepAxe": "維持在斧頭",
+    "text.autoconfig.autotools.option.general.keepAxe.@Tooltip": "當手持斧頭時，AutoTools 不會切換到更好的武器（例如劍）",
+
+    "text.autoconfig.autotools.option.general.preferSilkTouch": "偏好絲綢之觸",
+    "text.autoconfig.autotools.option.general.preferSilkTouch.@Tooltip": "即使不是挖掘方塊的必需品，AutoTools 仍會額外偏好絲綢之觸工具：",
+    "text.autoconfig.autotools.option.general.preferSilkTouch.always": "總是",
+    "text.autoconfig.autotools.option.general.preferSilkTouch.ores": "礦石",
+    "text.autoconfig.autotools.option.general.preferSilkTouch.except_ores": "排除礦石",
+    "text.autoconfig.autotools.option.general.preferSilkTouch.never": "永不",
+
+    "text.autoconfig.autotools.option.general.enabled": "啟用",
+    "text.autoconfig.autotools.option.general.enabled.@Tooltip": "AutoTools 只有在您已經手持以下物品時才會運作並切換到最佳工具：",
+    "text.autoconfig.autotools.option.general.enabled.always": "總是",
+    "text.autoconfig.autotools.option.general.enabled.tool": "手持工具",
+    "text.autoconfig.autotools.option.general.enabled.no_tool": "未手持工具",
+
+    "text.autoconfig.autotools.option.general.ignoredSlots": "忽略的欄位",
+    "text.autoconfig.autotools.option.general.ignoredSlots.@Tooltip": "如果當前選中的是這些欄位之一，AutoTools 將不會執行任何操作：",
+
+    "text.autoconfig.autotools.option.general.targetSlots": "目標欄位",
+    "text.autoconfig.autotools.option.general.targetSlots.@Tooltip": "AutoTools 只會將工具放置在這些欄位中：",
+
+    "text.autoconfig.autotools.option.general.minDurability": "最小耐久度",
+    "text.autoconfig.autotools.option.general.minDurability.@Tooltip": "如果 $< 1$：視為百分比，低於最小耐久度的工具將不會被選中。\n否則：視為耐久度值，工具將會被選中直到達到最小耐久度（例如，設定為 1 可永不破壞工具）",
+
+    "text.autoconfig.autotools.option.general.durabilityCheck": "耐久度檢查",
+    "text.autoconfig.autotools.option.general.durabilityCheck.@Tooltip": "防止在耐久度低於最小耐久度時繼續挖掘",
+
+    "text.autoconfig.autotools.option.general.experimentalBreakDelay": "[實驗性] 破壞延遲",
+    "text.autoconfig.autotools.option.general.experimentalBreakDelay.@Tooltip": "[實驗性] 如果切換開關已啟用，則在工具切換後、破壞方塊前增加一個 1 刻 = $50\text{ms}$ 的延遲。\n**僅在您遇到如瞬間挖掘時出現幽靈方塊等不同步問題時才啟用此選項。**",
+
+
+    "text.autoconfig.autotools.option.blockLists.silktouch": "絲綢之觸",
+    "text.autoconfig.autotools.option.blockLists.silktouch.@Tooltip": "對於此清單中的方塊，AutoTools 將總是偏好選擇帶有絲綢之觸的工具。適用於僅能使用絲綢之觸挖掘才能掉落的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.silktouch_setting_always": "偏好絲綢之觸：總是",
+    "text.autoconfig.autotools.option.blockLists.silktouch_setting_always.@Tooltip": "如果「偏好絲綢之觸：總是」，AutoTools 將偏好選擇帶有絲綢之觸的工具來挖掘此清單中的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.silktouch_setting_exc_ores": "偏好絲綢之觸：排除礦石",
+    "text.autoconfig.autotools.option.blockLists.silktouch_setting_exc_ores.@Tooltip": "如果「偏好絲綢之觸：排除礦石」，AutoTools 將偏好選擇帶有絲綢之觸的工具來挖掘此清單中的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.silktouch_setting_always_ores": "偏好絲綢之觸：礦石",
+    "text.autoconfig.autotools.option.blockLists.silktouch_setting_always_ores.@Tooltip": "如果「偏好絲綢之觸：礦石」，AutoTools 將偏好選擇帶有絲綢之觸的工具來挖掘此清單中的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.fortune": "幸運",
+    "text.autoconfig.autotools.option.blockLists.fortune.@Tooltip": "對於此清單中的方塊，AutoTools 將總是偏好選擇帶有幸運的工具（在絲綢之觸之後）。適用於掉落物受幸運影響的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.fortune_setting": "總是偏好幸運",
+    "text.autoconfig.autotools.option.blockLists.fortune_setting.@Tooltip": "如果「總是偏好幸運」，AutoTools 將總是偏好選擇帶有幸運的工具（在絲綢之觸之前）來挖掘此清單中的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.shears": "剪刀",
+    "text.autoconfig.autotools.option.blockLists.shears.@Tooltip": "對於此清單中的方塊，AutoTools 將總是偏好選擇剪刀",
+
+    "text.autoconfig.autotools.option.blockLists.do_not_swap_unless_ench": "除非附魔，否則不切換",
+    "text.autoconfig.autotools.option.blockLists.do_not_swap_unless_ench.@Tooltip": "只有在找到附魔工具時，AutoTools 才會切換此清單中的方塊。適用於可被瞬間挖掘但受益於附魔的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.enable_datapacks": "啟用資料包",
+    "text.autoconfig.autotools.option.blockLists.enable_datapacks.@Tooltip": "AutoTools 也將包含第三方模組和資料包新增清單中的方塊",
+
+    "text.autoconfig.autotools.option.blockLists.customTools": "自訂工具",
+    "text.autoconfig.autotools.option.blockLists.customTools.@Tooltip": "新增 JSON 格式的自訂工具設定\n例如：\"minecraft:block_id\":\"minecraft:tool_id\" 或 \"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]\n當新增多個工具時，第一個具有最高優先順序。\n也支援方塊和物品標籤。\n使用 \"autotools:disabled\" 來在特定方塊上停用 AutoTools。\n對實體也有效：\"minecraft:entity_id\":\"minecraft:tool_id\"",
+    "text.autoconfig.autotools.error.incorrect_json": "自訂工具輸入錯誤：不是有效的 Json 項目"
+}

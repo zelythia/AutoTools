@@ -4,7 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 1.16.5
-  VERSION: 3.3.0
+  VERSION: 3.4.0
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 17
+          java-version: 21
 
       - name: Make Gradle Wrapper Executable
         if: ${{ runner.os != 'Windows' }}
@@ -94,3 +94,11 @@ jobs:
           changelog-file: CHANGELOG.md
 
           github-tag: ${{env.MINECRAFT_VERSION}}-${{env.VERSION}}
+
+      - name: Publish Maven
+        if: env.MAVEN == 'true'
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{secrets.MAVEN_USERNAME}}
+          MAVEN_PASSWORD: ${{secrets.MAVEN_PASSWORD}}
