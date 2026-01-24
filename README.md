@@ -6,17 +6,21 @@
 AutoTools looks through your whole inventory and finds the best tool to mine a block or attack a mob. The tool is
 determined by mining speed, mining level, enchantments, and the DPS. the Mod features a high level of customisation with
 many config options. For blocks where SilkTouch is preferred
-see [silk_touch.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/silk_touch.json)
+see [silk_touch.json](https://github.com/zelythia/AutoTools/blob/1.21.6/blockLists/silk_touch.json)
 and for
-Fortune [fortune.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/fortune.json).
+Fortune [fortune.json](https://github.com/zelythia/AutoTools/blob/1.21.6/blockLists/fortune.json).
 Shears will always pre preferred
-for [shears.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/main/resources/data/autotools/tags/blocks/shears.json)
+for [shears.json](https://github.com/zelythia/AutoTools/blob/1.21.6/blockLists/shears.json).
+
+All config options can conveniently be edited using the ClothConfig UI:
 
 - #### Selection Config \[default]:
     - **toggle** \[false]: AutoTools will always be active and try to get you the best tool. Can be toggled with the set
       key.
     - **disableCreative** \[true]: Disables AutoTools in creative-mode if toggle is enabled.
     - **keepSlot** \[false]: Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.
+    - **hotbarOnly** \[false]: AutoTools will only select tool from you hotbar
+    - **preserveDurability** \[true]: AutoTools will switch to an item with no durability if no suitable tool has been found
     - **preferHotBarTool** \[true]: AutoTools will prefer the tool already in your hotbar if multiple tools have the
       same
       mining
@@ -68,6 +72,8 @@ for [shears.json](https://github.com/zelythia/AutoTools/blob/1.20.4/common/src/m
 
 There is a version available for the Forge, NeoForge and Fabric mod loader (ModMenu integration when using the Fabric
 version)  
+AutoTools requires [ClothConfig](https://modrinth.com/mod/cloth-config).
+
 AutoTools is entirely client-side and works on servers and with many third-party mods.
 
 AutoTools also works with [Controllable](https://github.com/MrCrayfish/Controllable)
@@ -76,7 +82,39 @@ AutoTools also works with [Controllable](https://github.com/MrCrayfish/Controlla
 
 ### For Developers:
 
+#### Item Compatability:
+
 Tools: Should implement Item.isCorrectToolForDrops(BlockState) and Item.getDestroySpeed(Item, BlockState). Additionally,
 Blocks should correctly implement requiresCorrectToolForDrops  (Mojmap Mappings)
 
 Weapons: Items need their attack damage (and attack speed) stored as AttributeModifiers
+
+#### Mod Integration:
+
+If you want to depend on AutoTools in your own project, use either one of these configs. A list of available packages can be found at: 
+
+https://maven.zelythia.net/#/releases/net/zelythia/autotools-common or https://github.com/zelythia/AutoTools/packages/2683389/versions
+
+
+```
+repositories {
+    maven {
+        name = "Zelythia Releases"
+        url = uri("https://maven.zelythia.net/releases")
+    }
+}
+```
+
+According to the [GitHub Documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#using-a-published-package):
+```
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/zelythia/AutoTools")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+   }
+}
+```
+
