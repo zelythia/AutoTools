@@ -5,6 +5,10 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.19.4
   VERSION: 3.4.0
+  FORGE: true
+  FABRIC: true
+  GITHUB: true
+  MAVEN: true
 
 jobs:
   publish:
@@ -32,6 +36,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Publish Forge-Mod on (Curseforge/Modrinth)
+        if: env.FORGE == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -54,6 +59,7 @@ jobs:
             cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
 
       - name: Publish Fabric-Mod on (Curseforge/Modrinth)
+        if: env.FABRIC == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: zgVJyCgK
@@ -78,6 +84,7 @@ jobs:
             fabric(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
 
       - name: Publish Mod on Github
+        if: env.GITHUB == 'true'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           github-token: ${{ secrets.GITH_TOKEN }}
