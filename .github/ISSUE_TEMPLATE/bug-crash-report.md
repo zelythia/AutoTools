@@ -18,7 +18,6 @@ A clear and concise description of what the bug is or what caused the crash.
 
 
 **AutoTools Config (found at `/config/autotools/general.json`, also `lists.json` if changed):**
-
 ```
 
 ```
