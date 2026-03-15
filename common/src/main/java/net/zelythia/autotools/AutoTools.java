@@ -414,7 +414,7 @@ public class AutoTools {
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
 
             int toolSlot = -1;
-            ItemMiningSpeed miningSpeed = new ItemMiningSpeed(1f, 0);
+            ItemMiningSpeed miningSpeed = new ItemMiningSpeed(getMiningSpeed(ItemStack.EMPTY, blockState, blockHitResult.getBlockPos()).miningSpeed, 0);
 
             //Detection for custom tools
             if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
@@ -464,7 +464,7 @@ public class AutoTools {
                 Item item = inventory.getItem(i).getItem();
 
                 if (item != Items.AIR) {
-                    ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
+                    ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(getMiningSpeed(ItemStack.EMPTY, blockState, blockHitResult.getBlockPos()).miningSpeed, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
                         if(!checkDurability(inventory.getItem(i))) continue;
