@@ -40,7 +40,22 @@ public class AutoToolsForge {
     public static final KeyMapping KEY_SILKTOUCH = new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, "key.autotools.category");
 
     public AutoToolsForge() {
-        //Registering the clientSetup method
+        // Registering config
+        AutoConfig.register(AutoToolsConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new));
+
+        AutoConfig.getConfigHolder(AutoToolsConfig.class).registerSaveListener((configHolder, autoToolsConfig) -> {
+            AutoTools.reloadConfig();
+            return InteractionResult.SUCCESS;
+        });
+
+        GuiRegistry registry = AutoConfig.getGuiRegistry(AutoToolsConfig.class);
+        registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
+        registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
+
+        AutoTools.init();
+
+
+        // Registering the clientSetup method
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
         // Registering mod for game events
@@ -55,21 +70,8 @@ public class AutoToolsForge {
 
     //Called once when the client is set up
     public void clientSetup(final FMLCommonSetupEvent event) {
-        AutoConfig.register(AutoToolsConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new));
-
-        AutoConfig.getConfigHolder(AutoToolsConfig.class).registerSaveListener((configHolder, autoToolsConfig) -> {
-            AutoTools.reloadConfig();
-            return InteractionResult.SUCCESS;
-        });
-
-        GuiRegistry registry = AutoConfig.getGuiRegistry(AutoToolsConfig.class);
-        registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
-        registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
-
-
         ClientRegistry.registerKeyBinding(KEY_CHANGE_TOOL);
         ClientRegistry.registerKeyBinding(KEY_SILKTOUCH);
-        AutoTools.init();
     }
 
 

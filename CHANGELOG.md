@@ -1,4 +1,3 @@
-- Add zh_tw.json (@yangyx30678)
-- Add Hotbar Only option (#50) (idea by @OeschMe)
-- Add Preserve Durability option (default = true), where AutoTools switches to an item without durability if no suitable tool has been found (idea by @BigEmster)
-- Added third-party mod support
+- Fix bug that caused crashed on game launch on Forge
+- Fix bug where AutoTools wouldn't work for wood, stone and copper tools while underwater
+- Fix German toggle message
