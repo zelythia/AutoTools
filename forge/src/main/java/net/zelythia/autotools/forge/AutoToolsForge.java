@@ -19,7 +19,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.zelythia.autotools.AutoTools;
 import net.zelythia.autotools.PlatformHelper;
@@ -39,22 +38,7 @@ public class AutoToolsForge {
     public static final KeyMapping KEY_SILKTOUCH = new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, "key.autotools.category");
 
     public AutoToolsForge() {
-        //Registering the clientSetup method
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerKeyBinding);
-
-        // Registering mod for game events
-        MinecraftForge.EVENT_BUS.register(this);
-
-        //Registering the config
-        ModLoadingContext.get().registerExtensionPoint(
-                ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory(((minecraft, screen) -> AutoConfig.getConfigScreen(AutoToolsConfig.class, screen).get()))
-        );
-    }
-
-    //Called once when the client is set up
-    public void clientSetup(final FMLCommonSetupEvent event) {
+        // Registering config
         AutoConfig.register(AutoToolsConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new));
 
         AutoConfig.getConfigHolder(AutoToolsConfig.class).registerSaveListener((configHolder, autoToolsConfig) -> {
@@ -67,6 +51,18 @@ public class AutoToolsForge {
         registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
 
         AutoTools.init();
+
+        //Registering FMLListeners
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerKeyBinding);
+
+        // Registering mod for game events
+        MinecraftForge.EVENT_BUS.register(this);
+
+        //Registering the config
+        ModLoadingContext.get().registerExtensionPoint(
+                ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory(((minecraft, screen) -> AutoConfig.getConfigScreen(AutoToolsConfig.class, screen).get()))
+        );
     }
 
     public void registerKeyBinding(RegisterKeyMappingsEvent event) {
