@@ -39,21 +39,7 @@ public class AutoToolsNeoForge {
     public static final Lazy<KeyMapping> KEY_SILKTOUCH = Lazy.of(() -> new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, "key.autotools.category"));
 
     public AutoToolsNeoForge(IEventBus modEventBus, ModContainer modContainer) {
-        //Registering the clientSetup method
-        modEventBus.addListener(this::clientSetup);
-        modEventBus.addListener(this::registerKeyBinding);
-
-        // Registering mod for game events
-        NeoForge.EVENT_BUS.register(this);
-
-        //Registering the config
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (modContainer1, parent) -> {
-            return AutoConfig.getConfigScreen(AutoToolsConfig.class, parent).get();
-        });
-    }
-
-    //Called once when the client is set up
-    public void clientSetup(final FMLCommonSetupEvent event) {
+        // Registering config
         AutoConfig.register(AutoToolsConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new));
 
         AutoConfig.getConfigHolder(AutoToolsConfig.class).registerSaveListener((configHolder, autoToolsConfig) -> {
@@ -67,7 +53,19 @@ public class AutoToolsNeoForge {
 
 
         AutoTools.init();
+
+
+        modEventBus.addListener(this::registerKeyBinding);
+
+        // Registering mod for game events
+        NeoForge.EVENT_BUS.register(this);
+
+        //Registering the config
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (modContainer1, parent) -> {
+            return AutoConfig.getConfigScreen(AutoToolsConfig.class, parent).get();
+        });
     }
+
 
     public void registerKeyBinding(RegisterKeyMappingsEvent event) {
         event.register(KEY_CHANGE_TOOL.get());
