@@ -2,6 +2,7 @@ package net.zelythia.autotools.neoforge;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
@@ -14,7 +15,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -39,21 +39,7 @@ public class AutoToolsNeoForge {
     private static final KeyMapping KEY_SILKTOUCH = new KeyMapping("key.autotools.silktouch", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, CATEGORY);
 
     public AutoToolsNeoForge(IEventBus modEventBus, ModContainer modContainer) {
-        //Registering the clientSetup method
-        modEventBus.addListener(this::clientSetup);
-        modEventBus.addListener(this::registerKeyBinding);
-
-        // Registering mod for game events
-        NeoForge.EVENT_BUS.register(this);
-
-        //Registering the config
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (modContainer1, parent) -> {
-            return AutoConfig.getConfigScreen(AutoToolsConfig.class, parent).get();
-        });
-    }
-
-    //Called once when the client is set up
-    public void clientSetup(final FMLCommonSetupEvent event) {
+        // Registering config
         AutoConfig.register(AutoToolsConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new));
 
         AutoConfig.getConfigHolder(AutoToolsConfig.class).registerSaveListener((configHolder, autoToolsConfig) -> {
@@ -61,13 +47,24 @@ public class AutoToolsNeoForge {
             return InteractionResult.SUCCESS;
         });
 
-        GuiRegistry registry = AutoConfig.getGuiRegistry(AutoToolsConfig.class);
+        GuiRegistry registry = AutoConfigClient.getGuiRegistry(AutoToolsConfig.class);
         registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
         registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
 
-
         AutoTools.init();
+
+
+        modEventBus.addListener(this::registerKeyBinding);
+
+        // Registering mod for game events
+        NeoForge.EVENT_BUS.register(this);
+
+        //Registering the config
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (modContainer1, parent) -> {
+            return AutoConfigClient.getConfigScreen(AutoToolsConfig.class, parent).get();
+        });
     }
+
 
     public void registerKeyBinding(RegisterKeyMappingsEvent event) {
         event.register(KEY_AUTOTOOLS);

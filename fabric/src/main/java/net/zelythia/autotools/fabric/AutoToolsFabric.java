@@ -2,6 +2,7 @@ package net.zelythia.autotools.fabric;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
@@ -39,7 +40,7 @@ public class AutoToolsFabric implements ClientModInitializer {
             return InteractionResult.SUCCESS;
         });
 
-        GuiRegistry registry = AutoConfig.getGuiRegistry(AutoToolsConfig.class);
+        GuiRegistry registry = AutoConfigClient.getGuiRegistry(AutoToolsConfig.class);
         registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
         registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
 
