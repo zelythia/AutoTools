@@ -1,2 +1,4 @@
-- Add Hotbar Only option (#50) (idea by @OeschMe)
-- Add Preserve Durability option (default = true), where AutoTools switches to an item without durability if no suitable tool has been found (idea by @BigEmster)
+- Fix AutoTools not correctly calculating damage for maces
+- Fix bug that caused crashed on game launch on Forge and Neoforge
+- Fix bug where AutoTools wouldn't work for wood, stone and copper tools while underwater
+- Fix German toggle message
