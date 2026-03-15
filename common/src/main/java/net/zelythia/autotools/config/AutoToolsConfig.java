@@ -62,7 +62,7 @@ public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
                 "minecraft:grass_block", "minecraft:mycelium", "minecraft:podzol", "minecraft:warped_nylium", "minecraft:crimson_nylium", "minecraft:stone", "minecraft:deepslate", "minecraft:gravel",
                 "minecraft:gold_ore", "minecraft:iron_ore", "minecraft:coal_ore", "minecraft:copper_ore", "minecraft:diamond_ore", "minecraft:emerald_ore", "minecraft:redstone_ore", "minecraft:nether_gold_ore", "minecraft:lapis_ore", "minecraft:nether_quartz_ore", "minecraft:gilded_blackstone", "minecraft:deepslate_coal_ore", "minecraft:deepslate_gold_ore", "minecraft:deepslate_iron_ore", "minecraft:deepslate_copper_ore", "minecraft:deepslate_diamond_ore", "minecraft:deepslate_emerald_ore", "minecraft:deepslate_redstone_ore", "minecraft:deepslate_lapis_ore",
                 "#minecraft:leaves", "minecraft:snow_block", "minecraft:snow",
-                "minecraft:pale_hanging_moss", "minecraft:bush", "minecraft:short_dry_grass", "minecraft:tall_dry_grass",
+                "minecraft:pale_hanging_moss",
                 "minecraft:sculk", "minecraft:sculk_catalyst", "minecraft:sculk_sensor", "minecraft:calibrated_sculk_sensor", "minecraft:sculk_shrieker", "minecraft:sculk_vein"
         );
 
@@ -73,7 +73,7 @@ public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
                 "minecraft:stone", "minecraft:deepslate",
                 "minecraft:warped_nylium", "minecraft:crimson_nylium",
                 "#minecraft:leaves", "minecraft:snow_block", "minecraft:snow",
-                "minecraft:pale_hanging_moss", "minecraft:bush", "minecraft:short_dry_grass", "minecraft:tall_dry_grass",
+                "minecraft:pale_hanging_moss",
                 "minecraft:sculk", "minecraft:sculk_catalyst", "minecraft:sculk_sensor", "minecraft:calibrated_sculk_sensor", "minecraft:sculk_shrieker", "minecraft:sculk_vein"
         );
 
@@ -102,7 +102,7 @@ public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
         @ConfigEntry.Gui.Tooltip
         @BlockList
         public List<String> shears = List.of(
-                "minecraft:dead_bush", "minecraft:fern", "minecraft:large_fern", "#minecraft:leaves", "minecraft:nether_sprouts", "minecraft:seagrass", "minecraft:tall_seagrass", "minecraft:short_grass", "minecraft:tall_grass", "minecraft:tripwire", "minecraft:twisting_vines", "minecraft:weeping_vines", "minecraft:vine", "minecraft:cobweb", "minecraft:bush", "minecraft:short_dry_grass", "minecraft:tall_dry_grass",
+                "minecraft:dead_bush", "minecraft:fern", "minecraft:large_fern", "#minecraft:leaves", "minecraft:nether_sprouts", "minecraft:seagrass", "minecraft:tall_seagrass", "minecraft:short_grass", "minecraft:tall_grass", "minecraft:tripwire", "minecraft:twisting_vines", "minecraft:weeping_vines", "minecraft:vine", "minecraft:cobweb",
                 "minecraft:pale_hanging_moss"
         );
 
@@ -110,7 +110,7 @@ public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
         @ConfigEntry.Gui.Tooltip
         @BlockList
         public List<String> do_not_swap_unless_ench = List.of(
-                "minecraft:dead_bush", "minecraft:fern", "minecraft:large_fern", "#minecraft:leaves", "minecraft:nether_sprouts", "minecraft:seagrass", "minecraft:tall_seagrass", "minecraft:short_grass", "minecraft:tall_grass", "minecraft:tripwire", "minecraft:twisting_vines", "minecraft:weeping_vines", "minecraft:vine", "minecraft:cobweb", "minecraft:bush", "minecraft:short_dry_grass", "minecraft:tall_dry_grass", "minecraft:pale_hanging_moss",
+                "minecraft:dead_bush", "minecraft:fern", "minecraft:large_fern", "#minecraft:leaves", "minecraft:nether_sprouts", "minecraft:seagrass", "minecraft:tall_seagrass", "minecraft:short_grass", "minecraft:tall_grass", "minecraft:tripwire", "minecraft:twisting_vines", "minecraft:weeping_vines", "minecraft:vine", "minecraft:cobweb", "minecraft:pale_hanging_moss",
                 "minecraft:nether_wart", "minecraft:sweet_berry_bush", "minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots",
                 "minecraft:twisting_vines", "minecraft:twisting_vines_plant", "minecraft:weeping_vines", "minecraft:weeping_vines_plant",
                 "#minecraft:corals", "#minecraft:coral_blocks"

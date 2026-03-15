@@ -201,17 +201,17 @@ public class AutoTools {
      * @param sourceSlot The slot with the item you want to select
      */
     public static void selectItem(Minecraft client, Inventory inventory, int sourceSlot) {
-        if(sourceSlot == inventory.getSelectedSlot()) return;
+        if(sourceSlot == inventory.selected) return;
 
         if (swaps.empty()) {
-            swaps.push(inventory.getSelectedSlot());
+            swaps.push(inventory.selected);
         }
 
         if (sourceSlot <= 8 && !AutoToolsConfig.get().keepSlot) {
-            if (swaps.getLast() != inventory.getSelectedSlot()) {
-                if (swaps.peek() != sourceSlot) swaps.push(inventory.getSelectedSlot());
+            if (swaps.getLast() != inventory.selected) {
+                if (swaps.peek() != sourceSlot) swaps.push(inventory.selected);
             }
-            inventory.setSelectedSlot(sourceSlot);
+            inventory.selected = sourceSlot;
 
             if(!AutoToolsConfig.get().switchBack) swaps.clear();
             return;
@@ -219,7 +219,7 @@ public class AutoTools {
 
         if(sourceSlot <= 8) sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
 
-        int destSlot = AutoToolsConfig.get().keepSlot ? inventory.getSelectedSlot() : getSuitableHotbarSlot(inventory);
+        int destSlot = AutoToolsConfig.get().keepSlot ? inventory.selected : getSuitableHotbarSlot(inventory);
         if (!AutoToolsConfig.get().targetSlots.contains(destSlot + 1)) destSlot = AutoToolsConfig.get().targetSlots.getFirst() - 1;
 
         if (swaps.peek() != sourceSlot) swaps.push(sourceSlot);
@@ -228,7 +228,7 @@ public class AutoTools {
         swapped = true;
         client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
 
-        inventory.setSelectedSlot(destSlot);
+        inventory.selected = destSlot;
         inventory.setChanged();
 
         if(!AutoToolsConfig.get().switchBack) swaps.clear(); //Easy way to safe some memory because swaps are only needed for switchBack
@@ -241,20 +241,20 @@ public class AutoTools {
         int i;
         int j;
         for (i = 0; i < 9; ++i) {
-            j = (inventory.getSelectedSlot() + i) % 9;
+            j = (inventory.selected + i) % 9;
             if (AutoToolsConfig.get().targetSlots.contains(j + 1) && inventory.getItem(j).isEmpty()) {
                 return j;
             }
         }
 
         for (i = 0; i < 9; ++i) {
-            j = (inventory.getSelectedSlot() + i) % 9;
+            j = (inventory.selected + i) % 9;
             if (AutoToolsConfig.get().targetSlots.contains(j + 1) && !inventory.getItem(j).isEnchanted()) {
                 return j;
             }
         }
 
-        return inventory.getSelectedSlot();
+        return inventory.selected;
     }
 
     /**
@@ -306,16 +306,16 @@ public class AutoTools {
             int i = swaps.pop();
 
             if (i <= 8) {
-                if (AutoToolsConfig.get().keepSlot && i != inventory.getSelectedSlot()) {
-                    client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, inventory.getSelectedSlot(), i, ClickType.SWAP, client.player);
+                if (AutoToolsConfig.get().keepSlot && i != inventory.selected) {
+                    client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, inventory.selected, i, ClickType.SWAP, client.player);
                     return;
                 }
 
-                inventory.setSelectedSlot(i);
+                inventory.selected = i;
                 return;
             }
 
-            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, i, inventory.getSelectedSlot(), ClickType.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, i, inventory.selected, ClickType.SWAP, client.player);
         }
 
         inventory.setChanged();
@@ -336,9 +336,9 @@ public class AutoTools {
         if (MobEffectUtil.hasDigSpeed(player)) {
             miningSpeed *= 1.0F + (float) (MobEffectUtil.getDigSpeedAmplification(player) + 1) * 0.2F;
         }
-        if (player.hasEffect(MobEffects.MINING_FATIGUE)) {
+        if (player.hasEffect(MobEffects.DIG_SLOWDOWN)) {
             float g;
-            switch (player.getEffect(MobEffects.MINING_FATIGUE).getAmplifier()) {
+            switch (player.getEffect(MobEffects.DIG_SLOWDOWN).getAmplifier()) {
                 case 0:
                     g = 0.3F;
                     break;
@@ -424,8 +424,8 @@ public class AutoTools {
      */
     public static int findSlotMatchingItem(Inventory inventory, ItemStack itemStack) {
 
-        for (int i = 0; i < inventory.getContainerSize() - Inventory.EQUIPMENT_SLOT_MAPPING.size(); ++i) {
-            if (ItemStack.isSameItem(itemStack, inventory.getItem(i))) {
+        for (int i = 0; i < inventory.items.size(); ++i) {
+            if (ItemStack.isSameItem(itemStack, inventory.items.get(i))) {
                 return i;
             }
         }
@@ -450,9 +450,9 @@ public class AutoTools {
     public static void getCorrectTool(HitResult hit, Minecraft client) {
         Inventory inventory = client.player.getInventory();
 
-        if (AutoToolsConfig.get().ignoredSlots.contains(inventory.getSelectedSlot() + 1)) return;
+        if (AutoToolsConfig.get().ignoredSlots.contains(inventory.selected + 1)) return;
 
-        ItemStack stack = inventory.getSelectedItem();
+        ItemStack stack = inventory.getSelected();
         if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.tool && !stack.getComponents().has(DataComponents.TOOL)) return;
         else if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.no_tool && stack.getComponents().has(DataComponents.TOOL)) return;
 
@@ -461,7 +461,7 @@ public class AutoTools {
             BlockState blockState = client.level.getBlockState(blockHitResult.getBlockPos());
 
             int toolSlot = -1;
-            ItemMiningSpeed miningSpeed = new ItemMiningSpeed(1f, 0);
+            ItemMiningSpeed miningSpeed = new ItemMiningSpeed(getMiningSpeed(ItemStack.EMPTY, blockState, blockHitResult.getBlockPos(), inventory.player, client.level).miningSpeed, 0);
 
             //Detection for custom tools
             if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
@@ -491,7 +491,7 @@ public class AutoTools {
 
                 if (toolSlot == -1) {
                 } else if (toolSlot <= 8) {
-                    inventory.setSelectedSlot(toolSlot);
+                    inventory.selected = toolSlot;
                     return;
                 } else {
                     selectItem(client, inventory, toolSlot);
@@ -506,7 +506,7 @@ public class AutoTools {
             }
 
             if (AutoToolsConfig.get().onlySwitchIfNecessary) {
-                if (inventory.getItem(inventory.getSelectedSlot()).getItem().isCorrectToolForDrops(inventory.getItem(inventory.getSelectedSlot()), blockState)
+                if (inventory.getItem(inventory.selected).getItem().isCorrectToolForDrops(inventory.getItem(inventory.selected), blockState)
                         || !blockState.requiresCorrectToolForDrops()) return;
             }
 
@@ -515,7 +515,7 @@ public class AutoTools {
                 Item item = inventory.getItem(i).getItem();
 
                 if (item != Items.AIR) {
-                    ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(1f, 0);
+                    ItemMiningSpeed newMiningSpeed = new ItemMiningSpeed(getMiningSpeed(ItemStack.EMPTY, blockState, blockHitResult.getBlockPos(), inventory.player, client.level).miningSpeed, 0);
 
                     if (item.isCorrectToolForDrops(inventory.getItem(i), blockState) || !blockState.requiresCorrectToolForDrops()) {
                         if(!checkDurability(inventory.getItem(i))) continue;
@@ -526,7 +526,7 @@ public class AutoTools {
                     if (newMiningSpeed.equals(miningSpeed)) {
                         if (toolSlot != -1) {
                             if (AutoToolsConfig.get().preferHotbarTool) {
-                                if (i <= 8 && (toolSlot > 8 || i == inventory.getSelectedSlot() ||
+                                if (i <= 8 && (toolSlot > 8 || i == inventory.selected ||
                                         ((AutoToolsConfig.get().preferLowDurability && inventory.getItem(i).getDamageValue() > inventory.getItem(toolSlot).getDamageValue())
                                                 || (!AutoToolsConfig.get().preferLowDurability && inventory.getItem(i).getDamageValue() < inventory.getItem(toolSlot).getDamageValue())))
                                 ) {
@@ -552,7 +552,7 @@ public class AutoTools {
             else if(toolSlot == -1) {
                 // If we haven't found a valid tool, select an item with no durability
                 if(AutoToolsConfig.get().preserveDurability) {
-                    if(inventory.getSelectedItem().getMaxDamage() == 0) return;
+                    if(inventory.getSelected().getMaxDamage() == 0) return;
 
 
                     if(AutoToolsConfig.get().switchBack && !swaps.empty()){
@@ -591,7 +591,7 @@ public class AutoTools {
             int toolSlot = -1;
             float attackDamage = 0;
 
-            if (AutoToolsConfig.get().keepAxe && ClientTags.isInWithLocalFallback(ItemTags.AXES, inventory.getSelectedItem().getItem())) {
+            if (AutoToolsConfig.get().keepAxe && ClientTags.isInWithLocalFallback(ItemTags.AXES, inventory.getSelected().getItem())) {
                 return;
             }
 
@@ -641,6 +641,8 @@ public class AutoTools {
                                 }
                             }
                         }
+
+                        baseAttackDamage += inventory.getItem(i).getItem().getAttackDamageBonus(entity, baseAttackDamage, entity.damageSources().playerAttack(inventory.player));
 
                         if (baseAttackDamage > 0) {
                             if (inventory.getItem(i).isEnchanted()) {
