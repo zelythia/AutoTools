@@ -3,7 +3,7 @@
     "key.autotools.silktouch" : "SilkTouch-Einstellung ändern",
     "key.autotools.category" : "AutoTools",
 
-    "chat.enabled_autotools": "AutoTools §4an§f!",
+    "chat.enabled_autotools": "AutoTools §2an§f!",
     "chat.disabled_autotools": "AutoTools! §4aus§f",
 
     "chat.cycle_silktouch": "SilkTouch: ",
@@ -30,7 +30,7 @@
     "text.autoconfig.autotools.option.general.preserveDurability": "[NEU] Abnutzung verhindern",
     "text.autoconfig.autotools.option.general.preserveDurability.@Tooltip": "AutoTools wird ein Werkzeug ohne Haltbarkeit wählen, wenn kein passendes gefunden wird",
 
-  "text.autoconfig.autotools.option.general.preferHotbarTool": "Hotbar Slot bevorzugen",
+    "text.autoconfig.autotools.option.general.preferHotbarTool": "Hotbar Slot bevorzugen",
     "text.autoconfig.autotools.option.general.preferHotbarTool.@Tooltip": "AutoTools wird immer das Werkzeug in deiner Hotbar bevorzugen ohne Rücksicht auf die Haltbarkeit bei gleicher Abbaugeschwindigkeit",
    
     "text.autoconfig.autotools.option.general.preferLowDurability": "Geringe Haltbarkeit bevorzugen",
