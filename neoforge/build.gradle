@@ -51,12 +51,12 @@ repositories {
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    common(project(path: ":common")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
-    modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}"
+    api "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config_version}"
 
-    modApi("com.mrcrayfish:controllable-common:${rootProject.controllable_version}")
+    compileOnly("com.mrcrayfish:controllable-common:${rootProject.controllable_version}")
 }
 
 processResources {
@@ -67,11 +67,27 @@ processResources {
     }
 }
 
-shadowJar {
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
+jar {
+    archiveClassifier = "raw"
 }
 
-remapJar {
-    inputFile.set shadowJar.archiveFile
+shadowJar {
+    dependsOn(jar)
+    mainSpec.sourcePaths.clear()       // Remove default source set inclusion
+    from(zipTree(jar.archiveFile))     // Unpack jar output (preserves Loom modifications)
+
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = null           // shadowJar becomes the main artifact
+    from rootProject.file("LICENSE.md")
+}
+
+configurations {
+    apiElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
+    runtimeElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
 }

@@ -6,13 +6,12 @@ import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
 import me.shedaniel.clothconfig2.impl.ConfigEntryBuilderImpl;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -38,7 +37,7 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
     }
 
     @Override
-    public void lateRender(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void lateRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         super.lateRender(graphics, mouseX, mouseY, delta);
 
         for (ItemCell cell : cells) {
@@ -83,11 +82,17 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
                     if (selection.startsWith("#")) id = Identifier.parse("minecraft:air");
                     else id = Identifier.parse(selection);
 
-                    final ItemStack s = new ItemStack(BuiltInRegistries.BLOCK.getValue(id));
-
-
                     return new DropdownBoxEntry.DefaultSelectionCellElement<String>(selection, this.toTextFunction) {
-                        public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
+                        private ItemStack getItem(Identifier id){
+                            try {
+                                return new ItemStack(BuiltInRegistries.BLOCK.getValue(id));
+                            }catch (NullPointerException e){
+                                return ItemStack.EMPTY;
+                            }
+                        }
+
+                        @Override
+                        public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
                             this.rendering = true;
                             this.x = x;
                             this.y = y;
@@ -98,9 +103,9 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
                                 graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, -15132391);
                             }
 
-                            graphics.drawString(Minecraft.getInstance().font, this.toTextFunction.apply(this.r).getVisualOrderText(), x + 6 + 18, y + 6, b ? -1 : -7829368);
-                            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-                            graphics.renderItem(s, x + 4, y + 2);
+                            graphics.text(Minecraft.getInstance().font, this.toTextFunction.apply(this.r).getVisualOrderText(), x + 6 + 18, y + 6, b ? -1 : -7829368);
+//                            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+                            graphics.item(getItem(id), x + 4, y + 2);
                         }
                     };
                 }
@@ -159,13 +164,13 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
         }
 
         @Override
-        public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+        public void extractRenderState(GuiGraphicsExtractor graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
             dropdownBoxEntry.setScreen(listListEntry.getConfigScreen());
             dropdownBoxEntry.setParent((ClothConfigScreen.ListWidget) listListEntry.getParent());
-            dropdownBoxEntry.render(graphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+            dropdownBoxEntry.extractRenderState(graphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         }
 
-        public void lateRender(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        public void lateRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
             dropdownBoxEntry.lateRender(graphics, mouseX, mouseY, delta);
         }
 
@@ -176,6 +181,7 @@ public class ItemListListEntry extends AbstractListListEntry<String, ItemListLis
 
         @Override
         public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+            dropdownBoxEntry.setFocused(true);
             return dropdownBoxEntry.mouseClicked(mouseButtonEvent, bl);
         }
 

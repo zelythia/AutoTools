@@ -80,7 +80,7 @@ public class AutoToolsNeoForge {
             if (KEY_AUTOTOOLS.consumeClick()) {
                 if (!keyPressed) {
                     AutoTools.toggle = !AutoTools.toggle;
-                    client.player.displayClientMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"), false);
+                    client.player.sendSystemMessage(AutoTools.toggle ? Component.translatable("chat.enabled_autotools") : Component.translatable("chat.disabled_autotools"));
                     keyPressed = true;
                 }
             } else {
@@ -113,7 +113,7 @@ public class AutoToolsNeoForge {
             AutoToolsConfig.PreferSilkTouch[] values = AutoToolsConfig.PreferSilkTouch.values();
             AutoToolsConfig.get().preferSilkTouch = values[(AutoToolsConfig.get().preferSilkTouch.ordinal() + 1) % values.length];
 
-            client.player.displayClientMessage(Component.translatable("chat.cycle_silktouch").append(Component.translatable("text.autoconfig.autotools.option.general.preferSilkTouch." + AutoToolsConfig.get().preferSilkTouch)), false);
+            client.player.sendSystemMessage(Component.translatable("chat.cycle_silktouch").append(Component.translatable("text.autoconfig.autotools.option.general.preferSilkTouch." + AutoToolsConfig.get().preferSilkTouch)));
 
             AutoToolsConfig.save();
         }

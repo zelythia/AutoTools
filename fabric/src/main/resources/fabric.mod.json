@@ -29,13 +29,9 @@
   "accessWidener" : "autotools.accesswidener",
   "depends": {
     "fabricloader": ">=0.15",
-    "minecraft": ">=1.21.11",
-    "java": ">=21",
-    "fabric-key-binding-api-v1": "*",
-    "fabric-lifecycle-events-v1": "*",
-    "fabric-api-base": "*",
-    "fabric-item-api-v1": "*",
-    "fabric-networking-api-v1": "*",
+    "minecraft": ">=26.1",
+    "java": ">=25",
+    "fabric-api": "*",
     "cloth-config": ">=4.9"
   }
 }

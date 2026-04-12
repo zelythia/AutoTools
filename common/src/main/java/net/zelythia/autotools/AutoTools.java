@@ -27,7 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -226,7 +226,8 @@ public class AutoTools {
         if (swaps.peek() != destSlot) swaps.push(destSlot);
 
         swapped = true;
-        client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
+//        client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ClickType.SWAP, client.player);
+        client.gameMode.handleContainerInput(client.player.inventoryMenu.containerId, sourceSlot, destSlot, ContainerInput.SWAP, client.player);
 
         inventory.setSelectedSlot(destSlot);
         inventory.setChanged();
@@ -307,7 +308,7 @@ public class AutoTools {
 
             if (i <= 8) {
                 if (AutoToolsConfig.get().keepSlot && i != inventory.getSelectedSlot()) {
-                    client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, inventory.getSelectedSlot(), i, ClickType.SWAP, client.player);
+                    client.gameMode.handleContainerInput(client.player.inventoryMenu.containerId, inventory.getSelectedSlot(), i, ContainerInput.SWAP, client.player);
                     return;
                 }
 
@@ -315,7 +316,7 @@ public class AutoTools {
                 return;
             }
 
-            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId, i, inventory.getSelectedSlot(), ClickType.SWAP, client.player);
+            client.gameMode.handleContainerInput(client.player.inventoryMenu.containerId, i, inventory.getSelectedSlot(), ContainerInput.SWAP, client.player);
         }
 
         inventory.setChanged();

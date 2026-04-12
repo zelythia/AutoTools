@@ -1,4 +1,1 @@
-- Fix AutoTools not correctly calculating damage for maces
-- Fix bug that caused crashed on game launch on Neoforge
-- Fix bug where AutoTools wouldn't work for wood, stone and copper tools while underwater
-- Fix German toggle message
+Minecraft 26.1.2 update

@@ -3,7 +3,7 @@ name: Publish on GitHub, CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:
-  MINECRAFT_VERSION: 1.21.11
+  MINECRAFT_VERSION: 26.1.2
   VERSION: 3.4.1
   FORGE: false
   NEOFORGE: true
@@ -117,7 +117,7 @@ jobs:
 
           dependencies: |
             cloth-config{modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
-            fabric(embedded){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
+            fabric-api{modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
 
       - name: Publish Mod on Github
         if: env.GITHUB == 'true'
