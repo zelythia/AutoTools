@@ -62,7 +62,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            forge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
+            forge/build/libs/!(*-@(dev|raw|shadow|sources|javadoc)).jar
 
           name: AutoTools Forge ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
@@ -82,7 +82,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            neoforge/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
+            neoforge/build/libs/!(*-@(dev|raw|shadow|sources|javadoc)).jar
 
           name: AutoTools NeoForge ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
@@ -105,7 +105,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            fabric/build/libs/!(*-@(dev|shadow|sources|javadoc)).jar
+            fabric/build/libs/!(*-@(dev|raw|shadow|sources|javadoc)).jar
 
           name: AutoTools Fabric ${{env.MINECRAFT_VERSION}} v${{env.VERSION}}
           version: "${{env.VERSION}}"
