@@ -113,6 +113,7 @@
 
     "text.autoconfig.autotools.option.blockLists.customTools": "Eigene Werkzeug-Regeln",
     "text.autoconfig.autotools.option.blockLists.customTools.@Tooltip": "Füge eigene Werkzeug-Regeln im JSON-Format hinzu\nz.B. \"minecraft:block_id\":\"minecraft:tool_id\" oder <\"minecraft:block_id\":[\"minecraft:tool_id_1\", \"minecraft:tool_id_2\"]\nBei mehreren Werkzeugen, hat das erste die höchste Priorität. Funktioniert auch mit Block- oder Gegenstand-Tags.\nVerwende \"autotools:disabled\" um AutoTools für einen bestimmten Block zu deaktivieren.\nFunktioniert auch für Kreaturen: \"minecraft:entity_id\":\"minecraft:tool_id",
-    "text.autoconfig.autotools.error.incorrect_json": "Fehlerhafte Werkzeug-Regel: Kein gültiges JSON-Format"
+    "text.autoconfig.autotools.error.incorrect_json": "Fehlerhafte Werkzeug-Regel: Kein gültiges JSON-Format",
 
+    "text.autoconfig.autotools.error.isEmpty": "Liste darf nicht leer sein"
 }
