@@ -1,1 +1,3 @@
-Minecraft 26.1.2 update
+- Fixed swapping to wrong slots when tool is in offhand (#55)
+- Fixed possible crash during inventory sync (#57)
+- Added better error handling and hints for targetSlots/ignoredSlots config

@@ -4,7 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: 26.1.2
-  VERSION: 3.4.1
+  VERSION: 3.4.2
   FORGE: false
   NEOFORGE: true
   FABRIC: true
