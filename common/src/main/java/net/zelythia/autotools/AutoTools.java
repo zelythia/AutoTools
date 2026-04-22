@@ -217,7 +217,7 @@ public class AutoTools {
             return;
         }
 
-        if(sourceSlot <= 8) sourceSlot += 36;   // Needs to be done because the hotbar slots are shifted by 36 in slot index
+        sourceSlot = toGuiSlotIndex(sourceSlot);
 
         int destSlot = AutoToolsConfig.get().keepSlot ? inventory.getSelectedSlot() : getSuitableHotbarSlot(inventory);
         if (!AutoToolsConfig.get().targetSlots.contains(destSlot + 1)) destSlot = AutoToolsConfig.get().targetSlots.getFirst() - 1;
@@ -232,6 +232,13 @@ public class AutoTools {
         inventory.setChanged();
 
         if(!AutoToolsConfig.get().switchBack) swaps.clear(); //Easy way to safe some memory because swaps are only needed for switchBack
+    }
+
+    public static int toGuiSlotIndex(int inventoryIndex){
+        if(inventoryIndex <= 8) return inventoryIndex + 36;                             // Hotbar
+        if(inventoryIndex >= 36 && inventoryIndex <= 39) return 44 - inventoryIndex;    // Armor
+        if(inventoryIndex == 40) return 45;                                             // Offhand
+        return inventoryIndex;                                                          // Inventory
     }
 
     /**
@@ -356,7 +363,7 @@ public class AutoTools {
             miningSpeed *= g;
         }
         miningSpeed *= (float) player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED);
-        if (player.isEyeInFluid(FluidTags.WATER)) {
+        if (player.isEyeInFluid(FluidTags.WATER) && player.getAttribute(Attributes.SUBMERGED_MINING_SPEED) != null) {
             miningSpeed *= (float) player.getAttribute(Attributes.SUBMERGED_MINING_SPEED).getValue();
         }
 
@@ -467,11 +474,11 @@ public class AutoTools {
             if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()))) {
                 List<Identifier> tools = CUSTOM_TOOLS.get(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
 
-                for (Identifier Identifier : tools) {
-                    if (Objects.equals(Identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
+                for (Identifier identifier : tools) {
+                    if (Objects.equals(identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
                         return;
 
-                    Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(Identifier);
+                    Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(identifier);
                     if(itemReference.isPresent()) {
                         toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
                         if (toolSlot != -1) break;
@@ -608,11 +615,11 @@ public class AutoTools {
                         if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
                             List<Identifier> tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
 
-                            for (Identifier Identifier : tools) {
-                                if (Objects.equals(Identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
+                            for (Identifier identifier : tools) {
+                                if (Objects.equals(identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
                                     return;
 
-                                Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(Identifier);
+                                Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(identifier);
                                 if(itemReference.isPresent()) {
                                     toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
                                     if (toolSlot != -1) break;
