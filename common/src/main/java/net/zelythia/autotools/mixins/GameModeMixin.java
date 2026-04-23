@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
+
 
 @Mixin(MultiPlayerGameMode.class)
 public class GameModeMixin {
@@ -32,7 +34,7 @@ public class GameModeMixin {
 
     @Inject(at = @At("HEAD"), method = "ensureHasSentCarriedItem")
     private void ensureHasSentCarriedItem(CallbackInfo ci) {
-        if (minecraft.hitResult.equals(this.autoTools$lastHit)) return;
+        if (Objects.equals(minecraft.hitResult, this.autoTools$lastHit)) return;
 
         if (minecraft.options.keyAttack.isDown() || PlatformHelper.controllableAttackDown()) {
             AutoTools.onBlockBreaking(minecraft, minecraft.hitResult);
