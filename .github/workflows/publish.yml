@@ -5,7 +5,7 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.19.4
   VERSION: 3.4.2
-  FORGE: true
+  FORGE: false
   FABRIC: true
   GITHUB: true
   MAVEN: true
