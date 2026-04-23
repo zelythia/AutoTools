@@ -5,6 +5,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
+import me.shedaniel.autoconfig.util.Utils;
+import me.shedaniel.clothconfig2.impl.builders.IntListBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -20,7 +22,11 @@ import net.zelythia.autotools.config.AutoToolsConfig;
 import net.zelythia.autotools.config.autoconfig.BlockList;
 import net.zelythia.autotools.config.autoconfig.BlockListAnnotationProvider;
 import net.zelythia.autotools.config.autoconfig.CustomToolsTransformer;
+import net.zelythia.autotools.config.autoconfig.HotbarSlots;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Collections;
+import java.util.Optional;
 
 public class AutoToolsFabric implements ClientModInitializer {
     private boolean keyPressed = false;
@@ -40,6 +46,18 @@ public class AutoToolsFabric implements ClientModInitializer {
         GuiRegistry registry = AutoConfig.getGuiRegistry(net.zelythia.autotools.config.AutoToolsConfig.class);
         registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
         registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
+        registry.registerAnnotationProvider((i18n, field, config, defaults, registry1) -> {
+            return Collections.singletonList(new IntListBuilder(Component.translatable("text.cloth-config.reset_value"), Component.translatable(i18n), Utils.getUnsafely(field, config))
+                    .setDefaultValue(() -> Utils.getUnsafely(field, defaults))
+                    .setSaveConsumer((newValue) -> Utils.setUnsafely(field, config, newValue))
+                    .setErrorSupplier(integers -> {
+                        if(!field.getAnnotation(HotbarSlots.class).allowEmpty() && integers.isEmpty()) return Optional.of(Component.translatable("text.autoconfig.autotools.error.isEmpty"));
+                        return Optional.empty();
+                    })
+                    .setMin(1)
+                    .setMax(9)
+                    .build());
+        }, HotbarSlots.class);
 
         AutoTools.init();
 
