@@ -5,6 +5,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
+import me.shedaniel.autoconfig.util.Utils;
+import me.shedaniel.clothconfig2.impl.builders.IntListBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +16,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionResult;
@@ -23,7 +26,11 @@ import net.zelythia.autotools.config.AutoToolsConfig;
 import net.zelythia.autotools.config.autoconfig.BlockList;
 import net.zelythia.autotools.config.autoconfig.BlockListAnnotationProvider;
 import net.zelythia.autotools.config.autoconfig.CustomToolsTransformer;
+import net.zelythia.autotools.config.autoconfig.HotbarSlots;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Collections;
+import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class AutoToolsFabric implements ClientModInitializer {
@@ -44,6 +51,18 @@ public class AutoToolsFabric implements ClientModInitializer {
         GuiRegistry registry = AutoConfig.getGuiRegistry(net.zelythia.autotools.config.AutoToolsConfig.class);
         registry.registerAnnotationProvider(new BlockListAnnotationProvider(), BlockList.class);
         registry.registerPredicateTransformer(new CustomToolsTransformer(), field -> field.getName().equals("customTools"));
+        registry.registerAnnotationProvider((i18n, field, config, defaults, registry1) -> {
+            return Collections.singletonList(new IntListBuilder(new TranslatableComponent("text.cloth-config.reset_value"), new TranslatableComponent(i18n), Utils.getUnsafely(field, config))
+                    .setDefaultValue(() -> Utils.getUnsafely(field, defaults))
+                    .setSaveConsumer((newValue) -> Utils.setUnsafely(field, config, newValue))
+                    .setErrorSupplier(integers -> {
+                        if(!field.getAnnotation(HotbarSlots.class).allowEmpty() && integers.isEmpty()) return Optional.of(new TranslatableComponent("text.autoconfig.autotools.error.isEmpty"));
+                        return Optional.empty();
+                    })
+                    .setMin(1)
+                    .setMax(9)
+                    .build());
+        }, HotbarSlots.class);
 
         AutoTools.init();
 
