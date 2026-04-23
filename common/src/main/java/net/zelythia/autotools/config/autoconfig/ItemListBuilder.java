@@ -33,11 +33,11 @@ public class ItemListBuilder extends AbstractListBuilder<String, ItemListListEnt
 
         entry.setInsertButtonEnabled(this.isInsertButtonEnabled());
         entry.setCellErrorSupplier(this.cellErrorSupplier);
-        entry.setTooltipSupplier(() -> (Optional) this.getTooltipSupplier().apply(entry.getValue()));
+        entry.setTooltipSupplier(() -> this.getTooltipSupplier().apply(entry.getValue()));
         entry.setAddTooltip(this.getAddTooltip());
         entry.setRemoveTooltip(this.getRemoveTooltip());
         if (this.errorSupplier != null) {
-            entry.setErrorSupplier(() -> (Optional) this.errorSupplier.apply(entry.getValue()));
+            entry.setErrorSupplier(() -> this.errorSupplier.apply(entry.getValue()));
         }
 
         return this.finishBuilding(entry);

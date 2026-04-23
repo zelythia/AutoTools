@@ -7,6 +7,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.zelythia.autotools.AutoTools;
 import net.zelythia.autotools.config.autoconfig.BlockList;
+import net.zelythia.autotools.config.autoconfig.HotbarSlots;
 
 import java.util.List;
 
@@ -166,8 +167,10 @@ public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
         @ConfigEntry.Gui.Tooltip
         public Enabled enabled = Enabled.always;
 
+        @HotbarSlots
         @ConfigEntry.Gui.Tooltip
         public List<Integer> ignoredSlots = List.<Integer>of();
+        @HotbarSlots(allowEmpty = false)
         @ConfigEntry.Gui.Tooltip
         public List<Integer> targetSlots = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
