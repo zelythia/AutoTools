@@ -21,14 +21,10 @@ All config options can conveniently be edited using the ClothConfig UI:
     - **keepSlot** \[false]: Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics.
     - **hotbarOnly** \[false]: AutoTools will only select tool from you hotbar
     - **preserveDurability** \[true]: AutoTools will switch to an item with no durability if no suitable tool has been found
-    - **preferHotBarTool** \[true]: AutoTools will prefer the tool already in your hotbar if multiple tools have the
-      same
-      mining
-      speed, regardless their durability.
-    - **preferLowDurability** \[false]: AutoTools will prefer the tool with the lower durability, instead of the higher
-      one,
-      if they
-      have the same mining speed and enchantments.
+    - **hotbarOnly** \[false]: AutoTools will only select tools from you hotbar
+    - **preferHotBarTool** \[true]: AutoTools will prefer the tool already in your hotbar if multiple tools have the same mining speed, regardless their durability.
+    - **preferLowDurability** \[false]: AutoTools will prefer the tool with the lower durability, instead of the higher one, if they have the same mining speed and enchantments.
+    - **preserveDurability** \[true]: AutoTools will switch to an item with no durability if no suitable tool has been found
     - **switchBack** \[false]: AutoTools will switch back to the item you had in your hand before breaking the block
     - **showDPS** \[true]: Displays the weapons Damage when hovering over it as a tooltip
     - **changeForEntities** \[true]: AutoTools will change to the tool with the most DPS when looking at an entity
@@ -39,12 +35,12 @@ All config options can conveniently be edited using the ClothConfig UI:
         - no_tool: AutoTools will only be active while not holding a tool
     - **ignoredSlots** \[\[]]: AutoTools won't do anything if the currently selected one of these
     - **targetSlots** \[\[1,2,3,4,5,6,7,8,9]]: AutoTools only puts tools in these slots
+    - **ignoredInventorySlots** \[\[]]: AutoTools won't select tools from these slots in your inventory. See [Inventory Slots](https://raw.githubusercontent.com/zelythia/AutoTools/refs/heads/1.21.6/images/inventory_slots.json)
     - **minDurability** \[0.0]: If < 1: Seen as a percentage: Tools below minDurability won't be selected  
       Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
     - **durabilityCheck** \[true]: Prevents mining when going under minDurability
     - **experimentalBreakDelay** \[false]: Adds an experimental 1 Tick = 50ms delay if toggle is enabled before breaking
-      a block after a tool switch.  
-      Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.
+      a block after a tool switch. Enable this if you are experiencing Desyncs like Ghost-Blocks when instant mining.
 
 - #### Block Behaviour:
     - **onlySwitchIfNecessary** \[false]: AutoTools only tries to get a new tool if it is needed to break the block
