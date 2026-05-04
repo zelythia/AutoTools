@@ -35,7 +35,7 @@ All config options can conveniently be edited using the ClothConfig UI:
         - no_tool: AutoTools will only be active while not holding a tool
     - **ignoredSlots** \[\[]]: AutoTools won't do anything if the currently selected one of these
     - **targetSlots** \[\[1,2,3,4,5,6,7,8,9]]: AutoTools only puts tools in these slots
-    - **ignoredInventorySlots** \[\[]]: AutoTools won't select tools from these slots in your inventory. See [Inventory Slots](https://raw.githubusercontent.com/zelythia/AutoTools/refs/heads/1.21.6/images/inventory_slots.json)
+    - **ignoredInventorySlots** \[\[]]: AutoTools won't select tools from these slots in your inventory. See [Inventory Slots](https://raw.githubusercontent.com/zelythia/AutoTools/refs/heads/26.1.2/images/inventory_slots.png)
     - **minDurability** \[0.0]: If < 1: Seen as a percentage: Tools below minDurability won't be selected  
       Else: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)
     - **durabilityCheck** \[true]: Prevents mining when going under minDurability
