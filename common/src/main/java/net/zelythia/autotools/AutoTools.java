@@ -481,11 +481,11 @@ public class AutoTools {
                     Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(identifier);
                     if(itemReference.isPresent()) {
                         toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
-                        if (toolSlot != -1) break;
+                        if (toolSlot != -1 && !AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) break;
                     }
                 }
 
-                if (toolSlot == -1) {
+                if (toolSlot == -1 || AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) {
                 } else {
                     selectItem(client, inventory, toolSlot);
                     return;
@@ -496,7 +496,7 @@ public class AutoTools {
             if (!AutoToolsConfig.get().toggle && blockState.getBlock() == Blocks.END_PORTAL_FRAME) {
                 toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Items.ENDER_EYE));
 
-                if (toolSlot == -1) {
+                if (toolSlot == -1 || AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) {
                 } else if (toolSlot <= 8) {
                     inventory.setSelectedSlot(toolSlot);
                     return;
@@ -519,6 +519,7 @@ public class AutoTools {
 
             int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
             for (int i = 0; i < containerLimit; i++) {
+                if(AutoToolsConfig.get().ignoredInventorySlots.contains(i)) continue;
                 Item item = inventory.getItem(i).getItem();
 
                 if (item != Items.AIR) {
@@ -593,47 +594,46 @@ public class AutoTools {
         } else if (AutoToolsConfig.get().changeForEntities && hit.getType() == HitResult.Type.ENTITY) {
             if (AutoToolsConfig.get().switchBack) return; //SwitchBack doesn't really make sense for mobs
 
-            Entity entity = ((EntityHitResult) hit).getEntity();
-
-            int toolSlot = -1;
-            float attackDamage = 0;
-
             if (AutoToolsConfig.get().keepAxe && ClientTags.isInWithLocalFallback(ItemTags.AXES, inventory.getSelectedItem().getItem())) {
                 return;
             }
 
-            int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
-            for (int i = 0; i < containerLimit; i++) {
-                Item item = inventory.getItem(i).getItem();
+            Entity entity = ((EntityHitResult) hit).getEntity();
 
-                if (item != Items.AIR) {
-                    double newAttackDamage = 1.0;
+            if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
+                int toolSlot = -1;
+                float attackDamage = 0;
 
-                    if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
+                //Custom tool detection
+                if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
+                    List<Identifier> tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
 
-                        //Custom tool detection
-                        if (CUSTOM_TOOLS.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
-                            List<Identifier> tools = CUSTOM_TOOLS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+                    for (Identifier identifier : tools) {
+                        if (Objects.equals(identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
+                            return;
 
-                            for (Identifier identifier : tools) {
-                                if (Objects.equals(identifier, Identifier.fromNamespaceAndPath("autotools", "disabled")))
-                                    return;
-
-                                Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(identifier);
-                                if(itemReference.isPresent()) {
-                                    toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
-                                    if (toolSlot != -1) break;
-                                }
-                            }
-
-                            if (toolSlot == -1) {
-                            } else {
-                                selectItem(client, inventory, toolSlot);
-                                return;
-                            }
+                        Optional<Holder.Reference<Item>> itemReference = BuiltInRegistries.ITEM.get(identifier);
+                        if(itemReference.isPresent()) {
+                            toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(itemReference.get()));
+                            if (toolSlot != -1 && !AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) break;
                         }
+                    }
 
+                    if (toolSlot == -1 || AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) {
+                    } else {
+                        selectItem(client, inventory, toolSlot);
+                        return;
+                    }
+                }
+
+                int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
+                for (int i = 0; i < containerLimit; i++) {
+                    if(AutoToolsConfig.get().ignoredInventorySlots.contains(i)) continue;
+                    Item item = inventory.getItem(i).getItem();
+
+                    if (item != Items.AIR) {
                         if(!checkDurability(inventory.getItem(i))) continue;
+                        double newAttackDamage = 1.0;
 
                         float baseAttackDamage = 0;
                         float baseAttackSpeed = 0;
@@ -685,18 +685,18 @@ public class AutoTools {
                                 toolSlot = i;
                             }
                         }
+
                     }
                 }
-            }
 
-            if (toolSlot == -1) {
-                if (!AutoToolsConfig.get().toggle && client.player.isCreative()) {
-                    inventory.setItem(inventory.getSuitableHotbarSlot(), new ItemStack(Items.NETHERITE_SWORD));
+                if (toolSlot == -1) {
+                    if (!AutoToolsConfig.get().toggle && client.player.isCreative()) {
+                        inventory.setItem(inventory.getSuitableHotbarSlot(), new ItemStack(Items.NETHERITE_SWORD));
+                    }
+                } else {
+                    selectItem(client, inventory, toolSlot);
                 }
-            } else {
-                selectItem(client, inventory, toolSlot);
             }
-
         }
     }
 }

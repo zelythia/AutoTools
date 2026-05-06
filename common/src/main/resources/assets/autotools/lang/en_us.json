@@ -24,10 +24,10 @@
     "text.autoconfig.autotools.option.general.keepSlot": "Keep selected slot",
     "text.autoconfig.autotools.option.general.keepSlot.@Tooltip": "Keeps the selected slot when swapping to a new tool instead of using the vanilla mechanics",
 
-    "text.autoconfig.autotools.option.general.hotbarOnly": "[NEW] Hotbar only",
-    "text.autoconfig.autotools.option.general.hotbarOnly.@Tooltip": "AutoTools will only select tool from you hotbar",
+    "text.autoconfig.autotools.option.general.hotbarOnly": "Hotbar only",
+    "text.autoconfig.autotools.option.general.hotbarOnly.@Tooltip": "AutoTools will only select tools from you hotbar",
 
-    "text.autoconfig.autotools.option.general.preserveDurability": "[NEW] Preserve durability",
+    "text.autoconfig.autotools.option.general.preserveDurability": "Preserve durability",
     "text.autoconfig.autotools.option.general.preserveDurability.@Tooltip": "AutoTools will switch to an item with no durability if no suitable tool has been found",
 
     "text.autoconfig.autotools.option.general.preferHotbarTool": "Prefer Hotbar slot",
@@ -72,6 +72,9 @@
 
     "text.autoconfig.autotools.option.general.targetSlots": "Target Slots",
     "text.autoconfig.autotools.option.general.targetSlots.@Tooltip": "AutoTools only puts tools in these slots:",
+
+    "text.autoconfig.autotools.option.general.ignoredInventorySlots": "[NEW] Ignored Inventory-Slots",
+    "text.autoconfig.autotools.option.general.ignoredInventorySlots.@Tooltip": "AutoTools won't select tools from these slots in your inventory (Offhand = 40). See websites for more details.",
 
     "text.autoconfig.autotools.option.general.minDurability": "Minimum Durability",
     "text.autoconfig.autotools.option.general.minDurability.@Tooltip": "If < 1: Seen as a percentage: Tools below minDurability won't be selected\nElse: Seen as durability: tools will be selected until at minDurability (e.g. set to 1 to never break a tool)",
