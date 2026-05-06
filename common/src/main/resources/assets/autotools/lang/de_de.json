@@ -24,10 +24,10 @@
     "text.autoconfig.autotools.option.general.keepSlot": "Ausgewählten Slot behalten",
     "text.autoconfig.autotools.option.general.keepSlot.@Tooltip": "Behalte immer den ausgewählten Slot",
 
-    "text.autoconfig.autotools.option.general.hotbarOnly": "[NEU] Nur Hotbar",
+    "text.autoconfig.autotools.option.general.hotbarOnly": "Nur Hotbar",
     "text.autoconfig.autotools.option.general.hotbarOnly.@Tooltip": "AutoTools wird nur Werkzeuge aus der Hotbar verwenden",
 
-    "text.autoconfig.autotools.option.general.preserveDurability": "[NEU] Abnutzung verhindern",
+    "text.autoconfig.autotools.option.general.preserveDurability": "Abnutzung verhindern",
     "text.autoconfig.autotools.option.general.preserveDurability.@Tooltip": "AutoTools wird ein Werkzeug ohne Haltbarkeit wählen, wenn kein passendes gefunden wird",
 
     "text.autoconfig.autotools.option.general.preferHotbarTool": "Hotbar Slot bevorzugen",
@@ -72,6 +72,9 @@
 
     "text.autoconfig.autotools.option.general.targetSlots": "Ziel-Slots",
     "text.autoconfig.autotools.option.general.targetSlots.@Tooltip": "AutoTools tut Werkzeuge nur in diese Slots:",
+
+    "text.autoconfig.autotools.option.general.ignoredInventorySlots": "[Neu] Ignorierte Inventar-Slots",
+    "text.autoconfig.autotools.option.general.ignoredInventorySlots.@Tooltip": "AutoTools wird keine Werkzeuge aus diesen Slots im Inventar auswählen (Nebenhand = 40). Vgl. Websites für weitere Informationen.",
 
     "text.autoconfig.autotools.option.general.minDurability": "Minimale Haltbarkeit",
     "text.autoconfig.autotools.option.general.minDurability.@Tooltip": "Wenn < 1: Als Prozent der Haltbarkeit gesehen: Werkzeuge unter der Minimalen Haltbarkeit werden nicht ausgewählt\nSonst: Als explizite Haltbarkeit gesehen: Werkzeuge werden ausgewählt bis sie die Minimale Haltbarkeit erreichen (z.B. 1, damit eine Werkzeug nie kaputt gehen kann)",

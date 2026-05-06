@@ -433,10 +433,10 @@ public class AutoTools {
                     if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled"))) return;
 
                     toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
-                    if (toolSlot != -1) break;
+                    if (toolSlot != -1 && !AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) break;
                 }
 
-                if (toolSlot == -1) {
+                if (toolSlot == -1 || AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) {
                 } else {
                     selectItem(client, inventory, toolSlot);
                     return;
@@ -447,7 +447,7 @@ public class AutoTools {
             if (!AutoToolsConfig.get().toggle && blockState.getBlock() == Blocks.END_PORTAL_FRAME) {
                 toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Items.ENDER_EYE));
 
-                if (toolSlot == -1) {
+                if (toolSlot == -1 || AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) {
                 } else if (toolSlot <= 8) {
                     inventory.selected = toolSlot;
                     return;
@@ -470,6 +470,7 @@ public class AutoTools {
 
             int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
             for (int i = 0; i < containerLimit; i++) {
+                if(AutoToolsConfig.get().ignoredInventorySlots.contains(i)) continue;
                 Item item = inventory.getItem(i).getItem();
 
                 if (item != Items.AIR) {
@@ -544,8 +545,6 @@ public class AutoTools {
         } else if (AutoToolsConfig.get().changeForEntities && hit.getType() == HitResult.Type.ENTITY) {
             if (AutoToolsConfig.get().switchBack) return;
 
-            Entity entity = ((EntityHitResult) hit).getEntity();
-
             if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.tool && !(inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
             else if(AutoToolsConfig.get().enabled == AutoToolsConfig.Enabled.no_tool && (inventory.getSelected().getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE))) return;
 
@@ -554,45 +553,46 @@ public class AutoTools {
                 return;
             }
 
-            int toolSlot = -1;
-            float attackDamage = 0;
+            Entity entity = ((EntityHitResult) hit).getEntity();
 
-            int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
-            for (int i = 0; i < containerLimit; i++) {
-                Item item = inventory.getItem(i).getItem();
+            if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
+                int toolSlot = -1;
+                float attackDamage = 0;
 
-                if (item != Items.AIR) {
-                    double newAttackDamage = 1.0;
+                //Custom tool detection
+                if (CUSTOM_TOOLS.containsKey(Registry.ENTITY_TYPE.getKey(entity.getType()))) {
+                    List<ResourceLocation> tools = CUSTOM_TOOLS.get(Registry.ENTITY_TYPE.getKey(entity.getType()));
+
+                    for (ResourceLocation resourceLocation : tools) {
+                        if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled")))
+                            return;
+
+                        toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
+                        if (toolSlot != -1 && !AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) break;
+                    }
+
+                    if (toolSlot == -1 || AutoToolsConfig.get().ignoredInventorySlots.contains(toolSlot)) {
+                    } else {
+                        selectItem(client, inventory, toolSlot);
+                        return;
+                    }
+                }
 
 
-                    if (entity instanceof Boat || entity instanceof AbstractMinecart || entity instanceof LivingEntity) {
+                int containerLimit = AutoToolsConfig.get().hotbarOnly? 9: inventory.getContainerSize();
+                for (int i = 0; i < containerLimit; i++) {
+                    if(AutoToolsConfig.get().ignoredInventorySlots.contains(i)) continue;
+                    Item item = inventory.getItem(i).getItem();
+
+                    if (item != Items.AIR) {
+                        if(!checkDurability(inventory.getItem(i))) continue;
                         //Only switch if the player can hurt the entity with the current item
                         if (entity instanceof LivingEntity livingEntity) {
                             if (!item.hurtEnemy(inventory.getItem(i), livingEntity, inventory.player)) {
                                 continue;
                             }
                         }
-
-                        //Custom tool detection
-                        if (CUSTOM_TOOLS.containsKey(Registry.ENTITY_TYPE.getKey(entity.getType()))) {
-                            List<ResourceLocation> tools = CUSTOM_TOOLS.get(Registry.ENTITY_TYPE.getKey(entity.getType()));
-
-                            for (ResourceLocation resourceLocation : tools) {
-                                if (Objects.equals(resourceLocation, new ResourceLocation("autotools", "disabled")))
-                                    return;
-
-                                toolSlot = AutoTools.findSlotMatchingItem(inventory, new ItemStack(Registry.ITEM.get(resourceLocation)));
-                                if (toolSlot != -1) break;
-                            }
-
-                            if (toolSlot == -1) {
-                            } else {
-                                selectItem(client, inventory, toolSlot);
-                                return;
-                            }
-                        }
-
-                        if(!checkDurability(inventory.getItem(i))) continue;
+                        double newAttackDamage = 1.0;
 
                         //Every item with an attackDamage larger than 1 has an ATTACK_DAMAGE attribute/modifier
                         if (inventory.getItem(i).getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE)) {
@@ -624,16 +624,15 @@ public class AutoTools {
                         }
                     }
                 }
-            }
 
-            if (toolSlot == -1) {
-                if (!AutoToolsConfig.get().toggle && client.player.isCreative()) {
-                    inventory.setItem(inventory.getSuitableHotbarSlot(), new ItemStack(Items.NETHERITE_SWORD));
+                if (toolSlot == -1) {
+                    if (!AutoToolsConfig.get().toggle && client.player.isCreative()) {
+                        inventory.setItem(inventory.getSuitableHotbarSlot(), new ItemStack(Items.NETHERITE_SWORD));
+                    }
+                } else {
+                    selectItem(client, inventory, toolSlot);
                 }
-            } else {
-                selectItem(client, inventory, toolSlot);
             }
-
         }
     }
 }
