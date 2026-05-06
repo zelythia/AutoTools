@@ -174,6 +174,8 @@ public class AutoToolsConfig extends PartitioningSerializer.GlobalData {
         @HotbarSlots(allowEmpty = false)
         @ConfigEntry.Gui.Tooltip
         public List<Integer> targetSlots = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        @ConfigEntry.Gui.Tooltip
+        public List<Integer> ignoredInventorySlots = List.of();
 
         @ConfigEntry.Gui.Tooltip
         public double minDurability = 0d;
