@@ -8,7 +8,7 @@ modId="autotools"
 version="${version}"
 displayName="AutoTools"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/autotools"
-logoFile="icon.png"
+iconFile="icon.png"
 authors="zelythia"
 description='''
 Automatically switch to the correct tool to use on a block/mob.
@@ -24,7 +24,7 @@ side = "CLIENT"
 [[dependencies.autotools]]
 modId = "minecraft"
 type="required"
-versionRange = "[26.1,)"
+versionRange = "[26.2,)"
 ordering = "NONE"
 side = "CLIENT"
 

@@ -50,7 +50,7 @@ public class GameModeMixin {
     private void startDestroyBlock(BlockPos blockPos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if (minecraft.player.getInventory().getSelectedItem().getMaxDamage() > 0 && AutoToolsConfig.get().durabilityCheck && !AutoTools.checkDurability(minecraft.player.getInventory().getSelectedItem())) {
             cir.setReturnValue(false);
-            SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.get().minDurability < 1 ? AutoToolsConfig.get().minDurability * 100 + "%" : AutoToolsConfig.get().minDurability));
+            SystemToast.addOrUpdate(minecraft.gui.toastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.get().minDurability < 1 ? AutoToolsConfig.get().minDurability * 100 + "%" : AutoToolsConfig.get().minDurability));
         }
 
         //FIXME Probably not needed anymore
@@ -67,7 +67,7 @@ public class GameModeMixin {
     private void attack(CallbackInfo ci) {
         if (minecraft.player.getInventory().getSelectedItem().getMaxDamage() > 0 && AutoToolsConfig.get().durabilityCheck && !AutoTools.checkDurability(minecraft.player.getInventory().getSelectedItem())) {
             ci.cancel();
-            SystemToast.addOrUpdate(minecraft.getToastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.get().minDurability < 1 ? AutoToolsConfig.get().minDurability * 100 + "%" : AutoToolsConfig.get().minDurability));
+            SystemToast.addOrUpdate(minecraft.gui.toastManager(), autoTools$toastId, Component.literal("AutoTools"), Component.translatable("ui.toast.autotools.durability_warning", AutoToolsConfig.get().minDurability < 1 ? AutoToolsConfig.get().minDurability * 100 + "%" : AutoToolsConfig.get().minDurability));
         }
     }
 }

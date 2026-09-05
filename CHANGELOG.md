@@ -1,1 +1,1 @@
-- Added option: ignoreInventorySlots = \[]: AutoTools won't select tools from these slots in your inventory
+26.2 Update
